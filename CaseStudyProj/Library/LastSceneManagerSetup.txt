@@ -1,4 +1,4 @@
 sceneSetups:
-- path: "C:/Users/\u9EBB\u8A00/Desktop/MultHockey_Mater/Assets/Scenes/Easy_1.unity"
+- path: Assets/Scenes/tamakoshi/tamakoshi.unity
   isLoaded: 1
   isActive: 1
