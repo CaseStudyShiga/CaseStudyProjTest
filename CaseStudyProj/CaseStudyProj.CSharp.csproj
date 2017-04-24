@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scenes\Global.cs" />
     <Compile Include="Assets\Scenes\SoundManager.cs" />
     <Compile Include="Assets\Scenes\Title\Title.cs" />
+    <Compile Include="Assets\Scenes\tamakoshi\moveScene.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
