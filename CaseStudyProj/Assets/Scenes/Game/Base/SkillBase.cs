@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-class SkillBase
+class SkillBase : MonoBehaviour
 {
-	string _name;
-	string _content;
-	int _type;
-	int _value;
+	string _name;		// スキルの名前
+	string _content;	// スキルの内容　※説明文
+	int _type;			// スキルの種類 ※攻撃スキルなのか回復スキルなのか　など
+	int _value;			// 各種値　※　ダメージ値や回復値
 
 	public string Name { get { return _name; } set { _name = value; } }
 	public string Content { get { return _content; } set { _content = value; } }

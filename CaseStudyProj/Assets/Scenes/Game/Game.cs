@@ -9,14 +9,12 @@ public class Game : MonoBehaviour {
 
 	private GameObject _nextSceneBtn;
 
-	// Use this for initialization
 	void Start() {
 		this.InitField();
 		this.InitAction();
 		Fader.instance.BlackIn();
 	}
 
-	// Update is called once per frame
 	void Update() {
 	}
 
