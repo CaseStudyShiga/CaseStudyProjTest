@@ -88,13 +88,14 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Prehabs\Fader\Fader.cs" />
     <Compile Include="Assets\Scenes\ButtonManager.cs" />
-    <Compile Include="Assets\Scenes\Game\AttackChar.cs" />
-    <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
+    <Compile Include="Assets\Scenes\Game\AttackStatus.cs" />
+    <Compile Include="Assets\Scenes\Game\Base\StatusBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\SkillBase.cs" />
     <Compile Include="Assets\Scenes\Game\Game.cs" />
     <Compile Include="Assets\Scenes\GameManager.cs" />
     <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
     <Compile Include="Assets\Scenes\Global.cs" />
+    <Compile Include="Assets\Scenes\Shiga\CharBase.cs" />
     <Compile Include="Assets\Scenes\Shiga\Enemy.cs" />
     <Compile Include="Assets\Scenes\Shiga\Panel.cs" />
     <Compile Include="Assets\Scenes\Shiga\Player.cs" />

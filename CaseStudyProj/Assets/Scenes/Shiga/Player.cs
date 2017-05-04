@@ -3,43 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player
+public class Player : CharBase
 {
 	GameObject _player;
-	CharBase _charBase;
 
-	public GameObject Create(GameObject parent, CharBase.eType type, int x, int y)
+	void ClickEvent()
 	{
-		_player = this.CreateChild(type, "player", parent, null, new Vector2(60, 60));
-		_charBase.SetPos(x, y);
+		var stage = this.Status.Stage.GetComponent<Stage>();
+
+		if (this.Status.IsSelect == false)
+		{
+			this.OtherPlayersSelectOff();
+			this.Status.SelectOn();
+
+			stage.ClearPossibleMovePanel();
+			stage.Search(this.Status.X, this.Status.Y - 1, this.Status.Move, 1);
+			stage.Search(this.Status.X + 1, this.Status.Y, this.Status.Move, 2);
+			stage.Search(this.Status.X, this.Status.Y + 1, this.Status.Move, 3);
+			stage.Search(this.Status.X - 1, this.Status.Y, this.Status.Move, 4);
+		}
+		else
+		{
+			this.Status.SelectOff();
+			stage.ClearPossibleMovePanel();
+		}
+	}
+
+	public GameObject Create(Transform stage, StatusBase.eType type, int x, int y)
+	{
+		_player = this.CreateChild(type, "player", stage.Find("Players"), stage.gameObject, null, new Vector2(60, 60));
+		_player.GetComponent<StatusBase>().SelectOff();
+		_player.GetComponent<Button>().onClick.AddListener(this.ClickEvent);
+		this.Status.SetPos(x, y);
 
 		return _player;
 	}
 
-
-
-	GameObject CreateChild(CharBase.eType type, string name, GameObject parent, Sprite sp, Vector2 size)
+	void OtherPlayersSelectOff()
 	{
-		GameObject child = new GameObject(name);
-		child.transform.SetParent(parent.transform.Find("Players"));
-		child.AddComponent<RectTransform>();
-		child.GetComponent<RectTransform>().sizeDelta = size;
-		child.GetComponent<RectTransform>().localScale = Vector3.one;
-		child.AddComponent<Image>().sprite = sp;
-		child.GetComponent<Image>().color = new Color32(100, 210, 255, 255);
-
-		switch (type)
+		foreach (Transform child in this._player.transform.parent)
 		{
-			case CharBase.eType.eAttacker:
-				_charBase = child.AddComponent<AttackChar>();
-				break;
-
-			case CharBase.eType.eDefender:
-				break;
+			child.GetComponent<StatusBase>().SelectOff();
 		}
-
-		_charBase.Stage = parent;
-
-		return child;
+		this.Status.SelectOn();
 	}
 }
