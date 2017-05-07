@@ -95,15 +95,18 @@
     <Compile Include="Assets\Scenes\GameManager.cs" />
     <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
     <Compile Include="Assets\Scenes\Global.cs" />
-    <Compile Include="Assets\Scenes\Shiga\CharBase.cs" />
-    <Compile Include="Assets\Scenes\Shiga\Enemy.cs" />
-    <Compile Include="Assets\Scenes\Shiga\Panel.cs" />
-    <Compile Include="Assets\Scenes\Shiga\Player.cs" />
-    <Compile Include="Assets\Scenes\Shiga\Stage.cs" />
-    <Compile Include="Assets\Scenes\Shiga\StageBase.cs" />
+    <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
+    <Compile Include="Assets\Scenes\Game\Enemy.cs" />
+    <Compile Include="Assets\Scenes\Game\Panel.cs" />
+    <Compile Include="Assets\Scenes\Game\Player.cs" />
+    <Compile Include="Assets\Scenes\Game\Stage.cs" />
+    <Compile Include="Assets\Scenes\Game\Base\StageBase.cs" />
     <Compile Include="Assets\Scenes\SoundManager.cs" />
     <Compile Include="Assets\Scenes\Title\Title.cs" />
     <Compile Include="Assets\Scenes\tamakoshi\moveScene.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Scenes\Shiga\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

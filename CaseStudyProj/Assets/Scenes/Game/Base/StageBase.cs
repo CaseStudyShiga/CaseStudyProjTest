@@ -8,6 +8,7 @@ public class StageBase : MonoBehaviour
 	const float SPACE_COEFFICIENT = 1.2f; // パネルごとの間隔
 
 	GameObject[,] _panelData;
+	public GameObject[,] PanelData { get { return _panelData; } }
 
 	void Start ()
 	{
@@ -59,12 +60,10 @@ public class StageBase : MonoBehaviour
 
 	public void Search(int x, int y, int mv, int di)
 	{
-		// 例外処理 ( 範囲外 || 存在しない )
-		if (x < 0 || y < 0 || x >= _panelData.GetLength(1) || y >= _panelData.GetLength(0)
-			|| _panelData[y, x] == null)
-			return;
-
 		Panel panelData = this.GetPanelData(x, y);
+
+		if (panelData == null)
+			return;
 
 		// パネルの上にすでに何か存在していたら終了
 		if (panelData.IsOnObj) return;
@@ -99,18 +98,24 @@ public class StageBase : MonoBehaviour
 
 	void CharMove(Panel panel)
 	{
-		foreach (Transform child in transform.Find("Players"))
+		foreach (Transform child in this.transform.Find("Players"))
 		{
 			StatusBase status = child.GetComponent<StatusBase>();
 			if (status.IsSelect && panel.IsCheck)
 			{
 				this.GetPanelData(status.X, status.Y).IsOnObj = false;
-				panel.IsOnObj = true;
-				child.transform.localPosition = this.GetPanelLocalPosition(panel.X, panel.Y);
-				status.X = panel.X;
-				status.Y = panel.Y;
+				this.GetPanelData(status.X, status.Y).OnObj = null;
+				status.SetPos(panel.X, panel.Y);
 				status.SelectOff();
 				this.ClearPossibleMovePanel();
+
+				//for (int i = 1; i <= 8; i++)
+				//{
+				//	this.SearchBetween(panel.X, panel.Y, i);
+				//}
+
+				// ※今だけ
+				this.AllCheckBetween();
 			}
 		}
 	}
@@ -139,6 +144,13 @@ public class StageBase : MonoBehaviour
 
 	public Panel GetPanelData(int x, int y)
 	{
+		// 例外処理 ( 範囲外 || 存在しない )
+		if (x < 0 || y < 0 || x >= _panelData.GetLength(1) || y >= _panelData.GetLength(0)
+			|| _panelData[y, x] == null)
+		{
+			return null;
+		}
+
 		return _panelData[y, x].GetComponent<Panel>();
 	}
 
@@ -161,5 +173,114 @@ public class StageBase : MonoBehaviour
 			this.CharMove(panel);
 		});
 		return child;
+	}
+
+	public void SearchBetween(int x, int y, int di) // center X, center Y, search dir
+	{
+		if (x < 0 || y < 0 || x >= this._panelData.GetLength(1) || y >= this._panelData.GetLength(0)
+			|| this._panelData[y, x] == null)
+			return;
+
+		int moveX = 0;
+		int moveY = 0;
+
+		switch (di)
+		{
+			case 1:
+				moveX = 0;
+				moveY = -1;
+				break;
+			case 2:
+				moveX = 1;
+				moveY = -1;
+				break;
+			case 3:
+				moveX = 1;
+				moveY = 0;
+				break;
+			case 4:
+				moveX = 1;
+				moveY = 1;
+				break;
+			case 5:
+				moveX = 0;
+				moveY = 1;
+				break;
+			case 6:
+				moveX = -1;
+				moveY = 1;
+				break;
+			case 7:
+				moveX = -1;
+				moveY = 0;
+				break;
+			case 8:
+				moveX = -1;
+				moveY = -1;
+				break;
+			default:
+				return;
+		}
+
+		bool result = false;
+		int enemyCount = 0;
+
+		int nextX = x;
+		int nextY = y;
+
+		List<StatusBase> enemyStatus = new List<StatusBase>();
+		while (!result)
+		{
+			nextX += moveX;
+			nextY += moveY;
+			Panel panel = this.GetPanelData(nextX, nextY);
+
+			if (panel == null || panel.IsOnObj == false)
+			{
+				break;
+			}
+
+			if (panel.OnObj.GetComponent<StatusBase>().IsPlayer == false)
+			{
+				enemyStatus.Add(panel.OnObj.GetComponent<StatusBase>());
+				enemyCount++;
+			}
+			else
+			{
+				result = true;
+			}
+		}
+
+		if (result)
+		{
+			for (int i = 0; i < enemyStatus.Count; i++)
+			{
+				enemyStatus[i].BetweenOn();
+			}
+			Debug.Log(enemyCount);
+		}
+	}
+
+	public void AllCheckBetween()
+	{
+		foreach (Transform child in this.transform.Find("Enemys"))
+		{
+			StatusBase enemyStatus = child.GetComponent<StatusBase>();
+
+			if (enemyStatus.IsBetween)
+			{
+				enemyStatus.BetweenOff();
+			}
+		}
+
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			StatusBase playerStatus = child.GetComponent<StatusBase>();
+
+			for (int i = 1; i <= 8; i++)
+			{
+				this.SearchBetween(playerStatus.X, playerStatus.Y, i);
+			}
+		}
 	}
 }

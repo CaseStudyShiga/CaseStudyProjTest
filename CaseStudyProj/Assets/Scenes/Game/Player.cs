@@ -35,6 +35,8 @@ public class Player : CharBase
 		_player.GetComponent<StatusBase>().SelectOff();
 		_player.GetComponent<Button>().onClick.AddListener(this.ClickEvent);
 		this.Status.SetPos(x, y);
+		this.Status.IsPlayer = true;
+		this.Status.SetColor(new Color32(0, 0, 255, 255), new Color32(0, 127, 255, 255), new Color32(255, 193, 143, 255));
 
 		return _player;
 	}
