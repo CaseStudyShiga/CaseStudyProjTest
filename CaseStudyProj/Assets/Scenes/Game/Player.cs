@@ -34,10 +34,11 @@ public class Player : CharBase
 	void SetStatusUI()
 	{
 		var stage = this.Status.Stage.GetComponent<Stage>();
-		var statusUI = stage.transform.parent.Find("TopUI/StatusUI").GetComponent<StatusUI>();
+		var statusUIObj = stage.transform.parent.Find("TopUI/StatusUI");
 
-		if (statusUI)
+		if (statusUIObj)
 		{
+			var statusUI = statusUIObj.GetComponent<StatusUI>();
 			statusUI.SetHpText(this.Status.Hp.ToString(), this.Status.HpMax.ToString());
 			statusUI.SetSimpleText("Name", this.Status.Name);
 			statusUI.SetSimpleText("Attack", this.Status.Attack.ToString());
@@ -51,9 +52,11 @@ public class Player : CharBase
 		_player = this.CreateChild(type, "player", stage.Find("Players"), stage.gameObject, null, new Vector2(60, 60));
 		_player.GetComponent<StatusBase>().SelectOff();
 		_player.GetComponent<Button>().onClick.AddListener(this.ClickEvent);
+
+		this.Status.SetColor(new Color32(0, 0, 255, 255), new Color32(0, 127, 255, 255), new Color32(255, 193, 143, 255), new Color32(0, 0, 150, 255));
 		this.Status.SetPos(x, y);
+		this.Status.MovedOff();
 		this.Status.IsPlayer = true;
-		this.Status.SetColor(new Color32(0, 0, 255, 255), new Color32(0, 127, 255, 255), new Color32(255, 193, 143, 255), new Color32(0,0,180,255));
 
 		return _player;
 	}

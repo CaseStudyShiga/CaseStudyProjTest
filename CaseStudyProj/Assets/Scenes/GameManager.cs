@@ -22,39 +22,16 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	int _score;
-	public int Score { get { return _score; } set { _score = value; } }
+	public int _totalTurnNum = 0;
+	public int TotalTurnNum { get { return _totalTurnNum; } set { this._totalTurnNum = value; } }
 
-	int _time;
-	public int Time { get { return _time; } set { _time = value; } }
-
-	bool[] canSkill = new bool[5];
-	public Slider[] _slider;
-
-	public bool StartSkillGage(int n)
+	void Start()
 	{
-		if (canSkill[n])
-		{
-			StartCoroutine(SkillCount(n));
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+
 	}
 
-	IEnumerator SkillCount(int n)
+	void Update()
 	{
-		canSkill[n] = false;
-		float coolTime = 10.0f; //現在選択しているスキルから取得する
-		float skillGage = 0;
-		while (skillGage < 1.0)
-		{
-			yield return null;
-			skillGage += UnityEngine.Time.deltaTime / coolTime;
-			_slider[n].value = skillGage;
-		}
-		canSkill[n] = true;
+		if (_totalTurnNum >= 999) _totalTurnNum = 999;
 	}
 }

@@ -14,6 +14,9 @@ public class StageBase : MonoBehaviour
 	GameObject _background;
 	public GameObject BackGround { get { return _background; } }
 
+	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
+	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
+
 	void Start ()
 	{
 	}
@@ -116,6 +119,9 @@ public class StageBase : MonoBehaviour
 			StatusBase status = child.GetComponent<StatusBase>();
 			if (status.IsSelect && panel.IsCheck)
 			{
+				_stackPlayerPos.Push(new Vector2(status.X, status.Y));
+				_stackPlayerObj.Push(child);
+
 				this.GetPanelData(status.X, status.Y).IsOnObj = false;
 				this.GetPanelData(status.X, status.Y).OnObj = null;
 				status.SetPos(panel.X, panel.Y);
@@ -309,5 +315,51 @@ public class StageBase : MonoBehaviour
 				this.SearchBetween(playerStatus.X, playerStatus.Y, i);
 			}
 		}
+	}
+
+	public void AllMovedOff()
+	{
+		foreach (Transform child in this.transform.Find("Enemys"))
+		{
+			var enemyStatus = child.GetComponent<StatusBase>();
+			enemyStatus.MovedOff();
+		}
+
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			var playerStatus = child.GetComponent<StatusBase>();
+			playerStatus.MovedOff();
+		}
+	}
+
+	public void UndoPlayer()
+	{
+		if (_stackPlayerObj.Count > 0)
+		{
+			Transform obj = _stackPlayerObj.Pop();
+			StatusBase status = obj.GetComponent<StatusBase>();
+			Vector2 pos = _stackPlayerPos.Pop();
+
+			this.GetPanelData(status.X, status.Y).IsOnObj = false;
+			this.GetPanelData(status.X, status.Y).OnObj = null;
+			status.MovedOff();
+			status.SetPos((int)pos.x, (int)pos.y);
+			status.MovedOff();
+
+			foreach (Transform child in this.transform.Find("Players"))
+			{
+				var playerStatus = child.GetComponent<StatusBase>();
+				playerStatus.SelectOff();
+			}
+
+			this.ClearPossibleMovePanel();
+			this.AllCheckBetween();
+		}
+	}
+
+	public void ClearStackPlayer()
+	{
+		_stackPlayerObj.Clear();
+		_stackPlayerPos.Clear();
 	}
 }

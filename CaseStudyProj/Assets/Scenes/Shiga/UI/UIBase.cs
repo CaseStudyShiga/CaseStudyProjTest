@@ -29,7 +29,8 @@ public class UIBase : MonoBehaviour
 		text.fontSize = size;
 		text.alignment = TextAnchor.MiddleCenter;
 		obj.transform.SetParent(parent);
-		obj.transform.GetComponent<RectTransform>().localPosition = pos;
+		obj.GetComponent<RectTransform>().localPosition = pos;
+		obj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
 
 		return obj;
 	}
