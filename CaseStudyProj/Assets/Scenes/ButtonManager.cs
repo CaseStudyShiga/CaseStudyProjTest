@@ -44,7 +44,7 @@ public class ButtonManager : MonoBehaviour
 				_instance = obj.AddComponent<ButtonManager>();
 			}
 			return _instance;
-		}
+		}	
 	}
 
 	void Awake()

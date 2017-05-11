@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI ;
+using DG.Tweening;
 
 public class StageBase : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class StageBase : MonoBehaviour
 
 	GameObject[,] _panelData;
 	public GameObject[,] PanelData { get { return _panelData; } }
+
+	GameObject _background;
+	public GameObject BackGround { get { return _background; } }
 
 	void Start ()
 	{
@@ -24,13 +28,22 @@ public class StageBase : MonoBehaviour
 		GameObject players = new GameObject("Players");
 		GameObject enemys = new GameObject("Enemys");
 		Vector3 BasePos = new Vector3(-300,350,0);
+		_background = new GameObject("BackGround");
 
 		panels.transform.SetParent(this.transform);
 		panels.transform.localPosition = Vector3.zero;
+
 		players.transform.SetParent(this.transform);
 		players.transform.localPosition = Vector3.zero;
+
 		enemys.transform.SetParent(this.transform);
 		enemys.transform.localPosition = Vector3.zero;
+
+		_background.transform.SetParent(this.transform);
+		_background.transform.localPosition = new Vector3(-7, -29);
+		_background.AddComponent<RectTransform>().sizeDelta = new Vector2(661, 905);
+		_background.AddComponent<Image>().color = new Color32(255, 255, 255, 100);
+		_background.transform.SetAsFirstSibling();
 
 		_panelData = new GameObject[stageData.GetLength(0), stageData.GetLength(1)];
 
@@ -122,7 +135,14 @@ public class StageBase : MonoBehaviour
 
 	public void SetPossibleMovePanel(int x, int y)
 	{
-		_panelData[y, x].GetComponent<Image>().color = new Color32(175, 255, 255, 255);
+		// Imageの色変更
+		var image = this._panelData[y, x].GetComponent<Image>();
+		DOTween.To(
+			() => image.color,					// 何を対象にするのか
+			color => image.color = color,		// 値の更新
+			new Color32(175, 255, 255, 255),	// 最終的な値
+			0.175f								// アニメーション時間
+		);
 	}
 
 	public void ClearPossibleMovePanel()
@@ -136,7 +156,14 @@ public class StageBase : MonoBehaviour
 					// パネルデータの設定
 					Panel panel = this.GetPanelData(x, y);
 					panel.IsCheck = false;
-					_panelData[y, x].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+					var image = this._panelData[y, x].GetComponent<Image>();
+					DOTween.To(
+						() => image.color,                  // 何を対象にするのか
+						color => image.color = color,       // 値の更新
+						Color.white,						// 最終的な値
+						0.175f                               // アニメーション時間
+					);
+
 				}
 			}
 		}
