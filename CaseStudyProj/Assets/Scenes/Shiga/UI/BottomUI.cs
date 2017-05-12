@@ -37,6 +37,7 @@ public class BottomUI : UIBase
 			stagebase.AllMovedOff();
 			stagebase.ClearPossibleMovePanel();
 			stagebase.ClearStackPlayer();
+			stagebase.AttackPlayers();
 		});
 		this._returnButton = this.CreateButton("Return", "一手\n戻る", new Vector2(80, 80), new Vector3(-7, -560), () => {
 			var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();

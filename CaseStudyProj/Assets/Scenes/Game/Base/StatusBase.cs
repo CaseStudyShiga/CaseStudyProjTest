@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
@@ -26,7 +27,8 @@ public class StatusBase : MonoBehaviour
 	public bool _isBetween; // 挟まれているかどうか
 	public bool _isPlayer;  // プレイヤーかどうか
 	public int _range;      // 射程
-	public bool _isMoved;	// 行動済みかどうか
+	public bool _isMoved;   // 行動済みかどうか
+	public List<int> _dir;	// 攻撃すべき方向（敵がいる方向）
 
 	public string Name { get { return _name; } set { _name = value; } }
 	public int Attack { get { return _attack; } set { _attack = value; } }
@@ -41,20 +43,12 @@ public class StatusBase : MonoBehaviour
 	public bool IsSelect { get { return _isSelect; } }
 	public bool IsBetween { get { return _isBetween; } }
 	public bool IsMoved { get { return _isMoved; } }
+	public List<int> Dir { get { return _dir; } set { _dir = value; } }
 
 	public enum eType
 	{
 		eAttacker = 0,
 		eDefender,
-	}
-
-	void Awake()
-	{
-		this._isDead = false;
-		this._isSelect = false;
-		this._isBetween = false;
-		this._isPlayer = false;
-		this._isMoved = false;
 	}
 
 	void Update()
@@ -69,6 +63,26 @@ public class StatusBase : MonoBehaviour
 		{
 			this.GetComponent<Image>().color = MOVED_COL;
 		}
+
+		if (this._hp <= 0)
+		{
+			this._isDead = true;
+		}
+
+		//if (this._isDead)
+		//{
+		//	Destroy(this.gameObject);
+		//}
+	}
+
+	public void InitField()
+	{
+		this._isDead = false;
+		this._isSelect = false;
+		this._isBetween = false;
+		this._isPlayer = false;
+		this._isMoved = false;
+		this._dir = new List<int>() { };
 	}
 
 	void SettingDefaultCol()
@@ -97,16 +111,15 @@ public class StatusBase : MonoBehaviour
 	{
 		if (this._isMoved == false)
 		{
-			_x = x;
-			_y = y;
-			_stage.GetComponent<StageBase>().GetPanelData(_x, _y).OnObj = this.transform;
-			_stage.GetComponent<StageBase>().GetPanelData(_x, _y).IsOnObj = true;
+			this._x = x;
+			this._y = y;
+			this._stage.GetComponent<StageBase>().GetPanelData(_x, _y).OnObj = this.transform;
+			this._stage.GetComponent<StageBase>().GetPanelData(_x, _y).IsOnObj = true;
+			this._isMoved = true;
 
 			// Tween Plugins Use
 			Vector3 nextpos = _stage.GetComponent<StageBase>().GetPanelLocalPosition(_x, _y);
 			this.transform.DOLocalMove(nextpos, 0.1f).SetEase(Ease.InOutQuart);
-
-			this._isMoved = true;
 		}
 	}
 

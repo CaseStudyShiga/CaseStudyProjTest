@@ -28,7 +28,8 @@ public class CharBase
 				break;
 		}
 
-		_status.Stage = stage;
+		this._status.InitField();
+		this._status.Stage = stage;
 
 		return child;
 	}

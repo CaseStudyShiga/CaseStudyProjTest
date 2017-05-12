@@ -17,11 +17,11 @@ public class StageBase : MonoBehaviour
 	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
 	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
 
-	void Start ()
+	void Start()
 	{
 	}
 
-	void Update ()
+	void Update()
 	{
 	}
 
@@ -30,7 +30,7 @@ public class StageBase : MonoBehaviour
 		GameObject panels = new GameObject("Panels");
 		GameObject players = new GameObject("Players");
 		GameObject enemys = new GameObject("Enemys");
-		Vector3 BasePos = new Vector3(-300,350,0);
+		Vector3 BasePos = new Vector3(-300, 350, 0);
 		_background = new GameObject("BackGround");
 
 		panels.transform.SetParent(this.transform);
@@ -90,10 +90,10 @@ public class StageBase : MonoBehaviour
 		{
 			case 0: // 進行不可
 				down = -999;
-			break;
-			case 1:	// 平地
+				break;
+			case 1: // 平地
 				down = -1;
-			break;
+				break;
 		}
 
 		// 歩数がマイナスになった地点へは進めないので中断
@@ -144,10 +144,10 @@ public class StageBase : MonoBehaviour
 		// Imageの色変更
 		var image = this._panelData[y, x].GetComponent<Image>();
 		DOTween.To(
-			() => image.color,					// 何を対象にするのか
-			color => image.color = color,		// 値の更新
-			new Color32(175, 255, 255, 255),	// 最終的な値
-			0.175f								// アニメーション時間
+			() => image.color,                  // 何を対象にするのか
+			color => image.color = color,       // 値の更新
+			new Color32(175, 255, 255, 255),    // 最終的な値
+			0.175f                              // アニメーション時間
 		);
 	}
 
@@ -166,7 +166,7 @@ public class StageBase : MonoBehaviour
 					DOTween.To(
 						() => image.color,                  // 何を対象にするのか
 						color => image.color = color,       // 値の更新
-						Color.white,						// 最終的な値
+						Color.white,                        // 最終的な値
 						0.175f                               // アニメーション時間
 					);
 
@@ -202,64 +202,26 @@ public class StageBase : MonoBehaviour
 		child.AddComponent<Image>().sprite = sp;
 
 		Panel panel = child.AddComponent<Panel>();
-		child.AddComponent<Button>().onClick.AddListener(() => {
+		child.AddComponent<Button>().onClick.AddListener(() =>
+		{
 			this.CharMove(panel);
 		});
 		return child;
 	}
 
-	public void SearchBetween(int x, int y, int di) // center X, center Y, search dir
+	public bool SearchBetween(int x, int y, int di) // center X, center Y, search dir
 	{
 		if (x < 0 || y < 0 || x >= this._panelData.GetLength(1) || y >= this._panelData.GetLength(0)
 			|| this._panelData[y, x] == null)
-			return;
-
-		int moveX = 0;
-		int moveY = 0;
-
-		switch (di)
-		{
-			case 1:
-				moveX = 0;
-				moveY = -1;
-				break;
-			case 2:
-				moveX = 1;
-				moveY = -1;
-				break;
-			case 3:
-				moveX = 1;
-				moveY = 0;
-				break;
-			case 4:
-				moveX = 1;
-				moveY = 1;
-				break;
-			case 5:
-				moveX = 0;
-				moveY = 1;
-				break;
-			case 6:
-				moveX = -1;
-				moveY = 1;
-				break;
-			case 7:
-				moveX = -1;
-				moveY = 0;
-				break;
-			case 8:
-				moveX = -1;
-				moveY = -1;
-				break;
-			default:
-				return;
-		}
+			return false;
 
 		bool result = false;
 		int enemyCount = 0;
 
 		int nextX = x;
 		int nextY = y;
+		int moveX = (int)GameManager.Instance.DirTable[di].x;
+		int moveY = (int)GameManager.Instance.DirTable[di].y;
 
 		List<StatusBase> enemyStatus = new List<StatusBase>();
 		while (!result)
@@ -291,7 +253,10 @@ public class StageBase : MonoBehaviour
 				enemyStatus[i].BetweenOn();
 			}
 			Debug.Log(enemyCount);
+			return true;
 		}
+
+		return false;
 	}
 
 	public void AllCheckBetween()
@@ -309,10 +274,14 @@ public class StageBase : MonoBehaviour
 		foreach (Transform child in this.transform.Find("Players"))
 		{
 			StatusBase playerStatus = child.GetComponent<StatusBase>();
+			playerStatus.Dir.Clear();
 
-			for (int i = 1; i <= 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
-				this.SearchBetween(playerStatus.X, playerStatus.Y, i);
+				if (this.SearchBetween(playerStatus.X, playerStatus.Y, i))
+				{
+					playerStatus.Dir.Add(i);
+				}
 			}
 		}
 	}
@@ -361,5 +330,29 @@ public class StageBase : MonoBehaviour
 	{
 		_stackPlayerObj.Clear();
 		_stackPlayerPos.Clear();
+	}
+
+	public void AttackPlayers()
+	{
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			var playerStatus = child.GetComponent<StatusBase>();
+
+			for (int d = 0; d < playerStatus.Dir.Count; d++)
+			{
+				for (int i = 0; i < playerStatus.Range; i++)
+				{
+					int enemyX = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].x * (i + 1) ) + playerStatus.X;
+					int enemyY = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].y * (i + 1) ) + playerStatus.Y;
+
+					var panel = this.GetPanelData(enemyX, enemyY);
+					var enemy = panel.OnObj;
+					var enemyStatus = enemy.GetComponent<StatusBase>();
+
+					if(enemyStatus.IsPlayer == false)
+						enemyStatus.Hp -= playerStatus.Attack;
+				}
+			}
+		}
 	}
 }
