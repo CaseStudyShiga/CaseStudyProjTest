@@ -25,7 +25,7 @@ public class TopUI : UIBase
 
 	void InitField()
 	{
-		this._background = this.CreateChild("BackGround", this.transform, new Vector2(661, 177), new Vector3(0, -555));
+		this._background = this.CreateChild("BackGround", this.transform, new Vector2(661, 177), new Vector3(-7, -555));
 		this._face = this.CreateChild("FaceImage", this.transform, new Vector2(160, 160), new Vector3(-225, -555));
 		this._statusUI = this.CreateStatusUI();
 		this._totalTurn = this.CreateChild("TotalTurn", this.transform, new Vector2(160, 160), new Vector3(225, -555));

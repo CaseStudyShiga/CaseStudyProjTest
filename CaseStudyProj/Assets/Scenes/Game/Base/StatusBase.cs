@@ -20,7 +20,6 @@ public class StatusBase : MonoBehaviour
 	public int _hp;         // 体力
 	public int _hpMax;      // 最大体力
 	public int _move;		// 移動量
-	public bool _isDead;	// 死んでるかどうか ※ 生存していたら:false 死んでいたら:true
 	public int _x;			// 現在位置
 	public int _y;          // 現在位置
 	public bool _isSelect;	// 選択されているかどうか
@@ -35,7 +34,6 @@ public class StatusBase : MonoBehaviour
 	public int Hp { get { return _hp; } set { _hp = value; } }
 	public int HpMax { get { return _hpMax; } set { _hpMax = value; } }
 	public int Move { get { return _move; } set { _move = value; } }
-	public bool IsDead { get { return _isDead; } set { _isDead = value; } }
 	public int X { get { return _x; } set { _x = value; } }
 	public int Y { get { return _y; } set { _y = value; } }
 	public int Range { get { return _range; } set { _range = value; } }
@@ -53,12 +51,6 @@ public class StatusBase : MonoBehaviour
 
 	void Update()
 	{
-		Panel panel = _stage.GetComponent<StageBase>().GetPanelData(_x, _y);
-		if (panel.IsOnObj == false)
-		{
-			panel.IsOnObj = true;
-		}
-
 		if (this._isMoved)
 		{
 			this.GetComponent<Image>().color = MOVED_COL;
@@ -66,18 +58,12 @@ public class StatusBase : MonoBehaviour
 
 		if (this._hp <= 0)
 		{
-			this._isDead = true;
+			Destroy(this.gameObject);
 		}
-
-		//if (this._isDead)
-		//{
-		//	Destroy(this.gameObject);
-		//}
 	}
 
 	public void InitField()
 	{
-		this._isDead = false;
 		this._isSelect = false;
 		this._isBetween = false;
 		this._isPlayer = false;
@@ -114,7 +100,6 @@ public class StatusBase : MonoBehaviour
 			this._x = x;
 			this._y = y;
 			this._stage.GetComponent<StageBase>().GetPanelData(_x, _y).OnObj = this.transform;
-			this._stage.GetComponent<StageBase>().GetPanelData(_x, _y).IsOnObj = true;
 			this._isMoved = true;
 
 			// Tween Plugins Use

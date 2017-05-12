@@ -64,8 +64,7 @@ public class StageBase : MonoBehaviour
 					panelData.Y = y;
 					panelData.Type = stageData[y, x];
 					panelData.Value = 0;
-					panelData.IsCheck = false;
-					panelData.IsOnObj = false;
+					panelData.DataReset();
 
 					// コードの二次元配列に合わせるため Y軸反転
 					_panelData[y, x].GetComponent<RectTransform>().localPosition = BasePos + new Vector3(x * (panelSize * SPACE_COEFFICIENT), -y * (panelSize * SPACE_COEFFICIENT), 0.0f);
@@ -82,7 +81,7 @@ public class StageBase : MonoBehaviour
 			return;
 
 		// パネルの上にすでに何か存在していたら終了
-		if (panelData.IsOnObj) return;
+		if (panelData.OnObj) return;
 
 		// 現在の地点にあるマップ情報を取り出して、ウェイトを計算
 		int down = 0;
@@ -122,8 +121,9 @@ public class StageBase : MonoBehaviour
 				_stackPlayerPos.Push(new Vector2(status.X, status.Y));
 				_stackPlayerObj.Push(child);
 
-				this.GetPanelData(status.X, status.Y).IsOnObj = false;
-				this.GetPanelData(status.X, status.Y).OnObj = null;
+				this.GetPanelData(status.X, status.Y).DataReset();
+				//this.GetPanelData(status.X, status.Y).IsOnObj = false;
+				//this.GetPanelData(status.X, status.Y).OnObj = null;
 				status.SetPos(panel.X, panel.Y);
 				status.SelectOff();
 				this.ClearPossibleMovePanel();
@@ -230,7 +230,7 @@ public class StageBase : MonoBehaviour
 			nextY += moveY;
 			Panel panel = this.GetPanelData(nextX, nextY);
 
-			if (panel == null || panel.IsOnObj == false)
+			if (panel == null || panel.OnObj == null)
 			{
 				break;
 			}
@@ -309,8 +309,7 @@ public class StageBase : MonoBehaviour
 			StatusBase status = obj.GetComponent<StatusBase>();
 			Vector2 pos = _stackPlayerPos.Pop();
 
-			this.GetPanelData(status.X, status.Y).IsOnObj = false;
-			this.GetPanelData(status.X, status.Y).OnObj = null;
+			this.GetPanelData(status.X, status.Y).DataReset();
 			status.MovedOff();
 			status.SetPos((int)pos.x, (int)pos.y);
 			status.MovedOff();
@@ -342,15 +341,26 @@ public class StageBase : MonoBehaviour
 			{
 				for (int i = 0; i < playerStatus.Range; i++)
 				{
-					int enemyX = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].x * (i + 1) ) + playerStatus.X;
-					int enemyY = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].y * (i + 1) ) + playerStatus.Y;
+					int enemyX = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].x * (i + 1)) + playerStatus.X;
+					int enemyY = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].y * (i + 1)) + playerStatus.Y;
 
 					var panel = this.GetPanelData(enemyX, enemyY);
 					var enemy = panel.OnObj;
-					var enemyStatus = enemy.GetComponent<StatusBase>();
 
-					if(enemyStatus.IsPlayer == false)
-						enemyStatus.Hp -= playerStatus.Attack;
+					if (enemy)
+					{
+						var enemyStatus = enemy.GetComponent<StatusBase>();
+
+						if (enemyStatus.IsPlayer == false)
+						{
+							enemyStatus.Hp -= playerStatus.Attack;
+
+							if (enemyStatus.Hp <= 0)
+							{
+								panel.DataReset();
+							}
+						}
+					}
 				}
 			}
 		}

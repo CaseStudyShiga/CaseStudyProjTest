@@ -9,7 +9,7 @@ class AttackStatus : StatusBase
 	{
 		this.Name = "Attack Character";
 		this.Attack = 5;
-		this.HpMax = this.Hp = 1;
+		this.HpMax = this.Hp = 9;
 		this.Move = 3;
 		this.Range = 2;
 	}
@@ -18,7 +18,7 @@ class AttackStatus : StatusBase
 	{
 		this.Name = name;
 		this.Attack = attack;
-		this.HpMax = this.Hp = 1;
+		this.HpMax = this.Hp = hp;
 		this.Move = move;
 	}
 }
