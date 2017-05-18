@@ -18,14 +18,22 @@ public class UIBase : MonoBehaviour
 		return child;
 	}
 
-	public GameObject CreateText(string name, string textValue, Transform parent, Vector3 pos, int size = 29)
+	public GameObject CreateText(string name, string textValue, Transform parent, Vector3 pos, int size = 29, bool large = true)
 	{
 		GameObject obj = new GameObject(name);
 		Text text = obj.AddComponent<Text>();
-		//text.font = Resources.Load<Font>("Font/Arial");
-		text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+		if (large)
+		{
+			text.font = Resources.Load<Font>("Fonts/JKG-L");
+		}
+		else
+		{
+			text.font = Resources.Load<Font>("Fonts/JKG-M");
+		}
+
 		text.text = textValue;
-		text.color = Color.black;
+		text.color = Color.white;
 		text.fontSize = size;
 		text.alignment = TextAnchor.MiddleCenter;
 		obj.transform.SetParent(parent);

@@ -6,16 +6,21 @@ using DG.Tweening;
 
 public class StageBase : MonoBehaviour
 {
-	const float SPACE_COEFFICIENT = 1.2f; // パネルごとの間隔
+	// 定数
+	const int PANEL_SIZE = 93;
+	const float SPACE_COEFFICIENT = 1.0f; // パネルごとの間隔
+	readonly Vector3 BASE_POS = new Vector3(-325.5f, 343.0f, 0); // パネルの左上　※開始地点
+	readonly Color32 PANEL_COL = new Color32(255,255,255,0);
 
+	// メンバ変数
 	GameObject[,] _panelData;
-	public GameObject[,] PanelData { get { return _panelData; } }
-
 	GameObject _background;
-	public GameObject BackGround { get { return _background; } }
-
 	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
 	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
+
+	// 外部読み取り用
+	public GameObject[,] PanelData { get { return _panelData; } }
+	public GameObject BackGround { get { return _background; } }
 
 	void Start()
 	{
@@ -25,13 +30,11 @@ public class StageBase : MonoBehaviour
 	{
 	}
 
-	public void CreateStageBase(int[,] stageData, int panelSize)
+	public void CreateStageBase(int[,] stageData)
 	{
 		GameObject panels = new GameObject("Panels");
 		GameObject players = new GameObject("Players");
 		GameObject enemys = new GameObject("Enemys");
-		Vector3 BasePos = new Vector3(-300, 350, 0);
-		_background = new GameObject("BackGround");
 
 		panels.transform.SetParent(this.transform);
 		panels.transform.localPosition = Vector3.zero;
@@ -42,10 +45,7 @@ public class StageBase : MonoBehaviour
 		enemys.transform.SetParent(this.transform);
 		enemys.transform.localPosition = Vector3.zero;
 
-		_background.transform.SetParent(this.transform);
-		_background.transform.localPosition = new Vector3(-7, -29);
-		_background.AddComponent<RectTransform>().sizeDelta = new Vector2(661, 905);
-		_background.AddComponent<Image>().color = new Color32(255, 255, 255, 100);
+		_background = CreateBackGround("BackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_background"));
 		_background.transform.SetAsFirstSibling();
 
 		_panelData = new GameObject[stageData.GetLength(0), stageData.GetLength(1)];
@@ -56,7 +56,7 @@ public class StageBase : MonoBehaviour
 			{
 				if (stageData[y, x] != 0)
 				{
-					_panelData[y, x] = this.CreateChild("panel" + (x + ((stageData.GetLength(1)) * y)), panels, null, new Vector2(panelSize, panelSize));
+					_panelData[y, x] = this.CreateChild("panel" + (x + ((stageData.GetLength(1)) * y)), panels, null, new Vector2(PANEL_SIZE, PANEL_SIZE));
 
 					// パネルデータの設定
 					Panel panelData = this.GetPanelData(x, y);
@@ -67,7 +67,7 @@ public class StageBase : MonoBehaviour
 					panelData.DataReset();
 
 					// コードの二次元配列に合わせるため Y軸反転
-					_panelData[y, x].GetComponent<RectTransform>().localPosition = BasePos + new Vector3(x * (panelSize * SPACE_COEFFICIENT), -y * (panelSize * SPACE_COEFFICIENT), 0.0f);
+					_panelData[y, x].GetComponent<RectTransform>().localPosition = BASE_POS + new Vector3(x * (PANEL_SIZE * SPACE_COEFFICIENT), -y * (PANEL_SIZE * SPACE_COEFFICIENT), 0.0f);
 				}
 			}
 		}
@@ -122,8 +122,6 @@ public class StageBase : MonoBehaviour
 				_stackPlayerObj.Push(child);
 
 				this.GetPanelData(status.X, status.Y).DataReset();
-				//this.GetPanelData(status.X, status.Y).IsOnObj = false;
-				//this.GetPanelData(status.X, status.Y).OnObj = null;
 				status.SetPos(panel.X, panel.Y);
 				status.SelectOff();
 				this.ClearPossibleMovePanel();
@@ -141,12 +139,16 @@ public class StageBase : MonoBehaviour
 
 	public void SetPossibleMovePanel(int x, int y)
 	{
+		Color32 moveCol = PANEL_COL;
+		moveCol.r -= 80;
+		moveCol.a += 100;
+
 		// Imageの色変更
 		var image = this._panelData[y, x].GetComponent<Image>();
 		DOTween.To(
 			() => image.color,                  // 何を対象にするのか
 			color => image.color = color,       // 値の更新
-			new Color32(175, 255, 255, 255),    // 最終的な値
+			moveCol,    // 最終的な値
 			0.175f                              // アニメーション時間
 		);
 	}
@@ -166,7 +168,7 @@ public class StageBase : MonoBehaviour
 					DOTween.To(
 						() => image.color,                  // 何を対象にするのか
 						color => image.color = color,       // 値の更新
-						Color.white,                        // 最終的な値
+						PANEL_COL,                        // 最終的な値
 						0.175f                               // アニメーション時間
 					);
 
@@ -200,6 +202,7 @@ public class StageBase : MonoBehaviour
 		child.GetComponent<RectTransform>().sizeDelta = size;
 		child.GetComponent<RectTransform>().localScale = Vector3.one;
 		child.AddComponent<Image>().sprite = sp;
+		child.GetComponent<Image>().color = PANEL_COL;
 
 		Panel panel = child.AddComponent<Panel>();
 		child.AddComponent<Button>().onClick.AddListener(() =>
@@ -345,7 +348,7 @@ public class StageBase : MonoBehaviour
 					int enemyY = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].y * (i + 1)) + playerStatus.Y;
 
 					var panel = this.GetPanelData(enemyX, enemyY);
-					var enemy = panel.OnObj;
+					var enemy = (panel) ? panel.OnObj : null;
 
 					if (enemy)
 					{
@@ -364,5 +367,18 @@ public class StageBase : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	GameObject CreateBackGround(string name, Transform parent, Vector2 size, Sprite sp = null)
+	{
+		GameObject child = new GameObject(name);
+		child.transform.SetParent(parent);
+		child.AddComponent<RectTransform>();
+		child.GetComponent<RectTransform>().sizeDelta = size;
+		child.GetComponent<RectTransform>().localScale = Vector3.one;
+		child.GetComponent<RectTransform>().localPosition = Vector3.zero;
+		child.AddComponent<Image>().sprite = sp;
+
+		return child;
 	}
 }

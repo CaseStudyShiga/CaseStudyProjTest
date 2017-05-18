@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class Stage : StageBase
 {
-	// 定数
-	const int PANEL_SIZE = 70;
-
 	// 変数
 	Player[] _player;
 	Enemy[] _enemy;
@@ -45,7 +42,7 @@ public class Stage : StageBase
 
 	void Start()
 	{
-		this.CreateStageBase(_stageData, PANEL_SIZE);
+		this.CreateStageBase(_stageData);
 		this.InitField();
 		this.AllCheckBetween();
 	}
@@ -67,7 +64,7 @@ public class Stage : StageBase
 		for (int i = 0; i < _enemyPos.GetLength(0); i++)
 		{
 			_enemy[i] = new Enemy();
-			_enemy[i].Create(this.transform, StatusBase.eType.eAttacker, _enemyPos[i,0], _enemyPos[i,1]);
+			_enemy[i].Create(this.transform, StatusBase.eType.eEnemy0, _enemyPos[i,0], _enemyPos[i,1]);
 		}
 	}
 }

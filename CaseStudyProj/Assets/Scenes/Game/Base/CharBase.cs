@@ -8,14 +8,14 @@ public class CharBase
 	StatusBase _status;
 	public StatusBase Status { get { return _status; } set { _status = value; } }
 
-	public GameObject CreateChild(StatusBase.eType type, string name, Transform parent,GameObject stage, Sprite sp, Vector2 size)
+	public GameObject CreateChild(StatusBase.eType type, string name, Transform parent,GameObject stage, Vector2 size)
 	{
 		GameObject child = new GameObject(name);
 		child.transform.SetParent(parent);
 		child.AddComponent<RectTransform>();
 		child.GetComponent<RectTransform>().sizeDelta = size;
 		child.GetComponent<RectTransform>().localScale = Vector3.one;
-		child.AddComponent<Image>().sprite = sp;
+		child.AddComponent<Image>();
 		child.AddComponent<Button>();
 
 		switch (type)
@@ -26,7 +26,13 @@ public class CharBase
 
 			case StatusBase.eType.eDefender:
 				break;
+
+			case StatusBase.eType.eEnemy0:
+				_status = child.AddComponent<EnemyStatus0>();
+				break;
 		}
+
+		child.GetComponent<Image>().sprite = _status.CharSp;
 
 		this._status.InitField();
 		this._status.Stage = stage;

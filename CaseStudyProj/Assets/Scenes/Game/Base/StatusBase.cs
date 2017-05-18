@@ -27,7 +27,8 @@ public class StatusBase : MonoBehaviour
 	public bool _isPlayer;  // プレイヤーかどうか
 	public int _range;      // 射程
 	public bool _isMoved;   // 行動済みかどうか
-	public List<int> _dir;	// 攻撃すべき方向（敵がいる方向）
+	public List<int> _dir;  // 攻撃すべき方向（敵がいる方向）
+	public Sprite _charSp;		// キャライメージ
 
 	public string Name { get { return _name; } set { _name = value; } }
 	public int Attack { get { return _attack; } set { _attack = value; } }
@@ -42,11 +43,14 @@ public class StatusBase : MonoBehaviour
 	public bool IsBetween { get { return _isBetween; } }
 	public bool IsMoved { get { return _isMoved; } }
 	public List<int> Dir { get { return _dir; } set { _dir = value; } }
+	public Sprite CharSp { get { return _charSp; } set { _charSp = value; } }
 
 	public enum eType
 	{
 		eAttacker = 0,
 		eDefender,
+
+		eEnemy0,
 	}
 
 	void Update()
@@ -69,6 +73,17 @@ public class StatusBase : MonoBehaviour
 		this._isPlayer = false;
 		this._isMoved = false;
 		this._dir = new List<int>() { };
+		this._charSp = null;
+	}
+
+	public void SetData(string name, int attack, int hp, int move, int range, Sprite sp)
+	{
+		this.Name = name;
+		this.Attack = attack;
+		this.HpMax = this.Hp = hp;
+		this.Move = move;
+		this.Range = range;
+		this.CharSp = sp;
 	}
 
 	void SettingDefaultCol()

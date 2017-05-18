@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>iOS:9</UnityBuildTarget>
     <UnityVersion>5.6.0f3</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -104,7 +106,7 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Prehabs\Fader\Fader.cs" />
     <Compile Include="Assets\Scenes\ButtonManager.cs" />
-    <Compile Include="Assets\Scenes\Game\AttackStatus.cs" />
+    <Compile Include="Assets\Scenes\Game\Status\AttackStatus.cs" />
     <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\SkillBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\StageBase.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Assets\Scenes\Game\Panel.cs" />
     <Compile Include="Assets\Scenes\Game\Player.cs" />
     <Compile Include="Assets\Scenes\Game\Stage.cs" />
+    <Compile Include="Assets\Scenes\Game\Status\EnemyStatus.cs" />
     <Compile Include="Assets\Scenes\Game\UI\BottomUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\StatusUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\TopUI.cs" />
