@@ -8,7 +8,7 @@ class EnemyStatus0 : StatusBase
 {
 	void Awake()
 	{
-		this.Name = "村瀬克磨";
+		this.Name = "エネミー";
 		this.Attack = 1;
 		this.HpMax = this.Hp = 9;
 		this.Move = 2;

@@ -125,7 +125,7 @@ public class StatusBase : MonoBehaviour
 
 	public void SelectOn()
 	{
-		if (this._isMoved == false)
+		if (this._isMoved == false)	
 		{
 			this._isSelect = true;
 			this.transform.GetComponent<Image>().color = SELECT_COL;

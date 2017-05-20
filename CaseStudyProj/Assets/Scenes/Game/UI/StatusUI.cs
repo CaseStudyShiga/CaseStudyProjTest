@@ -24,9 +24,9 @@ class StatusUI : UIBase
 	{
 		_name = this.CreateName(new Vector3(1.25f, 92));
 		_hp = this.CreateHp(new Vector3(-61, -6));
-		_attack = this.CreateSimple("Attack", "攻撃", "00", new Vector3(-70, -72));
-		_move = this.CreateSimple("Move", "移動量", "0", new Vector3(125, -72));
-		_range = this.CreateSimple("Range", "射程", "00", new Vector3(128, -6));
+		_attack = this.CreateSimple("Attack", "攻撃", "", new Vector3(-70, -72));
+		_move = this.CreateSimple("Move", "移動量", "", new Vector3(125, -72));
+		_range = this.CreateSimple("Range", "射程", "", new Vector3(128, -6));
 	}
 
 	public void SetHpText(string value, string max)
@@ -63,7 +63,7 @@ class StatusUI : UIBase
 		child.GetComponent<RectTransform>().localScale = Vector3.one;
 		child.GetComponent<RectTransform>().localPosition = pos;
 
-		GameObject text = this.CreateText("Text", "Name", child.transform, Vector3.zero, 30, false);
+		GameObject text = this.CreateText("Text", "", child.transform, Vector3.zero, 30, false);
 		text.GetComponent<RectTransform>().sizeDelta = new Vector2(400, 100);
 
 		return child;
@@ -78,8 +78,8 @@ class StatusUI : UIBase
 		child.GetComponent<RectTransform>().localScale = Vector3.one;
 		child.GetComponent<RectTransform>().localPosition = pos;
 
-		GameObject valueText = this.CreateText("Value", "00", child.transform, Vector3.zero, 25, false);
-		GameObject maxText = this.CreateText("Max", "/99", child.transform, new Vector3(36, -5), 21);
+		GameObject valueText = this.CreateText("Value", "", child.transform, Vector3.zero, 25, false);
+		GameObject maxText = this.CreateText("Max", "/", child.transform, new Vector3(36, -5), 21);
 
 		return child;
 	}

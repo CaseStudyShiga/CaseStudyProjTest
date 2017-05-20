@@ -120,7 +120,7 @@
     <Compile Include="Assets\Scenes\Game\UI\BottomUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\StatusUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\TopUI.cs" />
-    <Compile Include="Assets\Scenes\Game\UI\UIBase.cs" />
+    <Compile Include="Assets\Scenes\Game\Base\UIBase.cs" />
     <Compile Include="Assets\Scenes\GameManager.cs" />
     <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
     <Compile Include="Assets\Scenes\Global.cs" />

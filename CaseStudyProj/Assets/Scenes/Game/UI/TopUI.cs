@@ -31,9 +31,9 @@ public class TopUI : UIBase
 		this._totalTurn = this.CreateChild("TotalTurn", this.transform, new Vector2(160, 160), new Vector2(303, -471));
 		this._totalTurn.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
 
-		this.CreateText("Value", "00", this._totalTurn.transform, new Vector3(0, -10), 48, false);
+		this.CreateText("Value", "0", this._totalTurn.transform, new Vector3(0, -10), 48, false);
 
-		this._background.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+		this._face.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
 		this._face.transform.SetSiblingIndex(0);
 		this._background.transform.SetSiblingIndex(1);
 	}
@@ -51,5 +51,6 @@ public class TopUI : UIBase
 	public void SetFaceSprite(Sprite sp)
 	{
 		this._face.GetComponent<Image>().sprite = sp;
+		this._face.GetComponent<Image>().color = Color.white;
 	}
 }
