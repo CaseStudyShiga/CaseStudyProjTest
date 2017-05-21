@@ -23,7 +23,7 @@ public class Stage : StageBase
 	int[,] _playerPos = {
 			{ 4,3 },
 			{ 4,8 },
-			{ 1,1 },
+			{ 2,1 },
 		};
 	int[,] _enemyPos = {
 			{ 4,7 },

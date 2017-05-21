@@ -13,17 +13,12 @@ public class CharBase
 	protected void SetStatusUI()
 	{
 		var stage = this.Status.Stage.GetComponent<Stage>();
-		var statusUIObj = stage.transform.parent.Find("TopUI/StatusUI");
+		var TopUIObj = stage.transform.parent.Find("TopUI");
 
-		if (statusUIObj)
+		if (TopUIObj)
 		{
-			var statusUI = statusUIObj.GetComponent<StatusUI>();
-			statusUI.SetHpText(this.Status.Hp.ToString(), this.Status.HpMax.ToString());
-			statusUI.SetSimpleText("Name", this.Status.Name);
-			statusUI.SetSimpleText("Attack", this.Status.Attack.ToString());
-			statusUI.SetSimpleText("Move", this.Status.Move.ToString());
-			statusUI.SetSimpleText("Range", this.Status.Range.ToString());
-			statusUI.transform.parent.GetComponent<TopUI>().SetFaceSprite(this._instance.GetComponent<Image>().sprite);
+			var ui = TopUIObj.GetComponent<TopUI>();
+			ui.Obj = this._instance;
 		}
 	}
 

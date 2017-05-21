@@ -34,5 +34,4 @@ public class Game : MonoBehaviour {
 		yield return new WaitForSeconds(waitTime);			// waitTime後に実行する
 		SceneManager.LoadScene("Title");					// シーン切り替え
 	}
-
 }

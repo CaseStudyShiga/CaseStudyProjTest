@@ -23,10 +23,12 @@ public class GameManager : MonoBehaviour
 	}
 
 	int _totalTurnNum = 0;
-	public int TotalTurnNum { get { return _totalTurnNum; } set { this._totalTurnNum = value; } }
-
 	Dictionary<int, Vector2> _dirTable;
+	bool _enemyTurn;
+
+	public int TotalTurnNum { get { return _totalTurnNum; } set { this._totalTurnNum = value; } }
 	public Dictionary<int, Vector2> DirTable { get { return _dirTable; } }
+	public bool isEnemyTurn { get { return _enemyTurn; } set { _enemyTurn = value; } }
 
 	void Awake()
 	{

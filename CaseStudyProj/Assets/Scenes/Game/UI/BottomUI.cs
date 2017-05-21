@@ -24,24 +24,34 @@ public class BottomUI : UIBase
 	}
 
 	// ターン終了
-	void TurnDndAction()
+	IEnumerator TurnDndAction()
 	{
-		var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
+		if (GameManager.Instance.isEnemyTurn == false)
+		{
+			var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
+			stagebase.ClearPossibleMovePanel();
 
-		GameManager.Instance.TotalTurnNum++;
-		stagebase.ClearStackPlayer();
-		stagebase.AttackPlayers();
-		stagebase.AllCheckBetween();
-		stagebase.EnemysTurn();
-		stagebase.AllMovedOff();
-		stagebase.ClearPossibleMovePanel();
+			GameManager.Instance.TotalTurnNum++;
+
+			stagebase.AttackPlayers();
+			stagebase.DamageEnemy();
+			yield return StartCoroutine(stagebase.EnemysTurn());
+
+			stagebase.ClearStackPlayer();
+			stagebase.AllMovedOff();
+			stagebase.ClearPossibleMovePanel();
+			stagebase.AllCheckBetween();
+		}
 	}
 
 	// 一手戻る
 	void ReturnAction()
 	{
-		var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
-		stagebase.UndoPlayer();
+		if (GameManager.Instance.isEnemyTurn == false)
+		{
+			var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
+			stagebase.UndoPlayer();
+		}
 	}
 
 	// メニュー
@@ -61,7 +71,7 @@ public class BottomUI : UIBase
 		this._buttons.transform.SetParent(this.transform);
 		this._buttons.transform.localPosition = Vector3.zero;
 
-		this._turnEndButton = this.CreateButton("TurnEnd", new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), this.TurnDndAction);
+		this._turnEndButton = this.CreateButton("TurnEnd", new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), () => { StartCoroutine(this.TurnDndAction()); });
 		this._returnButton = this.CreateButton("Return", new Vector3(155, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_undo"), this.ReturnAction);
 		this._menuButton = this.CreateButton("Menu", new Vector3(-287, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_menu"), this.MenuAction);
 	}

@@ -18,7 +18,7 @@ public class UIBase : MonoBehaviour
 		return child;
 	}
 
-	public GameObject CreateText(string name, string textValue, Transform parent, Vector3 pos, int size = 29, bool large = true)
+	protected GameObject CreateText(string name, string textValue, Transform parent, Vector3 pos, int size = 29, bool large = true)
 	{
 		GameObject obj = new GameObject(name);
 		Text text = obj.AddComponent<Text>();

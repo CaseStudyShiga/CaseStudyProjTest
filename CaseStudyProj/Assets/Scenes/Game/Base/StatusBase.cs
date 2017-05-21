@@ -6,29 +6,31 @@ using DG.Tweening;
 
 public class StatusBase : MonoBehaviour
 {
-	private Color32 DEFAULT_COL;
+	private Color32 DEFAULT_COL = Color.white;
 	private Color32 SELECT_COL;
 	private Color32 BETWEEN_COL;
-	private Color32 MOVED_COL;
+	private Color32 MOVED_COL = new Color32(150, 150, 150, 255);
 
 	GameObject _stage;
 	public GameObject Stage { get { return _stage; } set { _stage = value; } }
 
 	// デバッグ用にいまだけpublic 
-	public string _name;	// キャラクターの名前
-	public int _attack;		// 攻撃力
-	public int _hp;         // 体力
-	public int _hpMax;      // 最大体力
-	public int _move;		// 移動量
-	public int _x;			// 現在位置
-	public int _y;          // 現在位置
-	public bool _isSelect;	// 選択されているかどうか
-	public bool _isBetween; // 挟まれているかどうか
-	public bool _isPlayer;  // プレイヤーかどうか
-	public int _range;      // 射程
-	public bool _isMoved;   // 行動済みかどうか
-	public List<int> _dir;  // 攻撃すべき方向（敵がいる方向）
-	public Sprite _charSp;		// キャライメージ
+	string _name;	// キャラクターの名前
+	int _attack;		// 攻撃力
+	int _hp;         // 体力
+	int _hpMax;      // 最大体力
+	int _move;		// 移動量
+	int _x;			// 現在位置
+	int _y;          // 現在位置
+	bool _isSelect;	// 選択されているかどうか
+	bool _isBetween; // 挟まれているかどうか
+	bool _isPlayer;  // プレイヤーかどうか
+	int _range;      // 射程
+	bool _isMoved;   // 行動済みかどうか
+	List<int> _dir;  // 攻撃すべき方向（敵がいる方向）
+	Sprite _charSp;  // キャライメージ
+	int _damage;     // 受けるダメージ値
+	int _attackNum;	// 攻撃回数
 
 	public string Name { get { return _name; } set { _name = value; } }
 	public int Attack { get { return _attack; } set { _attack = value; } }
@@ -44,6 +46,8 @@ public class StatusBase : MonoBehaviour
 	public bool IsMoved { get { return _isMoved; } }
 	public List<int> Dir { get { return _dir; } set { _dir = value; } }
 	public Sprite CharSp { get { return _charSp; } set { _charSp = value; } }
+	public int Damage { get { return _damage; } set { _damage = value; } }
+	public int AttackNum { get { return _attackNum; } }
 
 	public enum eType
 	{
@@ -73,17 +77,8 @@ public class StatusBase : MonoBehaviour
 		this._isPlayer = false;
 		this._isMoved = false;
 		this._dir = new List<int>() { };
-		this._charSp = null;
-	}
-
-	public void SetData(string name, int attack, int hp, int move, int range, Sprite sp)
-	{
-		this.Name = name;
-		this.Attack = attack;
-		this.HpMax = this.Hp = hp;
-		this.Move = move;
-		this.Range = range;
-		this.CharSp = sp;
+		this._damage = 0;
+		this._attackNum = 1;
 	}
 
 	void SettingDefaultCol()
@@ -98,12 +93,10 @@ public class StatusBase : MonoBehaviour
 		);
 	}
 
-	public void SetColor(Color32 d, Color32 s, Color32 b, Color32 moved)
+	public void SetColor(Color32 s, Color32 b)
 	{
-		DEFAULT_COL = d;
 		SELECT_COL = s;
 		BETWEEN_COL = b;
-		MOVED_COL = moved;
 
 		this.GetComponent<Image>().color = DEFAULT_COL;
 	}

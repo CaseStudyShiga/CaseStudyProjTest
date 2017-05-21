@@ -13,10 +13,6 @@ public class Title : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Global.SetButtonManager();
-		Global.SetSoundManager();
-		Global.SetGameManager();
-
 		this.InitField();
 		this.InitAction();
 
@@ -34,7 +30,7 @@ public class Title : MonoBehaviour {
 
 	void InitAction() {
 		ButtonManager.Instance.SetAction(this._nextSceneBtn, () => {
-			//Global.SoundMng.PlaySe("Decision");		// BGM再生開始
+			//SoundManager.Instance.PlaySe("Decision");		// BGM再生開始
 			Fader.instance.BlackOut();					// フェードアウト
 			StartCoroutine(DelayMethod(1.2f));			// 1.2秒後に実行する
 		});

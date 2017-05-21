@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI ;
+using UnityEngine.UI;
+using UnityEngine.Events;
 using DG.Tweening;
 
 public class StageBase : MonoBehaviour
@@ -77,72 +78,42 @@ public class StageBase : MonoBehaviour
 
 	public void Search(int x, int y, int mv, int di, int ra = 0)
 	{
-		Panel panelData = this.GetPanelData(x, y);
-
-		if (panelData == null)
-			return;
-
-		if (panelData.OnObj)
-			return;
-
-		// 現在の地点にあるマップ情報を取り出して、ウェイトを計算
-		int down = this.WeightCheck(panelData);
-
-		// 歩数がマイナスになった地点へは進めないので中断
-		if (mv + down < 0)
+		if (GameManager.Instance.isEnemyTurn == false)
 		{
-			if (ra > 0)
+			Panel panelData = this.GetPanelData(x, y);
+
+			if (panelData == null)
+				return;
+
+			if (panelData.OnObj)
+				return;
+
+			// 現在の地点にあるマップ情報を取り出して、ウェイトを計算
+			int down = this.WeightCheck(panelData);
+
+			// 歩数がマイナスになった地点へは進めないので中断
+			if (mv + down < 0)
 			{
-				if (di != 3) this.SearchPossibleRange(x, y, ra, 1);
-				if (di != 4) this.SearchPossibleRange(x, y, ra, 2);
-				if (di != 1) this.SearchPossibleRange(x, y, ra, 3);
-				if (di != 2) this.SearchPossibleRange(x, y, ra, 4);
+				if (ra > 0)
+				{
+					if (di != 3) this.SearchPossibleRange(x, y, ra, 1);
+					if (di != 4) this.SearchPossibleRange(x, y, ra, 2);
+					if (di != 1) this.SearchPossibleRange(x, y, ra, 3);
+					if (di != 2) this.SearchPossibleRange(x, y, ra, 4);
+				}
+
+				return;
 			}
 
-			return;
+			// マーク
+			panelData.IsCheck = true;
+			this.SetPossibleMovePanel(x, y);
+
+			if (di != 3) this.Search(x, y - 1, mv + down, 1, ra);
+			if (di != 4) this.Search(x + 1, y, mv + down, 2, ra);
+			if (di != 1) this.Search(x, y + 1, mv + down, 3, ra);
+			if (di != 2) this.Search(x - 1, y, mv + down, 4, ra);
 		}
-
-		// マーク
-		panelData.IsCheck = true;
-		this.SetPossibleMovePanel(x, y);
-
-		if (di != 3) this.Search(x, y - 1, mv + down, 1, ra);
-		if (di != 4) this.Search(x + 1, y, mv + down, 2, ra);
-		if (di != 1) this.Search(x, y + 1, mv + down, 3, ra);
-		if (di != 2) this.Search(x - 1, y, mv + down, 4, ra);
-	}
-
-	public void SetPossibleMovePanel(int x, int y)
-	{
-		Color32 moveCol = PANEL_COL;
-		moveCol.r -= 80;
-		moveCol.a += 100;
-
-		// Imageの色変更
-		var image = this._panelData[y, x].GetComponent<Image>();
-		DOTween.To(
-			() => image.color,                  // 何を対象にするのか
-			color => image.color = color,       // 値の更新
-			moveCol,    // 最終的な値
-			0.175f                              // アニメーション時間
-		);
-	}
-
-	void SetPossibleRangePanel(int x, int y)
-	{
-		Color32 moveCol = PANEL_COL;
-		moveCol.g -= 80;
-		moveCol.b -= 80;
-		moveCol.a += 100;
-
-		// Imageの色変更
-		var image = this._panelData[y, x].GetComponent<Image>();
-		DOTween.To(
-			() => image.color,                  // 何を対象にするのか
-			color => image.color = color,       // 値の更新
-			moveCol,    // 最終的な値
-			0.175f                              // アニメーション時間
-		);
 	}
 
 	public void ClearPossibleMovePanel()
@@ -223,7 +194,7 @@ public class StageBase : MonoBehaviour
 			}
 		}
 
-		if (result)
+		if (result && enemyCount > 0)
 		{
 			for (int i = 0; i < enemyStatus.Count; i++)
 			{
@@ -234,38 +205,6 @@ public class StageBase : MonoBehaviour
 		}
 
 		return false;
-	}
-
-	public void SearchPossibleRange(int x, int y, int ra, int di)
-	{
-		Panel panelData = this.GetPanelData(x, y);
-
-		if (panelData == null)
-			return;
-
-		if (panelData.OnObj)
-		{
-			if(panelData.OnObj.GetComponent<StatusBase>().IsPlayer)
-				_targetList.Add(panelData.OnObj);
-
-			return;
-		}
-
-		if (panelData.IsCheck)
-			return;
-
-		int down = this.WeightCheck(panelData);
-
-		if (ra + down < 0)
-			return;
-
-		// マーク
-		this.SetPossibleRangePanel(x, y);
-
-		if (di != 3) this.SearchPossibleRange(x, y - 1, ra + down, 1);
-		if (di != 4) this.SearchPossibleRange(x + 1, y, ra + down, 2);
-		if (di != 1) this.SearchPossibleRange(x, y + 1, ra + down, 3);
-		if (di != 2) this.SearchPossibleRange(x - 1, y, ra + down, 4);
 	}
 
 	public void AllCheckBetween()
@@ -362,12 +301,7 @@ public class StageBase : MonoBehaviour
 
 						if (enemyStatus.IsPlayer == false)
 						{
-							enemyStatus.Hp -= playerStatus.Attack;
-
-							if (enemyStatus.Hp <= 0)
-							{
-								panel.DataReset();
-							}
+							enemyStatus.Damage += playerStatus.Attack;
 						}
 					}
 				}
@@ -375,50 +309,100 @@ public class StageBase : MonoBehaviour
 		}
 	}
 
-	public void EnemysTurn()
+	public void DamageEnemy()
 	{
-		// 全敵キャラ移動
 		foreach (Transform child in this.transform.Find("Enemys"))
 		{
-			var status = child.GetComponent<StatusBase>();
-			int oldX = status.X;
-			int oldY = status.Y;
-
-			this.EnemyMove(child, status.X, status.Y - 1, status.Move, 1);
-			this.EnemyMove(child, status.X + 1, status.Y, status.Move, 2);
-			this.EnemyMove(child, status.X, status.Y + 1, status.Move, 3);
-			this.EnemyMove(child, status.X - 1, status.Y, status.Move, 4);
-
-			// 移動していたら
-			if (oldX != status.X || oldY != status.Y)
+			if (child)
 			{
-				// もともといたパネルのデータをリセット
-				this.GetPanelData(oldX, oldY).DataReset();
+				var enemyStatus = child.GetComponent<StatusBase>();
+
+				if (enemyStatus.Damage > 0)
+				{
+					DamageUI.Instance.SetDamage(enemyStatus.Damage, this.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
+					enemyStatus.Hp -= enemyStatus.Damage;
+
+					if (enemyStatus.Hp <= 0)
+					{
+						this.GetPanelData(enemyStatus.X, enemyStatus.Y).DataReset();
+					}
+				}
+
+				enemyStatus.Damage = 0;
 			}
 		}
+	}
+
+	public IEnumerator EnemysTurn()
+	{
+		GameManager.Instance.isEnemyTurn = true;
+
+		// 全敵キャラ移動
+		yield return StartCoroutine(AllEnemyMove(0.5f));
 
 		// 全敵キャラ攻撃
+		yield return StartCoroutine(AllEnemyAttack(0.5f));
+
+		GameManager.Instance.isEnemyTurn = false;
+	}
+
+	IEnumerator AllEnemyMove(float waitTime)
+	{
 		foreach (Transform child in this.transform.Find("Enemys"))
 		{
-			var status = child.GetComponent<StatusBase>();
+			yield return new WaitForSeconds(waitTime);
 
-			_targetList.Clear();
-			this.SearchPossibleRange(status.X, status.Y - 1, status.Range, 1);
-			this.SearchPossibleRange(status.X + 1, status.Y, status.Range, 2);
-			this.SearchPossibleRange(status.X, status.Y + 1, status.Range, 3);
-			this.SearchPossibleRange(status.X - 1, status.Y, status.Range, 4);
-
-			_targetList.Sort( (a, b) =>
-			a.GetComponent<StatusBase>().Hp - b.GetComponent<StatusBase>().Hp
-			);
-
-			int attackNum = 1;
-			for (int i = 0; i < attackNum; i++)
+			if (child)
 			{
-				if (i < _targetList.Count)
+				var status = child.GetComponent<StatusBase>();
+
+				int oldX = status.X;
+				int oldY = status.Y;
+
+				this.EnemyMove(child, status.X, status.Y - 1, status.Move, 1);
+				this.EnemyMove(child, status.X + 1, status.Y, status.Move, 2);
+				this.EnemyMove(child, status.X, status.Y + 1, status.Move, 3);
+				this.EnemyMove(child, status.X - 1, status.Y, status.Move, 4);
+
+				// 移動していたら
+				if (!(oldX == status.X && oldY == status.Y))
 				{
-					var targetStatus = _targetList[i].GetComponent<StatusBase>();
-					targetStatus.Hp -= status.Attack;
+					// もともといたパネルのデータをリセット
+					this.GetPanelData(oldX, oldY).DataReset();
+				}
+			}
+		}
+	}
+
+	IEnumerator AllEnemyAttack(float waitTime)
+	{
+		foreach (Transform child in this.transform.Find("Enemys"))
+		{
+			yield return new WaitForSeconds(waitTime);
+
+			if (child)
+			{
+				var status = child.GetComponent<StatusBase>();
+
+				_targetList.Clear();
+				this.SearchPossibleRange(status.X, status.Y - 1, status.Range, 1);
+				this.SearchPossibleRange(status.X + 1, status.Y, status.Range, 2);
+				this.SearchPossibleRange(status.X, status.Y + 1, status.Range, 3);
+				this.SearchPossibleRange(status.X - 1, status.Y, status.Range, 4);
+
+				_targetList.Sort((a, b) =>
+				a.GetComponent<StatusBase>().Hp - b.GetComponent<StatusBase>().Hp
+				);
+
+				for (int i = 0; i < status.AttackNum; i++)
+				{
+					if (i < _targetList.Count)
+					{
+						var targetStatus = _targetList[i].GetComponent<StatusBase>();
+
+						DamageUI.Instance.SetDamage(status.Attack, this.GetPanelLocalPosition(targetStatus.X, targetStatus.Y));
+						targetStatus.Hp -= status.Attack;
+					}
 				}
 			}
 		}
@@ -428,7 +412,7 @@ public class StageBase : MonoBehaviour
 	{
 		Panel panelData = this.GetPanelData(x, y);
 
-		if (panelData == null)
+		if (panelData == null || enemy.GetComponent<StatusBase>().IsMoved)
 			return;
 
 		// パネルの上にすでに何か存在していたら終了
@@ -464,19 +448,22 @@ public class StageBase : MonoBehaviour
 	// 指定したパネルに移動
 	void PlayerMove(Panel panel)
 	{
-		foreach (Transform child in this.transform.Find("Players"))
+		if (GameManager.Instance.isEnemyTurn == false)
 		{
-			StatusBase status = child.GetComponent<StatusBase>();
-			if (status.IsSelect && panel.IsCheck)
+			foreach (Transform child in this.transform.Find("Players"))
 			{
-				_stackPlayerPos.Push(new Vector2(status.X, status.Y));
-				_stackPlayerObj.Push(child);
+				StatusBase status = child.GetComponent<StatusBase>();
+				if (status.IsSelect && panel.IsCheck)
+				{
+					_stackPlayerPos.Push(new Vector2(status.X, status.Y));
+					_stackPlayerObj.Push(child);
 
-				this.GetPanelData(status.X, status.Y).DataReset();
-				status.SetPos(panel.X, panel.Y);
-				status.SelectOff();
-				this.ClearPossibleMovePanel();
-				this.AllCheckBetween();
+					this.GetPanelData(status.X, status.Y).DataReset();
+					status.SetPos(panel.X, panel.Y);
+					status.SelectOff();
+					this.ClearPossibleMovePanel();
+					this.AllCheckBetween();
+				}
 			}
 		}
 	}
@@ -496,6 +483,75 @@ public class StageBase : MonoBehaviour
 
 		return down;
 	}
+
+	void SearchPossibleRange(int x, int y, int ra, int di)
+	{
+		if (ra <= 0)
+			return;
+
+		Panel panelData = this.GetPanelData(x, y);
+
+		if (panelData == null)
+			return;
+
+		if (panelData.OnObj)
+		{
+			if (panelData.OnObj.GetComponent<StatusBase>().IsPlayer)
+				_targetList.Add(panelData.OnObj);
+
+			return;
+		}
+
+		if (panelData.IsCheck)
+			return;
+
+		int down = this.WeightCheck(panelData);
+
+		if (ra + down < 0)
+			return;
+
+		// マーク
+		this.SetPossibleRangePanel(x, y);
+
+		if (di != 3) this.SearchPossibleRange(x, y - 1, ra + down, 1);
+		if (di != 4) this.SearchPossibleRange(x + 1, y, ra + down, 2);
+		if (di != 1) this.SearchPossibleRange(x, y + 1, ra + down, 3);
+		if (di != 2) this.SearchPossibleRange(x - 1, y, ra + down, 4);
+	}
+
+	void SetPossibleMovePanel(int x, int y)
+	{
+		Color32 moveCol = PANEL_COL;
+		moveCol.r -= 80;
+		moveCol.a += 100;
+
+		// Imageの色変更
+		var image = this._panelData[y, x].GetComponent<Image>();
+		DOTween.To(
+			() => image.color,                  // 何を対象にするのか
+			color => image.color = color,       // 値の更新
+			moveCol,    // 最終的な値
+			0.175f                              // アニメーション時間
+		);
+	}
+
+	void SetPossibleRangePanel(int x, int y)
+	{
+		Color32 moveCol = PANEL_COL;
+		moveCol.g -= 80;
+		moveCol.b -= 80;
+		moveCol.a += 100;
+
+		// Imageの色変更
+		var image = this._panelData[y, x].GetComponent<Image>();
+		DOTween.To(
+			() => image.color,                  // 何を対象にするのか
+			color => image.color = color,       // 値の更新
+			moveCol,    // 最終的な値
+			0.175f                              // アニメーション時間
+		);
+	}
+
 
 	// パネルの作成
 	GameObject CreateChild(string name, GameObject parent, Sprite sp, Vector2 size)

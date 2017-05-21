@@ -32,10 +32,17 @@ public class SoundManager : MonoBehaviour
 
 	// シングルトン
 	static SoundManager _singleton = null;
-	// インスタンス取得
-	public static SoundManager GetInstance()
+	public static SoundManager Instance
 	{
-		return _singleton ?? (_singleton = new SoundManager());
+		get
+		{
+			if (_singleton == null)
+			{
+				GameObject obj = new GameObject("ButtonManager");
+				_singleton = obj.AddComponent<SoundManager>();
+			}
+			return _singleton;
+		}
 	}
 
 	// サウンド再生のためのゲームオブジェクト
@@ -119,11 +126,11 @@ public class SoundManager : MonoBehaviour
 	// ※Resources/Soundsフォルダに配置すること
 	public void LoadBgm(string key, string resName)
 	{
-		GetInstance()._LoadBgm(key, resName);
+		Instance._LoadBgm(key, resName);
 	}
 	public void LoadSe(string key, string resName)
 	{
-		GetInstance()._LoadSe(key, resName);
+		Instance._LoadSe(key, resName);
 	}
 	void _LoadBgm(string key, string resName)
 	{
@@ -148,7 +155,7 @@ public class SoundManager : MonoBehaviour
 	/// ※事前にLoadBgmでロードしておくこと
 	public bool PlayBgm(string key)
 	{
-		return GetInstance()._PlayBgm(key);
+		return Instance._PlayBgm(key);
 	}
 	bool _PlayBgm(string key)
 	{
@@ -175,7 +182,7 @@ public class SoundManager : MonoBehaviour
 	/// BGMの停止
 	public bool StopBgm()
 	{
-		return GetInstance()._StopBgm();
+		return Instance._StopBgm();
 	}
 	bool _StopBgm()
 	{
@@ -188,7 +195,7 @@ public class SoundManager : MonoBehaviour
 	/// ※事前にLoadSeでロードしておくこと
 	public bool PlaySe(string key, int channel = -1)
 	{
-		return GetInstance()._PlaySe(key, channel);
+		return Instance._PlaySe(key, channel);
 	}
 	bool _PlaySe(string key, int channel = -1)
 	{
