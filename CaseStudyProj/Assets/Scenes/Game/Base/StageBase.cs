@@ -339,7 +339,7 @@ public class StageBase : MonoBehaviour
 
 		// 全敵キャラ移動
 		yield return StartCoroutine(AllEnemyMove(0.5f));
-
+		
 		// 全敵キャラ攻撃
 		yield return StartCoroutine(AllEnemyAttack(0.5f));
 
