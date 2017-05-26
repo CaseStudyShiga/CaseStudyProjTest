@@ -30,14 +30,17 @@ class DamageUI : MonoBehaviour
 		Text t = text.GetComponent<Text>();
 		RectTransform rect = text.GetComponent<RectTransform>();
 
-		rect.DOLocalMoveY(30f, 0.14f).SetRelative().OnComplete(() => {
-			rect.DOLocalMoveY(-65, 0.14f).SetRelative().OnComplete(()=> {
+		rect.DOLocalMoveY(30f, 0.14f).SetRelative().OnComplete(() =>
+		{
+			rect.DOLocalMoveY(-65, 0.14f).SetRelative().OnComplete(()=> 
+			{
 				DOTween.ToAlpha(
 					() => t.color,
 					color => t.color = color,
 					0f,                         // 最終的なalpha値
 					0.5f
-				).OnComplete(() => {
+				).OnComplete(() => 
+				{
 					Destroy(text);
 				});
 			});

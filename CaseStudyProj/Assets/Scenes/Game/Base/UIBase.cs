@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class UIBase : MonoBehaviour
 {
@@ -41,6 +42,17 @@ public class UIBase : MonoBehaviour
 		obj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
 
 		return obj;
+	}
+
+
+	// ボタン生成
+	protected GameObject CreateButton(string name, Transform parent, Vector2 size, Vector3 pos, Sprite sp, UnityAction buttonMethod)
+	{
+		GameObject child = this.CreateChild(name, parent, size, pos, sp);
+		child.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
+		child.AddComponent<Button>().onClick.AddListener(buttonMethod);
+
+		return child;
 	}
 
 	public Text GetText(Transform obj, string name)

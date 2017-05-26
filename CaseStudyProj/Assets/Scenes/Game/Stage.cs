@@ -67,4 +67,20 @@ public class Stage : StageBase
 			_enemy[i].Create(this.transform, StatusBase.eType.eEnemy0, _enemyPos[i,0], _enemyPos[i,1]);
 		}
 	}
+
+	public void Reset()
+	{
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			Destroy(child.gameObject);
+		}
+
+		foreach (Transform child in this.transform.Find("Enemys"))
+		{
+			Destroy(child.gameObject);
+		}
+
+		this.InitField();
+		this.ClearPossibleMovePanel();
+	}
 }

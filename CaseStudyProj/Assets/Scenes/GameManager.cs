@@ -44,6 +44,12 @@ public class GameManager : MonoBehaviour
 		if (this._totalTurnNum >= 999) this._totalTurnNum = 999;
 	}
 
+	public void Reset()
+	{
+		_totalTurnNum = 0;
+		_enemyTurn = false;
+	}
+
 	void InitField()
 	{
 		this._dirTable = new Dictionary<int, Vector2> {

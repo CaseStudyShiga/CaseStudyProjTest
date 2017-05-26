@@ -13,7 +13,7 @@ public class CharBase
 	protected void SetStatusUI()
 	{
 		var stage = this.Status.Stage.GetComponent<Stage>();
-		var TopUIObj = stage.transform.parent.Find("TopUI");
+		var TopUIObj = stage.transform.parent.Find("UI/TopUI");
 
 		if (TopUIObj)
 		{

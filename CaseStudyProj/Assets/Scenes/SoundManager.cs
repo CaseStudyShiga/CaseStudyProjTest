@@ -38,7 +38,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (_singleton == null)
 			{
-				GameObject obj = new GameObject("ButtonManager");
+				GameObject obj = new GameObject("SoundManager");
 				_singleton = obj.AddComponent<SoundManager>();
 			}
 			return _singleton;

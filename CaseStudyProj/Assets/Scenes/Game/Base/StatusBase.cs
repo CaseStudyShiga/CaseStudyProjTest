@@ -6,10 +6,10 @@ using DG.Tweening;
 
 public class StatusBase : MonoBehaviour
 {
-	private Color32 DEFAULT_COL = Color.white;
-	private Color32 SELECT_COL;
-	private Color32 BETWEEN_COL;
-	private Color32 MOVED_COL = new Color32(150, 150, 150, 255);
+	Color32 DEFAULT_COL = Color.white;
+	Color32 SELECT_COL;
+	Color32 BETWEEN_COL;
+	Color32 MOVED_COL = new Color32(150, 150, 150, 255);
 
 	GameObject _stage;
 	public GameObject Stage { get { return _stage; } set { _stage = value; } }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 
 public class BottomUI : UIBase
 {
@@ -28,10 +27,8 @@ public class BottomUI : UIBase
 	{
 		if (GameManager.Instance.isEnemyTurn == false)
 		{
-			var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
+			var stagebase = this.transform.parent.parent.Find("Stage").GetComponent<StageBase>();
 			stagebase.ClearPossibleMovePanel();
-
-			GameManager.Instance.TotalTurnNum++;
 
 			stagebase.AttackPlayers();
 			stagebase.DamageEnemy();
@@ -41,6 +38,8 @@ public class BottomUI : UIBase
 			stagebase.AllMovedOff();
 			stagebase.ClearPossibleMovePanel();
 			stagebase.AllCheckBetween();
+
+			GameManager.Instance.TotalTurnNum++;
 		}
 	}
 
@@ -49,7 +48,7 @@ public class BottomUI : UIBase
 	{
 		if (GameManager.Instance.isEnemyTurn == false)
 		{
-			var stagebase = this.transform.parent.Find("Stage").GetComponent<StageBase>();
+			var stagebase = this.transform.parent.parent.Find("Stage").GetComponent<StageBase>();
 			stagebase.UndoPlayer();
 		}
 	}
@@ -57,6 +56,9 @@ public class BottomUI : UIBase
 	// メニュー
 	void MenuAction()
 	{
+		var menuUI = this.transform.parent.Find("MenuUI");
+
+		menuUI.GetComponent<MenuUI>().ActiveMethod();
 	}
 
 	void InitField()
@@ -71,20 +73,8 @@ public class BottomUI : UIBase
 		this._buttons.transform.SetParent(this.transform);
 		this._buttons.transform.localPosition = Vector3.zero;
 
-		this._turnEndButton = this.CreateButton("TurnEnd", new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), () => { StartCoroutine(this.TurnDndAction()); });
-		this._returnButton = this.CreateButton("Return", new Vector3(155, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_undo"), this.ReturnAction);
-		this._menuButton = this.CreateButton("Menu", new Vector3(-287, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_menu"), this.MenuAction);
-	}
-
-	// ボタン生成
-	GameObject CreateButton(string name, Vector3 pos, Sprite sp, UnityAction buttonMethod)
-	{
-		GameObject child = this.CreateChild(name, this._buttons.transform, SIZE, pos, sp);
-		child.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
-		child.AddComponent<Button>().onClick.AddListener(buttonMethod);
-
-		this.CreateText("Text", "", child.transform, new Vector3(-1, -2.5f), 25);
-
-		return child;
+		this._turnEndButton = this.CreateButton("TurnEnd", this._buttons.transform, SIZE, new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), () => { StartCoroutine(this.TurnDndAction()); });
+		this._returnButton = this.CreateButton("Return", this._buttons.transform, SIZE, new Vector3(155, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_undo"), this.ReturnAction);
+		this._menuButton = this.CreateButton("Menu", this._buttons.transform, SIZE, new Vector3(-287, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_menu"), this.MenuAction);
 	}
 }
