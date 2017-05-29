@@ -22,13 +22,25 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public enum SpeedUp {
+		x1 = 0,
+		x2,
+		x3
+	}
+
 	int _totalTurnNum = 0;
 	Dictionary<int, Vector2> _dirTable;
+	Dictionary<string, int> _stageTable;
 	bool _enemyTurn;
+	bool _turnendChk;
+	SpeedUp _speedupType = SpeedUp.x1;
 
 	public int TotalTurnNum { get { return _totalTurnNum; } set { this._totalTurnNum = value; } }
 	public Dictionary<int, Vector2> DirTable { get { return _dirTable; } }
+	public Dictionary<string, int> StageTable { get { return _stageTable; } }
 	public bool isEnemyTurn { get { return _enemyTurn; } set { _enemyTurn = value; } }
+	public bool isTurnEndChk { get { return _turnendChk; } set { _turnendChk = value; } }
+	public SpeedUp SpeedUpType { get { return _speedupType; } set { _speedupType = value; } }
 
 	void Awake()
 	{
@@ -42,6 +54,20 @@ public class GameManager : MonoBehaviour
 	void Update()
 	{
 		if (this._totalTurnNum >= 999) this._totalTurnNum = 999;
+	}
+
+	public void SaveConfigData()
+	{
+		ConfigData.Instance.SaveConfigData((int)_speedupType, _turnendChk);
+	}
+
+	public void LoadConfigData()
+	{
+		var speed = ConfigData.Instance.LoadSpeedUp();
+		var endchk = ConfigData.Instance.LoadEndChk();
+
+		this._speedupType = (SpeedUp)speed;
+		this._turnendChk = endchk;
 	}
 
 	public void Reset()
@@ -61,6 +87,11 @@ public class GameManager : MonoBehaviour
 			{5, new Vector2(-1, 1) },
 			{6, new Vector2(-1, 0) },
 			{7, new Vector2(-1, -1) },
+		};
+
+		this._stageTable = new Dictionary<string, int> {
+			{"P1", 0},
+			{"E1", 2},
 		};
 	}
 }

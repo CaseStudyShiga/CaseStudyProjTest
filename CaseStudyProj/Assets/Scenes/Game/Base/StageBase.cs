@@ -337,11 +337,25 @@ public class StageBase : MonoBehaviour
 	{
 		GameManager.Instance.isEnemyTurn = true;
 
+		float speed = 0.5f;
+		switch (GameManager.Instance.SpeedUpType)
+		{
+			case GameManager.SpeedUp.x1:
+				speed = 0.5f;
+				break;
+			case GameManager.SpeedUp.x2:
+				speed = 0.25f;
+				break;
+			case GameManager.SpeedUp.x3:
+				speed = 0.125f;
+				break;
+		}
+
 		// 全敵キャラ移動
-		yield return StartCoroutine(AllEnemyMove(0.5f));
+		yield return StartCoroutine(AllEnemyMove(speed));
 		
 		// 全敵キャラ攻撃
-		yield return StartCoroutine(AllEnemyAttack(0.5f));
+		yield return StartCoroutine(AllEnemyAttack(speed));
 
 		GameManager.Instance.isEnemyTurn = false;
 	}
@@ -408,6 +422,43 @@ public class StageBase : MonoBehaviour
 		}
 	}
 
+	void EnemyRangeMove(Transform enemy, int startDir, int startX, int startY, int x, int y, int mv, int di)
+	{
+		Panel panelData = this.GetPanelData(x, y);
+
+		if (panelData == null || enemy.GetComponent<StatusBase>().IsMoved)
+			return;
+
+		// パネルの上にすでに何か存在していたら終了
+		if (panelData.OnObj)
+		{
+			// それがプレイヤーだったら近くに移動
+			if (panelData.OnObj.GetComponent<StatusBase>().IsPlayer)
+			{
+				StatusBase status = enemy.GetComponent<StatusBase>();
+
+				if (startDir == 1) status.SetPos(startX, startY + 1);
+				if (startDir == 2) status.SetPos(startX - 1, startY);
+				if (startDir == 3) status.SetPos(startX, startY - 1);
+				if (startDir == 4) status.SetPos(startX + 1, startY);
+			}
+
+			return;
+		}
+
+		// 現在の地点にあるマップ情報を取り出して、ウェイトを計算
+		int down = this.WeightCheck(panelData);
+
+		// 歩数がマイナスになった地点へは進めないので中断
+		if (mv + down < 0)
+			return;
+
+		if (di != 3) this.EnemyRangeMove(enemy, startDir, startX, startY, x, y - 1, mv + down, 1);
+		if (di != 4) this.EnemyRangeMove(enemy, startDir, startX, startY, x + 1, y, mv + down, 2);
+		if (di != 1) this.EnemyRangeMove(enemy, startDir, startX, startY, x, y + 1, mv + down, 3);
+		if (di != 2) this.EnemyRangeMove(enemy, startDir, startX, startY, x - 1, y, mv + down, 4);
+	}
+
 	void EnemyMove(Transform enemy, int x, int y, int mv, int di)
 	{
 		Panel panelData = this.GetPanelData(x, y);
@@ -437,7 +488,20 @@ public class StageBase : MonoBehaviour
 
 		// 歩数がマイナスになった地点へは進めないので中断
 		if (mv + down < 0)
+		{
+			StatusBase status = enemy.GetComponent<StatusBase>();
+
+			int range = (status.Range - 1);
+
+			if (range > 0)
+			{
+				if (di != 3) this.EnemyRangeMove(enemy, di, x, y, x, y - 1, range + down, 1);
+				if (di != 4) this.EnemyRangeMove(enemy, di, x, y, x + 1, y, range + down, 2);
+				if (di != 1) this.EnemyRangeMove(enemy, di, x, y, x, y + 1, range + down, 3);
+				if (di != 2) this.EnemyRangeMove(enemy, di, x, y, x - 1, y, range + down, 4);
+			}
 			return;
+		}
 
 		if (di != 3) this.EnemyMove(enemy, x, y - 1, mv + down, 1);
 		if (di != 4) this.EnemyMove(enemy, x + 1, y, mv + down, 2);

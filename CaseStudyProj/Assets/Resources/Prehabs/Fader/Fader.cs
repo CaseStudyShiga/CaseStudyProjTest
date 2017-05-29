@@ -65,6 +65,8 @@ public class Fader : MonoBehaviour
 	private System.Action callback;
 	private bool isFading;
 
+	public float FadeTime { get { return fadeTime; } }
+
 	public bool IsFading
 	{
 		get

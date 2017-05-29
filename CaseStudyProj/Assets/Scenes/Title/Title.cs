@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
 
 public class Title : MonoBehaviour {
 
-	private GameObject _nextSceneBtn;
+	GameObject _nextSceneBtn;
+	GameObject _nextSceneBtn2;
 
 	// Use this for initialization
 	void Start () {
@@ -26,18 +27,26 @@ public class Title : MonoBehaviour {
 
 	void InitField() {
 		_nextSceneBtn = this.transform.Find("Canvas/Buttons/NextButton").gameObject;
+		_nextSceneBtn2 = this.transform.Find("Canvas/Buttons/NextButton2").gameObject;
 	}
 
 	void InitAction() {
 		ButtonManager.Instance.SetAction(this._nextSceneBtn, () => {
-			//SoundManager.Instance.PlaySe("Decision");		// BGM再生開始
-			Fader.instance.BlackOut();					// フェードアウト
-			StartCoroutine(DelayMethod(1.2f));			// 1.2秒後に実行する
+			//SoundManager.Instance.PlaySe("Decision");
+			Fader.instance.BlackOut();
+			StartCoroutine(DelayMethod(Fader.instance.FadeTime, () => { CSVDataReader.Instance.Load("stage00"); }));			// 1.2秒後に実行する
+		});
+
+		ButtonManager.Instance.SetAction(this._nextSceneBtn2, () => {
+			//SoundManager.Instance.PlaySe("Decision");
+			Fader.instance.BlackOut();
+			StartCoroutine(DelayMethod(Fader.instance.FadeTime, ()=> { CSVDataReader.Instance.Load("stage01"); }));          // 1.2秒後に実行する
 		});
 	}
 
-	private IEnumerator DelayMethod(float waitTime) {
-		yield return new WaitForSeconds(waitTime);		// waitTime後に実行する
+	private IEnumerator DelayMethod(float waitTime, System.Action ac) {
+		yield return new WaitForSeconds(waitTime);      // waitTime後に実行する
+		ac();
 		SceneManager.LoadScene("Game");					// シーン切り替え
 	}
 }

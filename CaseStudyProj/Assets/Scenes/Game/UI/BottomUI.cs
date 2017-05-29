@@ -22,8 +22,22 @@ public class BottomUI : UIBase
 	{
 	}
 
+	void EndAction()
+	{
+		if (GameManager.Instance.isTurnEndChk)
+		{
+			var endchkUI = this.transform.parent.Find("EndChkUI");
+			var end = endchkUI.GetComponent<EndChkUI>();
+			end.ActiveMethod();
+		}
+		else
+		{
+			StartCoroutine(this.TurnEndAction());
+		}
+	}
+
 	// ターン終了
-	IEnumerator TurnDndAction()
+	public IEnumerator TurnEndAction()
 	{
 		if (GameManager.Instance.isEnemyTurn == false)
 		{
@@ -73,7 +87,7 @@ public class BottomUI : UIBase
 		this._buttons.transform.SetParent(this.transform);
 		this._buttons.transform.localPosition = Vector3.zero;
 
-		this._turnEndButton = this.CreateButton("TurnEnd", this._buttons.transform, SIZE, new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), () => { StartCoroutine(this.TurnDndAction()); });
+		this._turnEndButton = this.CreateButton("TurnEnd", this._buttons.transform, SIZE, new Vector3(300, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_turnEnd"), this.EndAction);
 		this._returnButton = this.CreateButton("Return", this._buttons.transform, SIZE, new Vector3(155, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_undo"), this.ReturnAction);
 		this._menuButton = this.CreateButton("Menu", this._buttons.transform, SIZE, new Vector3(-287, -547), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_menu"), this.MenuAction);
 	}

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 /*******************************************************************************
 * クラス設計
 *******************************************************************************/
-public class SoundManager : MonoBehaviour
+public class SoundManager
 {
 	/// SEチャンネル数
 	const int SE_CHANNEL = 4;
@@ -38,8 +38,9 @@ public class SoundManager : MonoBehaviour
 		{
 			if (_singleton == null)
 			{
-				GameObject obj = new GameObject("SoundManager");
-				_singleton = obj.AddComponent<SoundManager>();
+				_singleton = new SoundManager();
+				//GameObject obj = new GameObject("SoundManager");
+				//_singleton = obj.AddComponent<SoundManager>();
 			}
 			return _singleton;
 		}

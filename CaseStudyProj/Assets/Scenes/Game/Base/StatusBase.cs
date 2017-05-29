@@ -49,14 +49,6 @@ public class StatusBase : MonoBehaviour
 	public int Damage { get { return _damage; } set { _damage = value; } }
 	public int AttackNum { get { return _attackNum; } }
 
-	public enum eType
-	{
-		eAttacker = 0,
-		eDefender,
-
-		eEnemy0,
-	}
-
 	void Update()
 	{
 		if (this._isMoved)

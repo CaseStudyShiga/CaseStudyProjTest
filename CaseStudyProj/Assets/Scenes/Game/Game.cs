@@ -12,6 +12,7 @@ public class Game : MonoBehaviour {
 	void Start() {
 		this.InitField();
 		this.InitAction();
+		GameManager.Instance.LoadConfigData();
 		Fader.instance.BlackIn();
 	}
 
@@ -26,7 +27,7 @@ public class Game : MonoBehaviour {
 		ButtonManager.Instance.SetAction(this._nextSceneBtn, () => {
 			//Global.SoundMng.PlaySe("Decision");			// BGM再生開始
 			Fader.instance.BlackOut();						// フェードアウト
-			StartCoroutine(DelayMethod(1.2f));				// 1.2秒後に実行する
+			StartCoroutine(DelayMethod(Fader.instance.FadeTime));				// 1.2秒後に実行する
 		});
 	}
 

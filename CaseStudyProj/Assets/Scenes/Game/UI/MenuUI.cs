@@ -5,19 +5,22 @@ using DG.Tweening;
 
 class MenuUI : UIBase
 {
-	const int ALLOW_TIME = 60 * 3;
 	readonly Vector2 SIZE = new Vector3(450f, 150f, 0f);
 	readonly Vector3 POS = new Vector3(0,-50,0);
 
 	GameObject _background;
 	GameObject _frame;
+
+	// menu
 	GameObject _resumeBtn;
 	GameObject _selectBtn;
 	GameObject _resetBtn;
 	GameObject _configButton;
 
-	private bool _isPushReloadButton = false;	// ボタン押下許可フラグ
-	private int _time;							// 前回ボタンが押された時点と現在時間との差分を格納
+	// setting
+	GameObject _speedupBtn;
+	GameObject _turnendChkBtn;
+	GameObject _returnMenuBtn;
 
 	void Start()
 	{
@@ -27,31 +30,41 @@ class MenuUI : UIBase
 
 	void Update()
 	{
-		// 3秒後にボタン押下を許可
-		if (_isPushReloadButton)
-		{
-			this._time += 1;
+	}
 
-			if (_time >= ALLOW_TIME)
-			{
-				_isPushReloadButton = false;
-			}
+	void SpeedUpIconChk()
+	{
+		switch (GameManager.Instance.SpeedUpType)
+		{
+			case GameManager.SpeedUp.x1:
+				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1");
+					break;
+			case GameManager.SpeedUp.x2:
+				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx2");
+				break;
+			case GameManager.SpeedUp.x3:
+				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx3");
+				break;
 		}
+	}
+
+	void TurnEndIconChk()
+	{
+		bool chk = GameManager.Instance.isTurnEndChk;
+		Image image = this._turnendChkBtn.GetComponent<Image>();
+		image.sprite = (chk) ? Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheck") : Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff");
 	}
 
 	// ステージリセット
 	void ResetAction()
 	{
-		if (this._isPushReloadButton) return;
-		this._isPushReloadButton = true;
-
 		Debug.Log("Reset");
 		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
 
 		stage.Reset();
 		GameManager.Instance.Reset();
 
-		this._time = 0;
+		this.NotActiveMethod();
 	}
 
 	// ステージ選択へ
@@ -62,6 +75,53 @@ class MenuUI : UIBase
 	// 設定画面へ
 	void ConfigAction()
 	{
+		_resetBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_selectBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_configButton.transform.DOScale(Vector3.zero, 0.2f);
+		_resumeBtn.transform.DOScale(Vector3.zero, 0.2f);
+
+		this.SpeedUpIconChk();
+		this.TurnEndIconChk();
+
+		_speedupBtn.transform.DOScale(SIZE, 0.2f);
+		_turnendChkBtn.transform.DOScale(SIZE, 0.2f);
+		_returnMenuBtn.transform.DOScale(SIZE, 0.2f);
+	}
+
+	void SpeedUpAction()
+	{
+		switch (GameManager.Instance.SpeedUpType)
+		{
+			case GameManager.SpeedUp.x1:
+				GameManager.Instance.SpeedUpType = GameManager.SpeedUp.x2;
+				break;
+			case GameManager.SpeedUp.x2:
+				GameManager.Instance.SpeedUpType = GameManager.SpeedUp.x3;
+				break;
+			case GameManager.SpeedUp.x3:
+				GameManager.Instance.SpeedUpType = GameManager.SpeedUp.x1;
+				break;
+		}
+
+		this.SpeedUpIconChk();
+	}
+
+	void TurnEndChkAction()
+	{
+		GameManager.Instance.isTurnEndChk ^= true;
+		this.TurnEndIconChk();
+	}
+
+	void ReturnMenuBtnAction()
+	{
+		_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(()=> {
+			_resumeBtn.transform.DOScale(SIZE, 0.2f);
+			_selectBtn.transform.DOScale(SIZE, 0.2f);
+			_resetBtn.transform.DOScale(SIZE, 0.2f);
+			_configButton.transform.DOScale(SIZE, 0.2f);
+		});
 	}
 
 	void InitField()
@@ -77,6 +137,10 @@ class MenuUI : UIBase
 		this._selectBtn = this.CreateButton("SelectBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_stageselect"), this.SelectAction);
 		this._configButton = this.CreateButton("ConfigBtn", this.transform, Vector2.one, new Vector3(0, POS.y - 50), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_config"), this.ConfigAction);
 		this._resumeBtn = this.CreateButton("ResumeBtn", this.transform, Vector2.one, new Vector3(0,POS.y - 200), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_resume"), this.NotActiveMethod);
+
+		this._speedupBtn = this.CreateButton("SpeedBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 250), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1"), this.SpeedUpAction);
+		this._turnendChkBtn = this.CreateButton("TurnChkBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff"), this.TurnEndChkAction);
+		this._returnMenuBtn = this.CreateButton("ReturnMenuBtn", this.transform, Vector2.one, new Vector3(0, POS.y - 50), null, this.ReturnMenuBtnAction);
 
 		this._background.transform.SetSiblingIndex(0);
 	}
@@ -104,11 +168,14 @@ class MenuUI : UIBase
 		_configButton.transform.DOScale(Vector3.zero, 0.2f);
 		_resumeBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(()=> {
 			_frame.transform.DOScale(Vector3.zero, 0.25f).OnComplete(() => {
-				this._time = ALLOW_TIME;
-				this._isPushReloadButton = false;
 				this.gameObject.SetActive(false);
+				GameManager.Instance.SaveConfigData();
 			});
 		});
+
+		_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f);
 	}
 }
 

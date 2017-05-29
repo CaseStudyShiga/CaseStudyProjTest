@@ -9,6 +9,7 @@ class UI : MonoBehaviour
 	GameObject _topUI;
 	GameObject _bottomUI;
 	GameObject _menuUI;
+	GameObject _endchkUI;
 
 	void Start()
 	{
@@ -21,13 +22,15 @@ class UI : MonoBehaviour
 
 	void InitField()
 	{
-		_topUI = CreateChild("TopUI");
-		_bottomUI = CreateChild("BottomUI");
-		_menuUI = CreateChild("MenuUI");
+		this._topUI = CreateChild("TopUI");
+		this._bottomUI = CreateChild("BottomUI");
+		this._menuUI = CreateChild("MenuUI");
+		this._endchkUI = CreateChild("EndChkUI");
 
-		_topUI.AddComponent<TopUI>();
-		_bottomUI.AddComponent<BottomUI>();
-		_menuUI.AddComponent<MenuUI>();
+		this._topUI.AddComponent<TopUI>();
+		this._bottomUI.AddComponent<BottomUI>();
+		this._menuUI.AddComponent<MenuUI>();
+		this._endchkUI.AddComponent<EndChkUI>();
 	}
 
 	GameObject CreateChild(string name)

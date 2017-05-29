@@ -20,22 +20,6 @@ public class Stage : StageBase
 		{1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1},
 	};
-	int[,] _playerPos = {
-			{ 4,3 },
-			{ 4,8 },
-			{ 2,1 },
-		};
-	int[,] _enemyPos = {
-			{ 4,7 },
-			{ 4,6 },
-			{ 4,5 },
-			{ 5,5 },
-
-			{ 2,7 },
-			{ 2,8 },
-			{ 1,8 },
-
-		};
 
 	// 外部読み取り用　関数
 	public int[,] StageData { get { return _stageData; } }
@@ -53,18 +37,27 @@ public class Stage : StageBase
 
 	void InitField()
 	{
-		_player = new Player[_playerPos.GetLength(0)];
-		for(int i = 0; i < _playerPos.GetLength(0); i ++)
+		var data = CSVDataReader.Instance.Data;
+		for (int i = 0; i < data.GetLength(0); i++)
 		{
-			_player[i] = new Player();
-			_player[i].Create(this.transform, StatusBase.eType.eAttacker, _playerPos[i,0], _playerPos[i, 1]);
-		}
+			for (int j = 0; j < data.GetLength(1); j++)
+			{
+				if (data[i, j].IndexOf('P') != -1)
+				{
+					Player player = new Player();
+					int type = 0;
+					GameManager.Instance.StageTable.TryGetValue(data[i, j], out type);
+					player.Create(this.transform, type, j, i);
+				}
 
-		_enemy = new Enemy[_enemyPos.GetLength(0)];
-		for (int i = 0; i < _enemyPos.GetLength(0); i++)
-		{
-			_enemy[i] = new Enemy();
-			_enemy[i].Create(this.transform, StatusBase.eType.eEnemy0, _enemyPos[i,0], _enemyPos[i,1]);
+				if (data[i, j].IndexOf('E') != -1)
+				{
+					Enemy enemy = new Enemy();
+					int type = 2;
+					GameManager.Instance.StageTable.TryGetValue(data[i, j], out type);
+					enemy.Create(this.transform, type, j, i);
+				}
+			}
 		}
 	}
 
