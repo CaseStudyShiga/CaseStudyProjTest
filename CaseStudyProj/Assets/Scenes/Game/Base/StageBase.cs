@@ -57,7 +57,7 @@ public class StageBase : MonoBehaviour
 		{
 			for (int x = 0; x < stageData.GetLength(1); x++)
 			{
-				if (stageData[y, x] != -1)
+				if (stageData[y, x] != 0)
 				{
 					_panelData[y, x] = this.CreateChild("panel" + (x + ((stageData.GetLength(1)) * y)), panels, null, new Vector2(PANEL_SIZE, PANEL_SIZE));
 
@@ -126,7 +126,6 @@ public class StageBase : MonoBehaviour
 				{
 					// パネルデータの設定
 					Panel panel = this.GetPanelData(x, y);
-
 					panel.IsCheck = false;
 					var image = this._panelData[y, x].GetComponent<Image>();
 					DOTween.To(
@@ -135,6 +134,7 @@ public class StageBase : MonoBehaviour
 						PANEL_COL,                        // 最終的な値
 						0.175f                               // アニメーション時間
 					);
+
 				}
 			}
 		}
@@ -609,37 +609,13 @@ public class StageBase : MonoBehaviour
 		// Imageの色変更
 		var image = this._panelData[y, x].GetComponent<Image>();
 		DOTween.To(
-			() => image.color,
-			color => image.color = color,
-			moveCol,
-			0.175f
+			() => image.color,                  // 何を対象にするのか
+			color => image.color = color,       // 値の更新
+			moveCol,    // 最終的な値
+			0.175f                              // アニメーション時間
 		);
 	}
 
-	public void SetALlBanPanelCol()
-	{
-		Color32 moveCol = PANEL_COL;
-		moveCol.g = 0;
-		moveCol.b = 0;
-		moveCol.a += 150;
-
-		for (int y = 0; y < _panelData.GetLength(0); y++)
-		{
-			for (int x = 0; x < _panelData.GetLength(1); x++)
-			{
-				if (this.GetPanelData(x,y).Type == 0)
-				{
-					var image = this._panelData[y, x].GetComponent<Image>();
-					DOTween.To(
-						() => image.color,
-						color => image.color = color,
-						moveCol,
-						0.175f
-					);
-				}
-			}
-		}
-	}
 
 	// パネルの作成
 	GameObject CreateChild(string name, GameObject parent, Sprite sp, Vector2 size)
