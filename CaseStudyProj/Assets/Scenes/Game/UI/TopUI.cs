@@ -56,6 +56,21 @@ public class TopUI : UIBase
 		this._background.transform.SetSiblingIndex(1);
 	}
 
+	public void Reset()
+	{
+		this._face.GetComponent<Image>().sprite = null;
+
+		var status = _obj.GetComponent<StatusBase>();
+		var statusUI = _statusUI.GetComponent<StatusUI>();
+		statusUI.SetHpText("", "");
+		statusUI.SetSimpleText("Name", "");
+		statusUI.SetSimpleText("Attack", "");
+		statusUI.SetSimpleText("Move", "");
+		statusUI.SetSimpleText("Range", "");
+		this._face.GetComponent<Image>().sprite = null;
+		this._face.GetComponent<Image>().color = new Color32(255,255,255,0);
+	}
+
 	GameObject CreateStatusUI()
 	{
 		GameObject child = new GameObject("StatusUI");

@@ -60,9 +60,12 @@ class MenuUI : UIBase
 	{
 		Debug.Log("Reset");
 		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
+		var topUI = this.transform.parent.Find("TopUI").GetComponent<TopUI>();
 
 		stage.Reset();
+		topUI.Reset();
 		GameManager.Instance.Reset();
+
 
 		this.NotActiveMethod();
 	}

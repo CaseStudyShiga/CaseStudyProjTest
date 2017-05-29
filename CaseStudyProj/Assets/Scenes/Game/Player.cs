@@ -17,6 +17,7 @@ public class Player : CharBase
 			this.Status.SelectOn();
 
 			stage.ClearPossibleMovePanel();
+			stage.SetALlBanPanelCol();
 			stage.Search(this.Status.X, this.Status.Y - 1, this.Status.Move, 1);
 			stage.Search(this.Status.X + 1, this.Status.Y, this.Status.Move, 2);
 			stage.Search(this.Status.X, this.Status.Y + 1, this.Status.Move, 3);
