@@ -9,11 +9,10 @@ public class ButtonSystem : MonoBehaviour
 {
 
     //------ 変数の生成 ------
-    public static string SceneName;
+   public static string SceneName;
 
     //// Use this for initialization
-    void Start()
-    {
+    void Start () {
         //------ クリックした際にオブジェクト名取得 ------
         GetGameObjName();
     }
@@ -29,7 +28,10 @@ public class ButtonSystem : MonoBehaviour
     public void MoveScene()
     {
         Fader.instance.BlackOut();                      // フェードアウト
-        StartCoroutine(DelayMethod(1.2f, SceneName));				// 1.2秒後に実行する
+        //StartCoroutine(DelayMethod(1.2f , SceneName));				// 1.2秒後に実行する
+
+        CSVDataReader.Instance.Load(SceneName);			// 1.2秒後に実行する
+        StartCoroutine(DelayMethod(1.2f, "Game"));				// 1.2秒後に実行する
     }
 
     //-----------------------------------------------------
@@ -73,24 +75,23 @@ public class ButtonSystem : MonoBehaviour
 
             SceneName = this.gameObject.name;
 
-            TextObject(SceneName);
-
-            //Fader.instance.BlackOut();                        // フェードアウト
-            //StartCoroutine(DelayMethod(1.2f, SceneName));		// 1.2秒後に実行する
         });
     }
 
     //-----------------------------------------------------
     //フェード使う際のScene遷移関数
     //-----------------------------------------------------
-    private IEnumerator DelayMethod(float waitTime, string name)
+    private IEnumerator DelayMethod(float waitTime , string name)
     {
         yield return new WaitForSeconds(waitTime);          // waitTime後に実行する
         SceneManager.LoadScene(name.ToString());                    // シーン切り替え
+
     }
 
-    public void TextObject(string name)
+    private IEnumerator DelayMethod(float waitTime, System.Action ac)
     {
-        this.GetComponent<TextMesh>().text = name;
+        yield return new WaitForSeconds(waitTime);      // waitTime後に実行する
+        ac();
+        SceneManager.LoadScene("Game");                 // シーン切り替え
     }
 }
