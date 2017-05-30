@@ -150,4 +150,14 @@ public class StatusBase : MonoBehaviour
 		if(this._isBetween == false)
 			this.SettingDefaultCol();
 	}
+
+	public void SetEffect(Vector3 v)
+	{
+		var a = Resources.Load<GameObject>("Prehabs/Effect/effect_gunattack");
+
+		GameObject gameObj = Instantiate(a) as GameObject;
+		gameObj.transform.SetParent(this.Stage.transform.parent);
+		gameObj.GetComponent<RectTransform>().localPosition = v;
+		gameObj.GetComponent<RectTransform>().localScale = Vector3.one * 100;
+	}
 }

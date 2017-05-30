@@ -7,6 +7,7 @@ class MenuUI : UIBase
 {
 	readonly Vector2 SIZE = new Vector3(450f, 150f, 0f);
 	readonly Vector3 POS = new Vector3(0,-50,0);
+	readonly Vector3 CONFIG_POS = new Vector3(0, -70, 0);
 
 	GameObject _background;
 	GameObject _frame;
@@ -65,7 +66,6 @@ class MenuUI : UIBase
 		stage.Reset();
 		topUI.Reset();
 		GameManager.Instance.Reset();
-
 
 		this.NotActiveMethod();
 	}
@@ -141,9 +141,9 @@ class MenuUI : UIBase
 		this._configButton = this.CreateButton("ConfigBtn", this.transform, Vector2.one, new Vector3(0, POS.y - 50), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_config"), this.ConfigAction);
 		this._resumeBtn = this.CreateButton("ResumeBtn", this.transform, Vector2.one, new Vector3(0,POS.y - 200), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_resume"), this.NotActiveMethod);
 
-		this._speedupBtn = this.CreateButton("SpeedBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 250), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1"), this.SpeedUpAction);
-		this._turnendChkBtn = this.CreateButton("TurnChkBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff"), this.TurnEndChkAction);
-		this._returnMenuBtn = this.CreateButton("ReturnMenuBtn", this.transform, Vector2.one, new Vector3(0, POS.y - 50), null, this.ReturnMenuBtnAction);
+		this._speedupBtn = this.CreateButton("SpeedBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y + 200), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1"), this.SpeedUpAction);
+		this._turnendChkBtn = this.CreateButton("TurnChkBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y + 50), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff"), this.TurnEndChkAction);
+		this._returnMenuBtn = this.CreateButton("ReturnMenuBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y - 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_backtomenu"), this.ReturnMenuBtnAction);
 
 		this._background.transform.SetSiblingIndex(0);
 	}

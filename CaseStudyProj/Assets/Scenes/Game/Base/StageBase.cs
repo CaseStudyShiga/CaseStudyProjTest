@@ -15,6 +15,7 @@ public class StageBase : MonoBehaviour
 
 	// メンバ変数
 	GameObject[,] _panelData;
+	GameObject _basebackground;
 	GameObject _background;
 	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
 	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
@@ -30,6 +31,11 @@ public class StageBase : MonoBehaviour
 
 	void Update()
 	{
+	}
+
+	protected void SetBaseBackGround()
+	{
+		//_basebackground.GetComponent<Image>().sprite = 
 	}
 
 	// int型の2次元配列を基準にパネルを生成
@@ -48,8 +54,13 @@ public class StageBase : MonoBehaviour
 		enemys.transform.SetParent(this.transform);
 		enemys.transform.localPosition = Vector3.zero;
 
+		_basebackground = CreateBackGround("BaseBackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/Stage/area1_1"));
+
 		_background = CreateBackGround("BackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_background"));
 		_background.transform.SetAsFirstSibling();
+
+		_basebackground.transform.SetSiblingIndex(0);
+		_background.transform.SetSiblingIndex(1);
 
 		_panelData = new GameObject[stageData.GetLength(0), stageData.GetLength(1)];
 
