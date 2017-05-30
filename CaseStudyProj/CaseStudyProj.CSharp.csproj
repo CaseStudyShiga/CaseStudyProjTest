@@ -130,7 +130,8 @@
     <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
     <Compile Include="Assets\Scenes\SoundManager.cs" />
     <Compile Include="Assets\Scenes\Title\Title.cs" />
-    <Compile Include="Assets\Scenes\tamakoshi\moveScene.cs" />
+    <Compile Include="Assets\Scenes\tamakoshi\ButtonSystem.cs" />
+    <Compile Include="Assets\Scenes\tamakoshi\textSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\DOTween\DOTween.XML" />

@@ -38,29 +38,24 @@ public class Stage : StageBase
 	void InitField()
 	{
 		var data = CSVDataReader.Instance.Data;
-		for (int y = 0; y < data.GetLength(0); y++)
+		for (int i = 0; i < data.GetLength(0); i++)
 		{
-			for (int x = 0; x < data.GetLength(1); x++)
+			for (int j = 0; j < data.GetLength(1); j++)
 			{
-				if (data[y, x].IndexOf('P') != -1)
+				if (data[i, j].IndexOf('P') != -1)
 				{
 					Player player = new Player();
 					int type = 0;
-					GameManager.Instance.StageTable.TryGetValue(data[y, x], out type);
-					player.Create(this.transform, type, x, y);
+					GameManager.Instance.StageTable.TryGetValue(data[i, j], out type);
+					player.Create(this.transform, type, j, i);
 				}
 
-				if (data[y, x].IndexOf('E') != -1)
+				if (data[i, j].IndexOf('E') != -1)
 				{
 					Enemy enemy = new Enemy();
 					int type = 2;
-					GameManager.Instance.StageTable.TryGetValue(data[y, x], out type);
-					enemy.Create(this.transform, type, x, y);
-				}
-
-				if (data[y, x].IndexOf('X') != -1)
-				{
-					this.GetPanelData(x, y).Type = 0;
+					GameManager.Instance.StageTable.TryGetValue(data[i, j], out type);
+					enemy.Create(this.transform, type, j, i);
 				}
 			}
 		}
