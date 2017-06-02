@@ -4,17 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 // LoadSceneを使うために必要！！！！！
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class ButtonSystem : MonoBehaviour
 {
+    static GameObject[] stage = new GameObject[11];
 
     //------ 変数の生成 ------
-   public static string SceneName;
+    public static string SceneName;
 
     //// Use this for initialization
     void Start () {
+
         //------ クリックした際にオブジェクト名取得 ------
         GetGameObjName();
+        //------ データを配列に書き込み ------
+        GetStageData();
+        //------ オブジェクトの変形アクション ------
+        OpenButtonAction();
     }
 
     // Update is called once per frame
@@ -28,8 +35,6 @@ public class ButtonSystem : MonoBehaviour
     public void MoveScene()
     {
         Fader.instance.BlackOut();                      // フェードアウト
-        //StartCoroutine(DelayMethod(1.2f , SceneName));				// 1.2秒後に実行する
-
         CSVDataReader.Instance.Load(SceneName);			// 1.2秒後に実行する
         StartCoroutine(DelayMethod(1.2f, "Game"));				// 1.2秒後に実行する
     }
@@ -43,11 +48,9 @@ public class ButtonSystem : MonoBehaviour
 
         GameObject ConfirmationPanel = GameObject.Find("ConfirmationPanel");
 
-        //--- もしパネルが指定の値まで伸びきったら表示 ---
-        //if(ConfirmationPanel.transform.position.x)
-        //{
+        ConfirmationPanel.transform.localScale = new Vector3(0, 0, 0);
 
-        //}
+        ConfirmationPanel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.5f);
 
         GameObject game_object = ConfirmationPanel.transform.FindChild("ConfirmationImage").gameObject;
 
@@ -59,8 +62,9 @@ public class ButtonSystem : MonoBehaviour
     //-----------------------------------------------------
     public void offConfirmationPanel()
     {
-        GameObject.Find("ConfirmationImage").SetActive(false);
-        //gameObject.GetComponent<>
+        GameObject ConfirmationPanel = GameObject.Find("ConfirmationPanel");
+
+        ConfirmationPanel.transform.DOScale(new Vector3(0f, 0f, 0f), 0.5f);
     }
 
     //-----------------------------------------------------
@@ -76,6 +80,27 @@ public class ButtonSystem : MonoBehaviour
             SceneName = this.gameObject.name;
 
         });
+    }
+
+    //-----------------------------------------------------
+    //------ データ入れ込み -------
+    //-----------------------------------------------------
+    public void GetStageData()
+    {
+        int idx = this.gameObject.name.LastIndexOf("e") + 1;
+        string n = this.gameObject.name.Substring(idx);
+        stage[int.Parse(n)] = this.gameObject;
+
+    }
+
+    //-----------------------------------------------------
+    //オブジェクトのアクション（動き）
+    //-----------------------------------------------------
+     void OpenButtonAction()
+    {
+        this.transform.localScale = new Vector3(0, 0, 0);
+
+        transform.DOScale(new Vector3(2.5f, 5.7f, 1.8f), 1f);
     }
 
     //-----------------------------------------------------
