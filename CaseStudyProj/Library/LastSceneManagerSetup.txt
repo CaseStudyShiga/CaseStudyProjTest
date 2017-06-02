@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Game/Game.unity
-  isLoaded: 1
-  isActive: 1
+- path: Assets/Scenes/Ishii/Ishii.unity
+  isLoaded: 0
+  isActive: 0
