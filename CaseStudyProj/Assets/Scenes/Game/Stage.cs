@@ -29,6 +29,8 @@ public class Stage : StageBase
 		this.CreateStageBase(_stageData);
 		this.InitField();
 		this.AllCheckBetween();
+		SaveManager.Instance.Save();
+		SaveManager.Instance.Load();
 	}
 
 	void Update()

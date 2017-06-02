@@ -28,7 +28,7 @@ public class Player : CharBase
 			stage.ClearPossibleMovePanel();
 		}
 
-		this.Status.SetEffect(stage.GetPanelLocalPosition(this.Status.X, this.Status.Y));
+		//this.Status.SetEffect(stage.GetPanelLocalPosition(this.Status.X, this.Status.Y));
 	}
 
 	public GameObject Create(Transform stage, int type, int x, int y)
