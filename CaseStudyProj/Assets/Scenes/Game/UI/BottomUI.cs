@@ -24,15 +24,18 @@ public class BottomUI : UIBase
 
 	void EndAction()
 	{
-		if (GameManager.Instance.isTurnEndChk)
+		if (GameManager.Instance.isEnemyTurn == false)
 		{
-			var endchkUI = this.transform.parent.Find("EndChkUI");
-			var end = endchkUI.GetComponent<EndChkUI>();
-			end.ActiveMethod();
-		}
-		else
-		{
-			StartCoroutine(this.TurnEndAction());
+			if (GameManager.Instance.isTurnEndChk)
+			{
+				var endchkUI = this.transform.parent.Find("EndChkUI");
+				var end = endchkUI.GetComponent<EndChkUI>();
+				end.ActiveMethod();
+			}
+			else
+			{
+				StartCoroutine(this.TurnEndAction());
+			}
 		}
 	}
 
@@ -53,7 +56,14 @@ public class BottomUI : UIBase
 			stagebase.ClearPossibleMovePanel();
 			stagebase.AllCheckBetween();
 
-			GameManager.Instance.TotalTurnNum++;
+			stagebase.CheckGameComplete();
+			GameManager.Instance.AddTurn();
+
+			if (GameManager.Instance.isComplete)
+			{
+				var result = this.transform.parent.Find("ResultUI").GetComponent<ResultUI>();
+				result.ActiveMethod();
+			}
 		}
 	}
 

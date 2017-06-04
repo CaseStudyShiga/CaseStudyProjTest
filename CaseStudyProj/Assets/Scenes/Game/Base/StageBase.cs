@@ -151,6 +151,25 @@ public class StageBase : MonoBehaviour
 		}
 	}
 
+	public void AllBannPanelCol()
+	{
+		for (int y = 0; y < _panelData.GetLength(0); y++)
+		{
+			for (int x = 0; x < _panelData.GetLength(1); x++)
+			{
+				if (_panelData[y, x])
+				{
+					// パネルデータの設定
+					Panel panel = this.GetPanelData(x, y);
+					if (panel.Type == 0)
+					{
+						this.SetBannPanel(x,y);
+					}
+				}
+			}
+		}
+	}
+
 	public Panel GetPanelData(int x, int y)
 	{
 		// 例外処理 ( 範囲外 || 存在しない )
@@ -242,6 +261,20 @@ public class StageBase : MonoBehaviour
 					playerStatus.Dir.Add(i);
 				}
 			}
+		}
+	}
+
+	public void CheckGameComplete()
+	{
+		int enemyCnt = 0;
+		foreach (Transform child in this.transform.Find("Enemys"))
+		{
+			enemyCnt++;
+		}
+
+		if (enemyCnt <= 0)
+		{
+			GameManager.Instance.GameComplete();
 		}
 	}
 
@@ -627,6 +660,22 @@ public class StageBase : MonoBehaviour
 		);
 	}
 
+	void SetBannPanel(int x, int y)
+	{
+		Color32 moveCol = PANEL_COL;
+		moveCol.g = 0;
+		moveCol.b = 0;
+		moveCol.a += 100;
+
+		// Imageの色変更
+		var image = this._panelData[y, x].GetComponent<Image>();
+		DOTween.To(
+			() => image.color,                  // 何を対象にするのか
+			color => image.color = color,       // 値の更新
+			moveCol,    // 最終的な値
+			0.175f                              // アニメーション時間
+		);
+	}
 
 	// パネルの作成
 	GameObject CreateChild(string name, GameObject parent, Sprite sp, Vector2 size)

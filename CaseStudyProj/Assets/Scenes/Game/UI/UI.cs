@@ -10,6 +10,7 @@ class UI : MonoBehaviour
 	GameObject _bottomUI;
 	GameObject _menuUI;
 	GameObject _endchkUI;
+	GameObject _resultUI;
 
 	void Start()
 	{
@@ -26,11 +27,13 @@ class UI : MonoBehaviour
 		this._bottomUI = CreateChild("BottomUI");
 		this._menuUI = CreateChild("MenuUI");
 		this._endchkUI = CreateChild("EndChkUI");
+		this._resultUI = CreateChild("ResultUI");
 
 		this._topUI.AddComponent<TopUI>();
 		this._bottomUI.AddComponent<BottomUI>();
 		this._menuUI.AddComponent<MenuUI>();
 		this._endchkUI.AddComponent<EndChkUI>();
+		this._resultUI.AddComponent<ResultUI>();
 	}
 
 	GameObject CreateChild(string name)

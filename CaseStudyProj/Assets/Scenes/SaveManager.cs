@@ -22,7 +22,7 @@ public class SaveManager : MonoBehaviour
 		}
 	}
 
-	readonly int STAGE_NUJM = 3;
+	readonly int STAGE_NUM = 3;
 	static string SavePath;
 	SaveData _saveData;
 
@@ -43,10 +43,11 @@ public class SaveManager : MonoBehaviour
 	///// 保存 /////////////////////////////////////
 	public void Save()
 	{
-		for (int i = 0; i < STAGE_NUJM; i++)
+		for (int i = 0; i < STAGE_NUM; i++)
 		{
-			this._saveData.data[i].Id = 0;
-			this._saveData.data[i].Name = "stage" + i.ToString().PadLeft(2, '0');
+			this._saveData.data[i].AreaID = 0;
+			this._saveData.data[i].StageID = 0;
+			this._saveData.data[i].Name = "stage" + i.ToString();
 			this._saveData.data[i].IsStar = new bool[3];
 			this._saveData.data[i].IsStar[0] = true;
 			this._saveData.data[i].IsStar[1] = false;
@@ -60,7 +61,7 @@ public class SaveManager : MonoBehaviour
 			bf.Serialize(fs, json);
 		}
 
-		for (int i = 0; i < STAGE_NUJM; i++)
+		for (int i = 0; i < STAGE_NUM; i++)
 		{
 			Debug.Log("[Save]Name:" + this._saveData.data[i].Name);
 		}
@@ -78,7 +79,7 @@ public class SaveManager : MonoBehaviour
 
 		var obj = JsonUtility.FromJson<SaveData>(json);
 
-		for (int i = 0; i < STAGE_NUJM; i++)
+		for (int i = 0; i < STAGE_NUM; i++)
 		{
 			Debug.Log("[Load]Name:" + obj.data[i].Name);
 		}

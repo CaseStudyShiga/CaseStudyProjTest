@@ -25,6 +25,7 @@ public class Enemy : CharBase
 			stage.Search(this.Status.X + 1, this.Status.Y, this.Status.Move, 2, this.Status.Range);
 			stage.Search(this.Status.X, this.Status.Y + 1, this.Status.Move, 3, this.Status.Range);
 			stage.Search(this.Status.X - 1, this.Status.Y, this.Status.Move, 4, this.Status.Range);
+			stage.AllBannPanelCol();
 		}
 		else
 		{

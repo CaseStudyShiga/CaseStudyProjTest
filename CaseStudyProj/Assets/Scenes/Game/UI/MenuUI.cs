@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 class MenuUI : UIBase
@@ -63,6 +64,7 @@ class MenuUI : UIBase
 		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
 
 		stage.Reset();
+		this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
 		GameManager.Instance.Reset();
 
 		this.NotActiveMethod();
@@ -71,6 +73,10 @@ class MenuUI : UIBase
 	// ステージ選択へ
 	void SelectAction()
 	{
+		Fader.instance.BlackOut();
+		StartCoroutine(DelayMethod(1.0f, () => {
+			SceneManager.LoadScene("Select");
+		}));
 	}
 
 	// 設定画面へ
@@ -177,6 +183,12 @@ class MenuUI : UIBase
 		_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
 		_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
 		_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f);
+	}
+
+	IEnumerator DelayMethod(float waitTime, System.Action ac)
+	{
+		yield return new WaitForSeconds(waitTime);      // waitTime後に実行する
+		ac();
 	}
 }
 

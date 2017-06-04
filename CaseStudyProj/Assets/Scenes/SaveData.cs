@@ -6,7 +6,8 @@ public class SaveData
 {
 	[Serializable]
 	public struct Data {
-		public int Id;
+		public int AreaID;
+		public int StageID;
 		public string Name;
 		public bool[] IsStar;
 	}

@@ -21,6 +21,7 @@ public class Player : CharBase
 			stage.Search(this.Status.X + 1, this.Status.Y, this.Status.Move, 2);
 			stage.Search(this.Status.X, this.Status.Y + 1, this.Status.Move, 3);
 			stage.Search(this.Status.X - 1, this.Status.Y, this.Status.Move, 4);
+			stage.AllBannPanelCol();
 		}
 		else
 		{

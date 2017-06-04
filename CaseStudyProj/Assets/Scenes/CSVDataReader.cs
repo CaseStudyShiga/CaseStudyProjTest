@@ -11,6 +11,11 @@ class CSVDataReader
 	static CSVDataReader _instance;
 	string[,] _sdataArrays;
 	int[,] _ndataArrays;
+	int _areaID;
+	int _stageID;
+
+	public int AreaID { get { return this._areaID; }	}
+	public int StageID { get { return this._stageID; } }
 
 	public static CSVDataReader Instance
 	{
@@ -19,7 +24,7 @@ class CSVDataReader
 			if (_instance == null)
 			{
 				_instance = new CSVDataReader();
-				_instance.Load("stage00");
+				_instance.Load(0, 0);
 			}
 			return _instance;
 		}
@@ -35,9 +40,11 @@ class CSVDataReader
 	{
 	}
 
-	public void Load(string fileName)
+	public void Load(int areaID, int stageID)
 	{
-		this.LoadText(fileName);
+		this._areaID = areaID;
+		this._stageID = stageID;
+		this.LoadText(areaID, "stage" + stageID);
 	}
 
 	void ReadCSVData(string path, ref string[,] sdata)
@@ -84,11 +91,11 @@ class CSVDataReader
 		}
 	}
 
-	void LoadText(string f)
+	void LoadText(int id, string f)
 	{
 		//データパスを設定
 		//このデータパスは、Assetフォルダ以下の位置を書くので/で階層を区切り、CSVデータ名まで書かないと読み込んでくれない
-		string textFileName = "/CSV/" + f + ".csv";
+		string textFileName = "/CSV" + "/Area" + id.ToString() + "/" + f + ".csv";
 		string path = "";
 
 #if UNITY_EDITOR

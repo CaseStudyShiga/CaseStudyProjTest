@@ -34,13 +34,15 @@ public class GameManager : MonoBehaviour
 	bool _enemyTurn;
 	bool _turnendChk;
 	SpeedUp _speedupType = SpeedUp.x1;
+	bool _complete = false;
 
-	public int TotalTurnNum { get { return _totalTurnNum; } set { this._totalTurnNum = value; } }
+	public int TotalTurnNum { get { return _totalTurnNum; } }
 	public Dictionary<int, Vector2> DirTable { get { return _dirTable; } }
 	public Dictionary<string, int> StageTable { get { return _stageTable; } }
 	public bool isEnemyTurn { get { return _enemyTurn; } set { _enemyTurn = value; } }
 	public bool isTurnEndChk { get { return _turnendChk; } set { _turnendChk = value; } }
 	public SpeedUp SpeedUpType { get { return _speedupType; } set { _speedupType = value; } }
+	public bool isComplete { get { return _complete; } }
 
 	void Awake()
 	{
@@ -69,6 +71,19 @@ public class GameManager : MonoBehaviour
 
 		this._speedupType = (SpeedUp)speed;
 		this._turnendChk = endchk;
+	}
+
+	public void GameComplete()
+	{
+		this._complete = true;
+	}
+
+	public void AddTurn()
+	{
+		if (_complete == false)
+		{
+			_totalTurnNum++;
+		}
 	}
 
 	public void Reset()

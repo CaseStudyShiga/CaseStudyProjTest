@@ -71,4 +71,15 @@ public class TopUI : UIBase
 		this._face.GetComponent<Image>().sprite = sp;
 		this._face.GetComponent<Image>().color = Color.white;
 	}
+
+	public void Reset()
+	{
+		var statusUI = _statusUI.GetComponent<StatusUI>();
+		statusUI.SetHpText("", "");
+		statusUI.SetSimpleText("Name", "");
+		statusUI.SetSimpleText("Attack", "");
+		statusUI.SetSimpleText("Move", "");
+		statusUI.SetSimpleText("Range", "");
+		this._face.GetComponent<Image>().color = new Color32(0,0,0,0);
+	}
 }
