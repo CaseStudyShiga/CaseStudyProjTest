@@ -29,6 +29,25 @@ class ResultUI : UIBase
 	{
 	}
 
+	void CheckMission()
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			var icon = this._mission[i].GetComponent<Image>();
+			var txt = this._missionTxt[i].GetComponent<Text>();
+			if (GameManager.Instance.isMission[i])
+			{
+				icon.sprite = Resources.Load<Sprite>("Sprites/GUI/result_normaclear");
+				txt.color = Color.white;
+			}
+			else
+			{
+				icon.sprite = Resources.Load<Sprite>("Sprites/GUI/result_normafail");
+				txt.color = new Color32(100,100,100,255);
+			}
+		}
+	}
+
 	void NextBtnAction()
 	{
 	}
@@ -43,6 +62,12 @@ class ResultUI : UIBase
 
 	void RetryBtnAction()
 	{
+		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
+		stage.Reset();
+		this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
+		GameManager.Instance.Reset();
+
+		this.NotActiveMethod();
 	}
 
 	void InitField()
@@ -65,7 +90,6 @@ class ResultUI : UIBase
 		this._mission[0] = this.CreateChild("Mission0", this.transform, new Vector2(90,90), new Vector3(rPos.x - 300f, 0 + rPos.y + 2), Resources.Load<Sprite>("Sprites/GUI/result_normaclear"));
 		this._mission[1] = this.CreateChild("Mission1", this.transform, new Vector2(90,90), new Vector3(rPos.x - 300f, -75 + rPos.y + 2),Resources.Load<Sprite>("Sprites/GUI/result_normaclear"));
 		this._mission[2] = this.CreateChild("Mission2", this.transform, new Vector2(90,90), new Vector3(rPos.x - 300f, -150 + rPos.y + 2),Resources.Load<Sprite>("Sprites/GUI/result_normaclear"));
-
 		this._missionTxt[0] = this.CreateText("MissionText0", "ステージをクリアした", this.transform, new Vector3(rPos.x, 0 + rPos.y), 40, false);
 		this._missionTxt[1] = this.CreateText("MissionText1", "全員生存した", this.transform, new Vector3(rPos.x, -75 + rPos.y), 40, false);
 		this._missionTxt[2] = this.CreateText("MissionText2", "5ターン以内にクリアした", this.transform, new Vector3(rPos.x, -150 + rPos.y), 40, false);
@@ -100,13 +124,33 @@ class ResultUI : UIBase
 			this._retryBtn.transform.DOScale(Vector3.one, 0.2f);
 			this._CompleteTxt.transform.DOScale(Vector3.one, 0.2f);
 			this._CompleteSubTxt.transform.DOScale(Vector3.one, 0.2f);
-
 			this._stageIcon.transform.DOScale(Vector3.one, 0.2f);
 			for (int i = 0; i < 3; i++)
 			{
 				this._mission[i].transform.DOScale(Vector3.one, 0.2f);
 				this._missionTxt[i].transform.DOScale(Vector3.one, 0.2f);
 			}
+
+			this.CheckMission();
+		});
+	}
+
+	void NotActiveMethod()
+	{
+		_CompleteTxt.transform.DOScale(Vector3.zero, 0.2f);
+		_CompleteSubTxt.transform.DOScale(Vector3.zero, 0.2f);
+		_stageIcon.transform.DOScale(Vector3.zero, 0.2f);
+		for (int i = 0; i < 3; i++)
+		{
+			this._mission[i].transform.DOScale(Vector3.zero, 0.2f);
+			this._missionTxt[i].transform.DOScale(Vector3.zero, 0.2f);
+		}
+
+		_nextBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_selectBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_retryBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+			_frame.transform.DOScale(Vector3.zero, 0.25f).OnComplete(() => {
+			});
 		});
 	}
 

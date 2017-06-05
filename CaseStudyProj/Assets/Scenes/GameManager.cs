@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
 	bool _turnendChk;
 	SpeedUp _speedupType = SpeedUp.x1;
 	bool _complete = false;
+	bool[] _isMission;
+	int _minTotalTurn;
 
 	public int TotalTurnNum { get { return _totalTurnNum; } }
 	public Dictionary<int, Vector2> DirTable { get { return _dirTable; } }
@@ -43,6 +45,8 @@ public class GameManager : MonoBehaviour
 	public bool isTurnEndChk { get { return _turnendChk; } set { _turnendChk = value; } }
 	public SpeedUp SpeedUpType { get { return _speedupType; } set { _speedupType = value; } }
 	public bool isComplete { get { return _complete; } }
+	public bool[] isMission { get { return this._isMission; } set { _isMission = value; } }
+	public int MinTotalTurn { get { return this._minTotalTurn; } set { _minTotalTurn = value; } }
 
 	void Awake()
 	{
@@ -88,8 +92,16 @@ public class GameManager : MonoBehaviour
 
 	public void Reset()
 	{
-		_totalTurnNum = 0;
-		_enemyTurn = false;
+		this._totalTurnNum = 0;
+		this._enemyTurn = false;
+		this._complete = false;
+
+		for (int i = 0; i < 3; i++)
+		{
+			this._isMission[i] = false;
+		}
+
+		this._minTotalTurn = 6;
 	}
 
 	void InitField()
@@ -109,5 +121,13 @@ public class GameManager : MonoBehaviour
 			{"P1", 0},
 			{"E1", 2},
 		};
+
+		this._isMission = new bool[3];
+		for (int i = 0; i < 3; i++)
+		{
+			this._isMission[i] = false;
+		}
+
+		this._minTotalTurn = 6;
 	}
 }

@@ -50,6 +50,7 @@ public class Stage : StageBase
 					int type = 0;
 					GameManager.Instance.StageTable.TryGetValue(data[y, x], out type);
 					player.Create(this.transform, type, x, y);
+					this.PlayerMaxNum++;
 				}
 
 				if (data[y, x].IndexOf('E') != -1)
@@ -80,6 +81,7 @@ public class Stage : StageBase
 			Destroy(child.gameObject);
 		}
 
+		this.PlayerMaxNum = 0;
 		this.InitField();
 		this.ClearPossibleMovePanel();
 	}

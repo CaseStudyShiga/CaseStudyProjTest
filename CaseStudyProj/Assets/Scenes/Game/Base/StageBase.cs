@@ -20,10 +20,12 @@ public class StageBase : MonoBehaviour
 	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
 	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
 	List<Transform> _targetList = new List<Transform>() { };
+	int _playerMaxNum;
 
 	// 外部読み取り用
 	public GameObject[,] PanelData { get { return _panelData; } }
 	public GameObject BackGround { get { return _background; } }
+	protected int PlayerMaxNum { get { return _playerMaxNum; } set { _playerMaxNum = value; } }
 
 	void Start()
 	{
@@ -275,6 +277,25 @@ public class StageBase : MonoBehaviour
 		if (enemyCnt <= 0)
 		{
 			GameManager.Instance.GameComplete();
+			GameManager.Instance.isMission[0] = true;	// ミッション0 ( ゲームクリア )
+
+			int playerAliveNum = 0;
+			foreach (Transform child in this.transform.Find("Players"))
+			{
+				playerAliveNum++;
+			}
+
+			if (playerAliveNum == this._playerMaxNum)
+			{
+				// ミッション1 ( プレイヤーがみんな生き残る )
+				GameManager.Instance.isMission[1] = true;
+			}
+
+			// ミッション2 ( 最小ターンクリア )
+			if(GameManager.Instance.TotalTurnNum <= GameManager.Instance.MinTotalTurn)
+			{
+				GameManager.Instance.isMission[2] = true;
+			}
 		}
 	}
 
