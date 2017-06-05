@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class SaveData
@@ -12,5 +13,5 @@ public class SaveData
 		public bool[] IsStar;
 	}
 
-	public Data[] data = new Data[3];
+	public List<Data> data = new List<Data>();
 }

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 using DG.Tweening;
 
 class ResultUI : UIBase
@@ -31,6 +32,9 @@ class ResultUI : UIBase
 
 	void CheckMission()
 	{
+		var stageIcon = this._stageIcon.GetComponent<Image>();
+
+		int missionCompleteNum = 0;
 		for (int i = 0; i < 3; i++)
 		{
 			var icon = this._mission[i].GetComponent<Image>();
@@ -39,6 +43,7 @@ class ResultUI : UIBase
 			{
 				icon.sprite = Resources.Load<Sprite>("Sprites/GUI/result_normaclear");
 				txt.color = Color.white;
+				missionCompleteNum++;
 			}
 			else
 			{
@@ -46,6 +51,40 @@ class ResultUI : UIBase
 				txt.color = new Color32(100,100,100,255);
 			}
 		}
+
+		stageIcon.sprite = Resources.Load<Sprite>("Sprites/GUI/stageSelectUI_stageButton_" + missionCompleteNum.ToString());
+
+		SaveData.Data data;
+		data.AreaID = CSVDataReader.Instance.AreaID;
+		data.StageID = CSVDataReader.Instance.StageID;
+		data.Name = "stage" + data.StageID.ToString();
+		data.IsStar = new bool[3];
+
+		for (int i = 0; i < 3; i++)
+		{
+			data.IsStar[i] = GameManager.Instance.isMission[i];
+		}
+
+		var save = SaveManager.Instance.SaveData.data.Where(d => d.AreaID == data.AreaID && d.StageID == data.StageID).ToList();
+		if (save.Count <= 0)
+		{
+			SaveManager.Instance.SaveData.data.Add(data);
+		}
+		else
+		{
+			save.ForEach(d =>
+			{
+				for (int i = 0; i < 3; i++)
+				{ 
+					if (d.IsStar[i] == false)
+					{
+						d.IsStar[i] = data.IsStar[i];
+					}
+				}
+			});
+		}
+
+		SaveManager.Instance.Save();
 	}
 
 	void NextBtnAction()
@@ -92,7 +131,7 @@ class ResultUI : UIBase
 		this._mission[2] = this.CreateChild("Mission2", this.transform, new Vector2(90,90), new Vector3(rPos.x - 300f, -150 + rPos.y + 2),Resources.Load<Sprite>("Sprites/GUI/result_normaclear"));
 		this._missionTxt[0] = this.CreateText("MissionText0", "ステージをクリアした", this.transform, new Vector3(rPos.x, 0 + rPos.y), 40, false);
 		this._missionTxt[1] = this.CreateText("MissionText1", "全員生存した", this.transform, new Vector3(rPos.x, -75 + rPos.y), 40, false);
-		this._missionTxt[2] = this.CreateText("MissionText2", "5ターン以内にクリアした", this.transform, new Vector3(rPos.x, -150 + rPos.y), 40, false);
+		this._missionTxt[2] = this.CreateText("MissionText2", CSVDataReader.Instance.MinTotalTurn.ToString() + "ターン以内にクリアした", this.transform, new Vector3(rPos.x, -150 + rPos.y), 40, false);
 
 		for (int i = 0; i < 3; i++)
 		{

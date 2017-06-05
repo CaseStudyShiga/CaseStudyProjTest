@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 		x3
 	}
 
-	int _totalTurnNum = 0;
+	int _totalTurnNum;
 	Dictionary<int, Vector2> _dirTable;
 	Dictionary<string, int> _stageTable;
 	bool _enemyTurn;
@@ -36,7 +36,6 @@ public class GameManager : MonoBehaviour
 	SpeedUp _speedupType = SpeedUp.x1;
 	bool _complete = false;
 	bool[] _isMission;
-	int _minTotalTurn;
 
 	public int TotalTurnNum { get { return _totalTurnNum; } }
 	public Dictionary<int, Vector2> DirTable { get { return _dirTable; } }
@@ -46,7 +45,6 @@ public class GameManager : MonoBehaviour
 	public SpeedUp SpeedUpType { get { return _speedupType; } set { _speedupType = value; } }
 	public bool isComplete { get { return _complete; } }
 	public bool[] isMission { get { return this._isMission; } set { _isMission = value; } }
-	public int MinTotalTurn { get { return this._minTotalTurn; } set { _minTotalTurn = value; } }
 
 	void Awake()
 	{
@@ -92,7 +90,7 @@ public class GameManager : MonoBehaviour
 
 	public void Reset()
 	{
-		this._totalTurnNum = 0;
+		this._totalTurnNum = 1;
 		this._enemyTurn = false;
 		this._complete = false;
 
@@ -100,12 +98,12 @@ public class GameManager : MonoBehaviour
 		{
 			this._isMission[i] = false;
 		}
-
-		this._minTotalTurn = 6;
 	}
 
 	void InitField()
 	{
+		this._totalTurnNum = 1;
+
 		this._dirTable = new Dictionary<int, Vector2> {
 			{0, new Vector2(0, -1) },
 			{1, new Vector2(1, -1) },
@@ -127,7 +125,5 @@ public class GameManager : MonoBehaviour
 		{
 			this._isMission[i] = false;
 		}
-
-		this._minTotalTurn = 6;
 	}
 }

@@ -292,7 +292,7 @@ public class StageBase : MonoBehaviour
 			}
 
 			// ミッション2 ( 最小ターンクリア )
-			if(GameManager.Instance.TotalTurnNum <= GameManager.Instance.MinTotalTurn)
+			if(GameManager.Instance.TotalTurnNum <= CSVDataReader.Instance.MinTotalTurn)
 			{
 				GameManager.Instance.isMission[2] = true;
 			}

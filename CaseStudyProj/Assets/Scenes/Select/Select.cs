@@ -8,7 +8,7 @@ using DG.Tweening;
 
 public class Select : MonoBehaviour
 {
-	enum eMode
+	public enum eMode
 	{
 		eArea = 0,
 		eStage,
@@ -19,15 +19,21 @@ public class Select : MonoBehaviour
 	GameObject _backBtn;
 	GameObject _configBtn;
 	eMode _mode;
+	GameObject _configUI;
 
+	public eMode Mode { get { return _mode; } }
 	public GameObject AreaSelect { get { return _areaSelect; } set { _areaSelect = value; } }
 	public GameObject StageSelect { get { return _stageSelect; } set { _stageSelect = value; } }
 
-	void Start ()
+	void Awake()
 	{
 		this.InitField();
-		Fader.instance.BlackIn();
+	}
 
+	void Start ()
+	{
+		SaveManager.Instance.Load();
+		Fader.instance.BlackIn();
 	}
 
 	void Update ()
@@ -63,10 +69,15 @@ public class Select : MonoBehaviour
 		this._stageSelect.AddComponent<StageSelect>();
 		this._stageSelect.transform.localPosition = Vector3.zero;
 
+		this._configUI = this.CreateChild("ConfigUI", this.transform, Vector2.one, Vector3.zero);
+		var config = this._configUI.AddComponent<ConfigUI>();
+		config.IsMenu = false;
+
 		Vector2 btnSize = new Vector2(150, 150);
 		this._backBtn = this.CreateButton("BackBtn", this.transform, btnSize, new Vector3(-260.5f, 570), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_backButton"), this.BackBtnAction);
-		this._configBtn = this.CreateButton("ConfigBtn", this.transform, btnSize, new Vector3(270, 570), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_configButton"), this.ConfigBtnAction);
+		this._configBtn = this.CreateButton("ConfigBtn", this.transform, btnSize, new Vector3(270, 570), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_configButton"), config.ActiveMethod);
 
+		this._configUI.transform.SetAsLastSibling();
 		this._stageSelect.SetActive(false);
 	}
 

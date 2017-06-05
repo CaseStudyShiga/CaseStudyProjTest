@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 
-public class SaveManager : MonoBehaviour
+public class SaveManager
 {
 	static SaveManager _instance;
 	public static SaveManager Instance
@@ -15,8 +16,8 @@ public class SaveManager : MonoBehaviour
 		{
 			if (_instance == null)
 			{
-				GameObject obj = new GameObject("SaveManager");
-				_instance = obj.AddComponent<SaveManager>();
+				_instance = new SaveManager();
+				_instance.InitField();
 			}
 			return _instance;
 		}
@@ -26,44 +27,45 @@ public class SaveManager : MonoBehaviour
 	static string SavePath;
 	SaveData _saveData;
 
-	void Awake()
-	{
-		SavePath = Application.dataPath + "/save.json";
-		_saveData = new SaveData();
-	}
+	public SaveData SaveData { get { return _saveData; } set { _saveData = value; } }
 
-	void Start()
+	void InitField()
 	{
 		// iOSでは下記設定を行わないとエラーになる
 #if UNITY_IPHONE
 		Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
 #endif
+
+		SavePath = Application.dataPath + "/save.json";
+		_saveData = new SaveData();
+	}
+
+	///// 保存 /////////////////////////////////////
+	void TestSave()
+	{
+		for (int i = 0; i < STAGE_NUM; i++)
+		{
+			SaveData.Data data;
+			data.AreaID = 0;
+			data.StageID = 0;
+			data.Name = "stage" + i.ToString();
+			data.IsStar = new bool[3];
+			data.IsStar[0] = true;
+			data.IsStar[1] = false;
+			data.IsStar[2] = true;
+		
+			this._saveData.data.Add(data);
+		}		
 	}
 
 	///// 保存 /////////////////////////////////////
 	public void Save()
 	{
-		for (int i = 0; i < STAGE_NUM; i++)
-		{
-			this._saveData.data[i].AreaID = 0;
-			this._saveData.data[i].StageID = 0;
-			this._saveData.data[i].Name = "stage" + i.ToString();
-			this._saveData.data[i].IsStar = new bool[3];
-			this._saveData.data[i].IsStar[0] = true;
-			this._saveData.data[i].IsStar[1] = false;
-			this._saveData.data[i].IsStar[2] = true;
-		}		
-
 		string json = JsonUtility.ToJson(this._saveData);
 		using (FileStream fs = new FileStream(SavePath, FileMode.Create, FileAccess.Write))
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 			bf.Serialize(fs, json);
-		}
-
-		for (int i = 0; i < STAGE_NUM; i++)
-		{
-			Debug.Log("[Save]Name:" + this._saveData.data[i].Name);
 		}
 	}
 
@@ -79,9 +81,38 @@ public class SaveManager : MonoBehaviour
 
 		var obj = JsonUtility.FromJson<SaveData>(json);
 
-		for (int i = 0; i < STAGE_NUM; i++)
+		_saveData = obj;
+	}
+
+	// セーブデータリセット
+	public void Reset()
+	{
+		this._saveData.data.Clear();
+		SelectManager.Instance.AreaList.Select((area,idx) =>
 		{
-			Debug.Log("[Load]Name:" + obj.data[i].Name);
-		}
+			for (int i = 0; i < area.StageNumMax; i++)
+			{
+				SaveData.Data data;
+				data.AreaID = area.ID;
+				data.StageID = i;
+				data.Name = "stage" + i.ToString();
+				data.IsStar = new bool[3];
+				data.IsStar[0] = false;
+				data.IsStar[1] = false;
+				data.IsStar[2] = false;
+
+				var hoges = this._saveData.data.Where(d => d.AreaID == data.AreaID && d.StageID == data.StageID).ToList();
+				if (hoges.Count <= 0)
+				{
+					this._saveData.data.Add(data);
+				}
+			}
+
+			return area;
+		}).ToList();
+
+		this.Save();
+
+		Debug.Log("SaveData - Reset");
 	}
 }

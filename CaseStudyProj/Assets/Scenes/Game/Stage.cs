@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class Stage : StageBase
 {
 	// 変数
-	Player[] _player;
-	Enemy[] _enemy;
 	int[,] _stageData = {
 		{1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1},
@@ -29,8 +27,6 @@ public class Stage : StageBase
 		this.CreateStageBase(_stageData);
 		this.InitField();
 		this.AllCheckBetween();
-		SaveManager.Instance.Save();
-		SaveManager.Instance.Load();
 	}
 
 	void Update()
@@ -84,5 +80,6 @@ public class Stage : StageBase
 		this.PlayerMaxNum = 0;
 		this.InitField();
 		this.ClearPossibleMovePanel();
+		this.AllCheckBetween();
 	}
 }

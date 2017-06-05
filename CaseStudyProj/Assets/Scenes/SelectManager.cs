@@ -9,7 +9,7 @@ public class Area
 	public int ID;
 	public string Name;
 	public int Difficulty;
-	public int StageNum;
+	public int StageNumMax;
 
 	public Area(int id, string t, int n)
 	{
@@ -20,22 +20,22 @@ public class Area
 		switch (this.ID)
 		{
 			case 0:
-				this.StageNum = 2;
+				this.StageNumMax = 2;
 				break;
 			case 1:
-				this.StageNum = 0;
+				this.StageNumMax = 0;
 				break;
 			case 2:
-				this.StageNum = 0;
+				this.StageNumMax = 0;
 				break;
 			case 3:
-				this.StageNum = 0;
+				this.StageNumMax = 0;
 				break;
 			case 4:
-				this.StageNum = 0;
+				this.StageNumMax = 0;
 				break;
 			default:
-				this.StageNum = 0;
+				this.StageNumMax = 0;
 				break;
 		}
 	}

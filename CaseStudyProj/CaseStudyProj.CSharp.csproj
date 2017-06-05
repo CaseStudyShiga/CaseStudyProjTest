@@ -122,6 +122,7 @@
     <Compile Include="Assets\Scenes\Game\Status\AttackStatus.cs" />
     <Compile Include="Assets\Scenes\Game\Status\EnemyStatus.cs" />
     <Compile Include="Assets\Scenes\Game\UI\BottomUI.cs" />
+    <Compile Include="Assets\Scenes\Game\UI\ConfigUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\DamageUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\EndChkUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\MenuUI.cs" />

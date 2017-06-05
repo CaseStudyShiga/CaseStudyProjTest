@@ -10,12 +10,13 @@ class CSVDataReader
 {
 	static CSVDataReader _instance;
 	string[,] _sdataArrays;
-	int[,] _ndataArrays;
 	int _areaID;
 	int _stageID;
+	int _minTotalTurn;
 
-	public int AreaID { get { return this._areaID; }	}
+	public int AreaID { get { return this._areaID; } }
 	public int StageID { get { return this._stageID; } }
+	public int MinTotalTurn { get { return this._minTotalTurn; } }
 
 	public static CSVDataReader Instance
 	{
@@ -49,7 +50,22 @@ class CSVDataReader
 
 	void ReadCSVData(string path, ref string[,] sdata)
 	{
+		StreamReader srOrg = new StreamReader(path);
 		StreamReader sr = new StreamReader(path);
+		char str = (char)sr.Read();
+
+		int min = 0;
+		if (int.TryParse(str.ToString(), out min))
+		{
+			this._minTotalTurn = min;
+		}
+		else
+		{
+			this._minTotalTurn = 88;
+		}
+
+
+		sr = srOrg;
 		sr.ReadLine(); // 1行読み捨てる。
 		string strStream = sr.ReadToEnd();
 
@@ -58,18 +74,18 @@ class CSVDataReader
 
 		// 行に分ける
 		string[] lines = strStream.Split(new char[] { '\r', '\n' }, option);
-	
+
 		// カンマ分けの準備(区分けする文字を設定する)
 		char[] spliter = new char[1] { ',' };
-	
+
 		int h = lines.Length;
 		int w = lines[0].Split(spliter, option).Length;
-	
+
 		sdata = new string[h, w];
 		for (int i = 0; i < h; i++)
 		{
 			string[] splitedData = lines[i].Split(spliter, option);
-	
+
 			for (int j = 0; j < w; j++)
 			{
 				sdata[i, j] = splitedData[j];
