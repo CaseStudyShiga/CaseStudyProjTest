@@ -6,6 +6,7 @@ using UnityEngine.UI;
 class StatusUI : UIBase
 {
 	GameObject _name;
+	GameObject _subName;
 	GameObject _hp;
 	GameObject _attack;
 	GameObject _move;
@@ -23,6 +24,7 @@ class StatusUI : UIBase
 	void InitField()
 	{
 		_name = this.CreateName(new Vector3(1.25f, 92));
+		_subName = this.CreateSubName(new Vector3(1.25f, 55));
 		_hp = this.CreateHp(new Vector3(-61, -6));
 		_attack = this.CreateSimple("Attack", "攻撃", "", new Vector3(-70, -72));
 		_move = this.CreateSimple("Move", "移動量", "", new Vector3(125, -72));
@@ -41,6 +43,9 @@ class StatusUI : UIBase
 		{
 			case "Name":
 				this.GetText(this._name.transform, "Text").text = value;
+				break;
+			case "SubName":
+				this.GetText(this._subName.transform, "Text").text = value;
 				break;
 			case "Attack":
 				this.GetText(this._attack.transform, "Value").text = value;
@@ -64,6 +69,21 @@ class StatusUI : UIBase
 		child.GetComponent<RectTransform>().localPosition = pos;
 
 		GameObject text = this.CreateText("Text", "", child.transform, Vector3.zero, 30, false);
+		text.GetComponent<RectTransform>().sizeDelta = new Vector2(400, 100);
+
+		return child;
+	}
+
+	GameObject CreateSubName(Vector3 pos, Sprite sp = null)
+	{
+		GameObject child = new GameObject("SubName");
+		child.transform.SetParent(this.transform);
+		child.AddComponent<RectTransform>();
+		child.GetComponent<RectTransform>().sizeDelta = Vector2.zero;
+		child.GetComponent<RectTransform>().localScale = Vector3.one;
+		child.GetComponent<RectTransform>().localPosition = pos;
+
+		GameObject text = this.CreateText("Text", "", child.transform, Vector3.zero, 24, false);
 		text.GetComponent<RectTransform>().sizeDelta = new Vector2(400, 100);
 
 		return child;

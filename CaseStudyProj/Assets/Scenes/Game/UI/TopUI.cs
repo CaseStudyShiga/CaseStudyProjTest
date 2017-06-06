@@ -31,6 +31,7 @@ public class TopUI : UIBase
 			var statusUI = _statusUI.GetComponent<StatusUI>();
 			statusUI.SetHpText(status.Hp.ToString(), status.HpMax.ToString());
 			statusUI.SetSimpleText("Name", status.Name);
+			statusUI.SetSimpleText("SubName", status.SubName);
 			statusUI.SetSimpleText("Attack", status.Attack.ToString());
 			statusUI.SetSimpleText("Move", status.Move.ToString());
 			statusUI.SetSimpleText("Range", status.Range.ToString());
@@ -77,6 +78,7 @@ public class TopUI : UIBase
 		var statusUI = _statusUI.GetComponent<StatusUI>();
 		statusUI.SetHpText("", "");
 		statusUI.SetSimpleText("Name", "");
+		statusUI.SetSimpleText("SubName", "");
 		statusUI.SetSimpleText("Attack", "");
 		statusUI.SetSimpleText("Move", "");
 		statusUI.SetSimpleText("Range", "");

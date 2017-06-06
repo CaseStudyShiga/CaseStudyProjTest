@@ -10,9 +10,9 @@ class EnemyStatus0 : StatusBase
 	{
 		this.Name = "エネミー";
 		this.Attack = 1;
-		this.HpMax = this.Hp = 9;
+		this.HpMax = this.Hp = 5;
 		this.Move = 2;
-		this.Range = 2;
+		this.Range = 1;
 		this.CharSp = Resources.Load<Sprite>("Sprites/Char/enemy0");
 	}
 }

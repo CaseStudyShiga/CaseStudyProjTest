@@ -23,7 +23,6 @@ public class SaveManager
 		}
 	}
 
-	readonly int STAGE_NUM = 3;
 	static string SavePath;
 	SaveData _saveData;
 
@@ -41,24 +40,6 @@ public class SaveManager
 	}
 
 	///// 保存 /////////////////////////////////////
-	void TestSave()
-	{
-		for (int i = 0; i < STAGE_NUM; i++)
-		{
-			SaveData.Data data;
-			data.AreaID = 0;
-			data.StageID = 0;
-			data.Name = "stage" + i.ToString();
-			data.IsStar = new bool[3];
-			data.IsStar[0] = true;
-			data.IsStar[1] = false;
-			data.IsStar[2] = true;
-		
-			this._saveData.data.Add(data);
-		}		
-	}
-
-	///// 保存 /////////////////////////////////////
 	public void Save()
 	{
 		string json = JsonUtility.ToJson(this._saveData);
@@ -67,11 +48,18 @@ public class SaveManager
 			BinaryFormatter bf = new BinaryFormatter();
 			bf.Serialize(fs, json);
 		}
+
+		Debug.Log("SaveData - Save");
 	}
 
 	///// 読み込み /////////////////////////////////////
 	public void Load()
 	{
+		if (File.Exists(SavePath) == false)
+		{
+			this.Reset();
+		}
+
 		string json;
 		using (FileStream fs = new FileStream(SavePath, FileMode.Open, FileAccess.Read))
 		{
@@ -82,6 +70,8 @@ public class SaveManager
 		var obj = JsonUtility.FromJson<SaveData>(json);
 
 		_saveData = obj;
+
+		Debug.Log("SaveData - Load");
 	}
 
 	// セーブデータリセット

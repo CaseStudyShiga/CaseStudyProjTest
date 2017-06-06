@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour
 
 		this._stageTable = new Dictionary<string, int> {
 			{"P1", 0},
+
 			{"E1", 2},
 		};
 

@@ -28,11 +28,9 @@ public class Player : CharBase
 			this.Status.SelectOff();
 			stage.ClearPossibleMovePanel();
 		}
-
-		//this.Status.SetEffect(stage.GetPanelLocalPosition(this.Status.X, this.Status.Y));
 	}
 
-	public GameObject Create(Transform stage, int type, int x, int y)
+	public GameObject Create(Transform stage, string type, int x, int y)
 	{
 		this._instance = this.CreateChild(type, "player", stage.Find("Players"), stage.gameObject, new Vector2(90, 90));
 		this._instance.GetComponent<StatusBase>().SelectOff();

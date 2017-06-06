@@ -104,11 +104,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Resources\Prehabs\Effect\EffectGunAttackScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\EnemyAttack\EffectEnemyAttackScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Explosion\EffectExplosionPurpleScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Explosion\EffectExplosionScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\GunAttack\EffectGunAttackScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\PunchAttack\EffectPunchScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Slash\EffectSlashScript.cs" />
     <Compile Include="Assets\Resources\Prehabs\Fader\Fader.cs" />
     <Compile Include="Assets\Scenes\ButtonManager.cs" />
     <Compile Include="Assets\Scenes\CSVDataReader.cs" />
     <Compile Include="Assets\Scenes\ConfigData.cs" />
+    <Compile Include="Assets\Scenes\EffectManager.cs" />
     <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\SkillBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\StageBase.cs" />
@@ -119,8 +125,8 @@
     <Compile Include="Assets\Scenes\Game\Panel.cs" />
     <Compile Include="Assets\Scenes\Game\Player.cs" />
     <Compile Include="Assets\Scenes\Game\Stage.cs" />
-    <Compile Include="Assets\Scenes\Game\Status\AttackStatus.cs" />
     <Compile Include="Assets\Scenes\Game\Status\EnemyStatus.cs" />
+    <Compile Include="Assets\Scenes\Game\Status\Statuses.cs" />
     <Compile Include="Assets\Scenes\Game\UI\BottomUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\ConfigUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\DamageUI.cs" />
@@ -131,7 +137,6 @@
     <Compile Include="Assets\Scenes\Game\UI\TopUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\UI.cs" />
     <Compile Include="Assets\Scenes\GameManager.cs" />
-    <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
     <Compile Include="Assets\Scenes\SaveData.cs" />
     <Compile Include="Assets\Scenes\SaveManager.cs" />
     <Compile Include="Assets\Scenes\Select\AreaSelect.cs" />

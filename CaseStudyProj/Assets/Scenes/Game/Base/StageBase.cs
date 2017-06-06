@@ -232,7 +232,7 @@ public class StageBase : MonoBehaviour
 			{
 				enemyStatus[i].BetweenOn();
 			}
-			Debug.Log(enemyCount);
+			Debug.Log("Between : " + enemyCount);
 			return true;
 		}
 
@@ -366,6 +366,7 @@ public class StageBase : MonoBehaviour
 
 						if (enemyStatus.IsPlayer == false)
 						{
+							EffectManager.Instance.SetEffect(playerStatus.Effect, this.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
 							enemyStatus.Damage += playerStatus.Attack;
 						}
 					}
@@ -479,6 +480,7 @@ public class StageBase : MonoBehaviour
 					{
 						var targetStatus = _targetList[i].GetComponent<StatusBase>();
 
+						EffectManager.Instance.SetEffect(EffectManager.eEffect.eEnemyAttack, this.GetPanelLocalPosition(targetStatus.X, targetStatus.Y));
 						DamageUI.Instance.SetDamage(status.Attack, this.GetPanelLocalPosition(targetStatus.X, targetStatus.Y));
 						targetStatus.Hp -= status.Attack;
 					}

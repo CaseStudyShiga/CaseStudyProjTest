@@ -130,7 +130,7 @@ class CSVDataReader
 #endif
 
 		ReadCSVData(path, ref this._sdataArrays);
-		WriteMapDatas(this._sdataArrays, this._sdataArrays.GetLength(0), this._sdataArrays.GetLength(1));
+		//WriteMapDatas(this._sdataArrays, this._sdataArrays.GetLength(0), this._sdataArrays.GetLength(1));
 	}
 }
 

@@ -10,6 +10,7 @@ public class Game : MonoBehaviour {
 	private GameObject _nextSceneBtn;
 
 	void Start() {
+		SaveManager.Instance.Load();
 		this.InitField();
 		this.InitAction();
 		GameManager.Instance.LoadConfigData();

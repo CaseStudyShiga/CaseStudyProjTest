@@ -14,25 +14,29 @@ public class StatusBase : MonoBehaviour
 	GameObject _stage;
 	public GameObject Stage { get { return _stage; } set { _stage = value; } }
 
-	// デバッグ用にいまだけpublic 
-	string _name;	// キャラクターの名前
+	// デバッグ用にいまだけpublic
+	EffectManager.eEffect _effect;
+	string _name;		// キャラクターの名前
+	string _subName;
 	int _attack;		// 攻撃力
-	int _hp;         // 体力
-	int _hpMax;      // 最大体力
-	int _move;		// 移動量
-	int _x;			// 現在位置
-	int _y;          // 現在位置
-	bool _isSelect;	// 選択されているかどうか
-	bool _isBetween; // 挟まれているかどうか
-	bool _isPlayer;  // プレイヤーかどうか
-	int _range;      // 射程
-	bool _isMoved;   // 行動済みかどうか
-	List<int> _dir;  // 攻撃すべき方向（敵がいる方向）
-	Sprite _charSp;  // キャライメージ
-	int _damage;     // 受けるダメージ値
-	int _attackNum;	// 攻撃回数
+	int _hp;			// 体力
+	int _hpMax;			// 最大体力
+	int _move;			// 移動量
+	int _x;				// 現在位置
+	int _y;				// 現在位置
+	bool _isSelect;		// 選択されているかどうか
+	bool _isBetween;	// 挟まれているかどうか
+	bool _isPlayer;		// プレイヤーかどうか
+	int _range;			// 射程
+	bool _isMoved;		// 行動済みかどうか
+	List<int> _dir;		// 攻撃すべき方向（敵がいる方向）
+	Sprite _charSp;		// キャライメージ
+	int _damage;		// 受けるダメージ値
+	int _attackNum;     // 攻撃回数
 
+	public EffectManager.eEffect Effect { get { return _effect; } set { _effect = value; } }
 	public string Name { get { return _name; } set { _name = value; } }
+	public string SubName { get { return _subName; } set { _subName = value; } }
 	public int Attack { get { return _attack; } set { _attack = value; } }
 	public int Hp { get { return _hp; } set { _hp = value; } }
 	public int HpMax { get { return _hpMax; } set { _hpMax = value; } }
@@ -150,14 +154,4 @@ public class StatusBase : MonoBehaviour
 		if(this._isBetween == false)
 			this.SettingDefaultCol();
 	}
-
-	//public void SetEffect(Vector3 v)
-	//{
-	//	var a = Resources.Load<GameObject>("Prehabs/Effect/effect_gunattack");
-	//
-	//	GameObject gameObj = Instantiate(a) as GameObject;
-	//	gameObj.transform.SetParent(this.Stage.transform.parent);
-	//	gameObj.GetComponent<RectTransform>().localPosition = v;
-	//	gameObj.GetComponent<RectTransform>().localScale = Vector3.one * 100;
-	//}
 }

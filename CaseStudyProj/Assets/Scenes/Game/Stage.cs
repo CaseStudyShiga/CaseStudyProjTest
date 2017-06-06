@@ -43,18 +43,14 @@ public class Stage : StageBase
 				if (data[y, x].IndexOf('P') != -1)
 				{
 					Player player = new Player();
-					int type = 0;
-					GameManager.Instance.StageTable.TryGetValue(data[y, x], out type);
-					player.Create(this.transform, type, x, y);
+					player.Create(this.transform, data[y, x], x, y);
 					this.PlayerMaxNum++;
 				}
 
 				if (data[y, x].IndexOf('E') != -1)
 				{
 					Enemy enemy = new Enemy();
-					int type = 2;
-					GameManager.Instance.StageTable.TryGetValue(data[y, x], out type);
-					enemy.Create(this.transform, type, x, y);
+					enemy.Create(this.transform, data[y, x], x, y);
 				}
 
 				if (data[y, x].IndexOf('X') != -1)

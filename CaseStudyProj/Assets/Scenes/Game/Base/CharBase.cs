@@ -22,7 +22,7 @@ public class CharBase
 		}
 	}
 
-	protected GameObject CreateChild(int type, string name, Transform parent,GameObject stage, Vector2 size)
+	protected GameObject CreateChild(string type, string name, Transform parent,GameObject stage, Vector2 size)
 	{
 		GameObject child = new GameObject(name);
 		child.transform.SetParent(parent);
@@ -34,14 +34,27 @@ public class CharBase
 
 		switch (type)
 		{
-			case 0:
+			case "P1":
 				_status = child.AddComponent<AttackStatus>();
 				break;
 
-			case 1:
+			case "P2":
+				_status = child.AddComponent<Ed>();
 				break;
 
-			case 2:
+			case "P3":
+				_status = child.AddComponent<Lucy>();
+				break;
+
+			case "P4":
+				_status = child.AddComponent<Shinya>();
+				break;
+
+			case "E1":
+				_status = child.AddComponent<EnemyStatus0>();
+				break;
+
+			default:
 				_status = child.AddComponent<EnemyStatus0>();
 				break;
 		}
