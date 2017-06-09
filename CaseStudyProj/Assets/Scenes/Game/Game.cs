@@ -10,6 +10,8 @@ public class Game : MonoBehaviour {
 	private GameObject _nextSceneBtn;
 
 	void Start() {
+		Application.targetFrameRate = 60;
+
 		SaveManager.Instance.Load();
 		this.InitField();
 		this.InitAction();

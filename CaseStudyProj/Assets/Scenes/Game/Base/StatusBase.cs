@@ -51,7 +51,7 @@ public class StatusBase : MonoBehaviour
 	public List<int> Dir { get { return _dir; } set { _dir = value; } }
 	public Sprite CharSp { get { return _charSp; } set { _charSp = value; } }
 	public int Damage { get { return _damage; } set { _damage = value; } }
-	public int AttackNum { get { return _attackNum; } }
+	public int AttackNum { get { return _attackNum; } set { _attackNum = value; } }
 
 	void Update()
 	{
@@ -74,7 +74,6 @@ public class StatusBase : MonoBehaviour
 		this._isMoved = false;
 		this._dir = new List<int>() { };
 		this._damage = 0;
-		this._attackNum = 1;
 	}
 
 	void SettingDefaultCol()

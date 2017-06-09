@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using System.Linq;
 
 class ConfigUI : UIBase
 {
@@ -11,15 +13,35 @@ class ConfigUI : UIBase
 
 	GameObject _background;
 	GameObject _frame;
-	GameObject _speedupBtn;
-	GameObject _turnendChkBtn;
-	GameObject _returnMenuBtn;
-	GameObject _dataDeleteBtn;
-
-	GameObject _okBtn;
-	GameObject _noBtn;
 
 	public bool IsMenu;
+
+	Dictionary<string, string> _btnDic;
+	List<System.Action> _btnAcList;
+	Dictionary<string, GameObject> _btnObjDic;
+
+	void Awake()
+	{
+		_btnDic = new Dictionary<string, string>()
+		{
+			{"SpeedBtn", "gameUI_v3_speedx1"},
+			{"TurnChkBtn", "gameUI_v3_turnendcheckoff"},
+			{"DeleteBtn", "gameUI_v3_data_delete"},
+			{"ReturnMenuBtn", "gameUI_v3_backtomenu"},
+			{"OkBtn", "turnendWindow_yes"},
+			{"ResumeBtn", "turnendWindow_no"},
+
+		};
+		_btnAcList = new List<System.Action>();
+		_btnAcList.Add(this.SpeedUpAction);
+		_btnAcList.Add(this.TurnEndChkAction);
+		_btnAcList.Add(this.DeleteBtnAction);
+		_btnAcList.Add(this.ReturnMenuBtnAction);
+		_btnAcList.Add(this.OkBtnAction);
+		_btnAcList.Add(this.NoBtnAction);
+
+		_btnObjDic = new Dictionary<string, GameObject>();
+	}
 
 	void Start()
 	{
@@ -38,16 +60,29 @@ class ConfigUI : UIBase
 		this._background.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
 		this._frame = this.CreateChild("Frame", this.transform, Vector2.one, Vector3.zero, Resources.Load<Sprite>("Sprites/GUI/configwindow"));
 
-		this._speedupBtn = this.CreateButton("SpeedBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y + 200), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1"), this.SpeedUpAction);
-		this._turnendChkBtn = this.CreateButton("TurnChkBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y + 50), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff"), this.TurnEndChkAction);
-		this._dataDeleteBtn = this.CreateButton("DeleteBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y - 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_data_delete"), this.DeleteBtnAction);
-		this._returnMenuBtn = this.CreateButton("ReturnMenuBtn", this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y - 250), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_backtomenu"), this.ReturnMenuBtnAction);
+		_btnDic.Select((data, idx) =>
+		{
+			GameObject obj = null;
 
-		this._okBtn = this.CreateButton("OkBtn", this.transform, Vector2.one, new Vector3(0, -100), Resources.Load<Sprite>("Sprites/GUI/turnendWindow_yes"), this.OkBtnAction);
-		this._noBtn = this.CreateButton("ResumeBtn", this.transform, Vector2.one, new Vector3(0, -250), Resources.Load<Sprite>("Sprites/GUI/turnendWindow_no"), this.NoBtnAction);
+			switch (data.Key)
+			{
+				case "OkBtn":
+					obj = this.CreateButton(data.Key, this.transform, Vector2.one, new Vector3(0, -100), Resources.Load<Sprite>("Sprites/GUI/" + data.Value), () => { _btnAcList[idx](); });
+					break;
+				case "ResumeBtn":
+					obj = this.CreateButton(data.Key, this.transform, Vector2.one, new Vector3(0, -250), Resources.Load<Sprite>("Sprites/GUI/" + data.Value), () => { _btnAcList[idx](); });
+					break;
+				default:
+					obj = this.CreateButton(data.Key, this.transform, Vector2.one, new Vector3(0, CONFIG_POS.y + 200 - (150 * idx)), Resources.Load<Sprite>("Sprites/GUI/" + data.Value), () => { _btnAcList[idx](); });
+					break;
+			}
+
+			_btnObjDic.Add(data.Key, obj);
+			return data;
+		}).ToList();
 
 		this.SpeedUpIconChk();
-		this.TurnEndIconChk();	
+		this.TurnEndIconChk();
 	}
 
 	void SpeedUpIconChk()
@@ -55,13 +90,13 @@ class ConfigUI : UIBase
 		switch (GameManager.Instance.SpeedUpType)
 		{
 			case GameManager.SpeedUp.x1:
-				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1");
+				this._btnObjDic["SpeedBtn"].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx1");
 				break;
 			case GameManager.SpeedUp.x2:
-				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx2");
+				this._btnObjDic["SpeedBtn"].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx2");
 				break;
 			case GameManager.SpeedUp.x3:
-				this._speedupBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx3");
+				this._btnObjDic["SpeedBtn"].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_speedx3");
 				break;
 		}
 	}
@@ -69,7 +104,7 @@ class ConfigUI : UIBase
 	void TurnEndIconChk()
 	{
 		bool chk = GameManager.Instance.isTurnEndChk;
-		Image image = this._turnendChkBtn.GetComponent<Image>();
+		Image image = this._btnObjDic["TurnChkBtn"].GetComponent<Image>();
 		image.sprite = (chk) ? Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheck") : Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_turnendcheckoff");
 	}
 
@@ -80,10 +115,14 @@ class ConfigUI : UIBase
 		this.SpeedUpIconChk();
 		this.TurnEndIconChk();
 
-		_speedupBtn.transform.DOScale(SIZE, 0.2f);
-		_turnendChkBtn.transform.DOScale(SIZE, 0.2f);
-		_dataDeleteBtn.transform.DOScale(SIZE, 0.2f);
-		_returnMenuBtn.transform.DOScale(SIZE, 0.2f);
+		_btnObjDic.Select((data) =>
+		{
+			if (!(data.Key == "OkBtn" || data.Key == "ResumeBtn"))
+			{
+				data.Value.transform.DOScale(SIZE, 0.2f);
+			}
+			return data;
+		});
 	}
 
 	void SpeedUpAction()
@@ -121,27 +160,48 @@ class ConfigUI : UIBase
 		{
 			this._background.transform.localScale = Vector3.zero;
 
-			_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_dataDeleteBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
-				_frame.transform.DOScale(Vector3.zero, 0.2f).OnComplete(()=> {
-					GameManager.Instance.SaveConfigData();
-				});
-			});
+			_btnObjDic.Select((data) =>
+			{
+				switch (data.Key)
+				{
+					case "ReturnMenuBtn":
+						data.Value.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+							_frame.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+							});
+						});
+						break;
+					default:
+						if (!(data.Key == "OkBtn" || data.Key == "ResumeBtn"))
+						{
+							data.Value.transform.DOScale(Vector3.zero, 0.2f);
+						}
+						break;
+				}
+
+				return data;
+			}).ToList();
+
+			GameManager.Instance.SaveConfigData();
 		}
 	}
 
 	void DeleteBtnAction()
 	{
-		_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_dataDeleteBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f);
-
+		_btnObjDic.Select((data, idx) =>
+		{
+			switch (data.Key)
+			{
+				case "OkBtn":
+				case "ResumeBtn":
+					data.Value.transform.DOScale(new Vector2(400, 150), 0.2f);
+					break;
+				default:
+					data.Value.transform.DOScale(Vector3.zero, 0.2f);
+					break;
+			}
+			return data;
+		}).ToList();
 		_frame.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/data_delete_window");
-		_noBtn.transform.DOScale(new Vector2(400, 150), 0.2f);
-		_okBtn.transform.DOScale(new Vector2(400, 150), 0.2f);
 	}
 
 	void OkBtnAction()
@@ -166,16 +226,24 @@ class ConfigUI : UIBase
 				stageSelect.CreateStages();
 			}
 
-			_noBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_okBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_dataDeleteBtn.transform.DOScale(Vector3.zero, 0.2f);
-			_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
-				_frame.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
-					GameManager.Instance.SaveConfigData();
-				});
-			});
+			_btnObjDic.Select((data, idx) =>
+			{
+				switch (data.Key)
+				{
+					case "ReturnMenuBtn":
+						data.Value.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+							_frame.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+							});
+						});
+						break;
+					default:
+						data.Value.transform.DOScale(Vector3.zero, 0.2f);
+						break;
+				}
+				return data;
+			}).ToList();
+
+			GameManager.Instance.SaveConfigData();
 		}
 
 	}
@@ -183,13 +251,21 @@ class ConfigUI : UIBase
 	void NoBtnAction()
 	{
 		_frame.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/GUI/configwindow");
-		_speedupBtn.transform.DOScale(SIZE, 0.2f);
-		_turnendChkBtn.transform.DOScale(SIZE, 0.2f);
-		_dataDeleteBtn.transform.DOScale(SIZE, 0.2f);
-		_returnMenuBtn.transform.DOScale(SIZE, 0.2f);
 
-		_noBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_okBtn.transform.DOScale(Vector3.zero, 0.2f);
+		_btnObjDic.Select((data, idx) =>
+		{
+			switch (data.Key)
+			{
+				case "OkBtn":
+				case "ResumeBtn":
+					data.Value.transform.DOScale(Vector3.zero, 0.2f);
+					break;
+				default:
+					data.Value.transform.DOScale(SIZE, 0.2f);
+					break;
+			}
+			return data;
+		}).ToList();
 	}
 
 	public void ActiveMethod()
@@ -198,32 +274,54 @@ class ConfigUI : UIBase
 		{
 			this._background.transform.localScale = Vector3.zero;
 			_frame.transform.localScale = new Vector3(750f, 1334f, 0);
-			_speedupBtn.transform.DOScale(SIZE, 0.2f);
-			_turnendChkBtn.transform.DOScale(SIZE, 0.2f);
-			_dataDeleteBtn.transform.DOScale(SIZE, 0.2f);
-			_returnMenuBtn.transform.DOScale(SIZE, 0.2f);
+
+			_btnObjDic.Select((data, idx) =>
+			{
+				if (!(data.Key == "OkBtn" || data.Key == "ResumeBtn"))
+				{
+					data.Value.transform.DOScale(SIZE, 0.2f);
+				}
+				return data;
+			}).ToList();
 		}
 		else
 		{
 			this._background.transform.localScale = new Vector3(750f, 1334f, 0f);
 
 			_frame.transform.DOScale(new Vector3(750f, 1334f, 0), 0.25f).OnComplete(() => {
-				_speedupBtn.transform.DOScale(SIZE, 0.2f);
-				_turnendChkBtn.transform.DOScale(SIZE, 0.2f);
-				_dataDeleteBtn.transform.DOScale(SIZE, 0.2f);
-				_returnMenuBtn.transform.DOScale(SIZE, 0.2f);
+
+				_btnObjDic.Select((data, idx) =>
+				{
+					if (!(data.Key == "OkBtn" || data.Key == "ResumeBtn"))
+					{
+						data.Value.transform.DOScale(SIZE, 0.2f);
+					}
+					return data;
+				}).ToList();
 			});
 		}
 	}
 
 	void NotActiveMethod()
 	{
-		_speedupBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_turnendChkBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_dataDeleteBtn.transform.DOScale(Vector3.zero, 0.2f);
-		_returnMenuBtn.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
-			_frame.transform.localScale = new Vector3(0f, 0f, 0f);
-			GameManager.Instance.SaveConfigData();
-		});
+		_btnObjDic.Select((data, idx) =>
+		{
+			switch (data.Key)
+			{
+				case "ReturnMenuBtn":
+					data.Value.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() => {
+						_frame.transform.localScale = new Vector3(0f, 0f, 0f);
+					});
+					break;
+				default:
+					if (!(data.Key == "OkBtn" || data.Key == "ResumeBtn"))
+					{
+						data.Value.transform.DOScale(Vector3.zero, 0.2f);
+					}
+					break;
+			}
+			return data;
+		}).ToList();
+		GameManager.Instance.SaveConfigData();
 	}
 }

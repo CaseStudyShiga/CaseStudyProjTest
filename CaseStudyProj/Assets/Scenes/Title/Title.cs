@@ -11,6 +11,8 @@ public class Title : MonoBehaviour
 {
 	void Start ()
 	{
+		Application.targetFrameRate = 60;
+
 		this.InitField();
 		this.InitAction();
 

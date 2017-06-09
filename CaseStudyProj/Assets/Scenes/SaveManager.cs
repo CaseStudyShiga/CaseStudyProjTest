@@ -30,12 +30,23 @@ public class SaveManager
 
 	void InitField()
 	{
-		// iOSでは下記設定を行わないとエラーになる
-#if UNITY_IPHONE
+#if UNITY_EDITOR
+		Debug.Log("Unity Editor");
+		SavePath = Application.dataPath + "/save.json";
+
+#elif UNITY_IPHONE
 		Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
+		Debug.Log("Unity iPhone");
+		SavePath = Application.persistentDataPath + "/save.json";
+
+#elif UNITY_ANDROID
+		string p = "jar:file://" + Application.dataPath + "!/assets" + "/" + "save.json";
+		WWW www = new WWW(p);
+		TextReader txtReader = new StringReader(www.text);
+		SavePath = txtReader.ToString();
 #endif
 
-		SavePath = Application.dataPath + "/save.json";
+
 		_saveData = new SaveData();
 	}
 

@@ -245,10 +245,7 @@ public class StageBase : MonoBehaviour
 		{
 			StatusBase enemyStatus = child.GetComponent<StatusBase>();
 
-			if (enemyStatus.IsBetween)
-			{
-				enemyStatus.BetweenOff();
-			}
+			enemyStatus.BetweenOff();
 		}
 
 		foreach (Transform child in this.transform.Find("Players"))

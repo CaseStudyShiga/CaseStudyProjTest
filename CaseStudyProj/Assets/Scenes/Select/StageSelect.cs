@@ -34,7 +34,6 @@ class StageSelect : UIBase
 	//-----------------------------------------------------
 	void onConfirmationPanel()
 	{
-		//W:450 H:795
 		this._confirmationPanel.SetActive(true);
 		this._confirmationPanel.transform.SetAsLastSibling();
 		this._confirmationPanel.transform.localScale = new Vector3(0, 0, 0);

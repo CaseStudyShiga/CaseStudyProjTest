@@ -61,6 +61,8 @@ public class BottomUI : UIBase
 
 			if (GameManager.Instance.isComplete)
 			{
+				yield return new WaitForSeconds(1.0f);          // waitTime後に実行する
+
 				var result = this.transform.parent.Find("ResultUI").GetComponent<ResultUI>();
 				result.ActiveMethod();
 			}

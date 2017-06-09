@@ -51,11 +51,23 @@ public class CharBase
 				break;
 
 			case "E1":
-				_status = child.AddComponent<EnemyStatus0>();
+				_status = child.AddComponent<EnemyStatus01>();
+				break;
+
+			case "E2":
+				_status = child.AddComponent<EnemyStatus02>();
+				break;
+
+			case "E3":
+				_status = child.AddComponent<EnemyStatus03>();
+				break;
+
+			case "E4":
+				_status = child.AddComponent<EnemyStatus04>();
 				break;
 
 			default:
-				_status = child.AddComponent<EnemyStatus0>();
+				_status = child.AddComponent<EnemyStatus01>();
 				break;
 		}
 

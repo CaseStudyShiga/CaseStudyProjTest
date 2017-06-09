@@ -72,6 +72,7 @@ public class Select : MonoBehaviour
 		this._configUI = this.CreateChild("ConfigUI", this.transform, Vector2.one, Vector3.zero);
 		var config = this._configUI.AddComponent<ConfigUI>();
 		config.IsMenu = false;
+		GameManager.Instance.LoadConfigData();
 
 		Vector2 btnSize = new Vector2(150, 150);
 		this._backBtn = this.CreateButton("BackBtn", this.transform, btnSize, new Vector3(-260.5f, 570), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_backButton"), this.BackBtnAction);

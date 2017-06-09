@@ -40,6 +40,8 @@ public class Stage : StageBase
 		{
 			for (int x = 0; x < data.GetLength(1); x++)
 			{
+				this.GetPanelData(x, y).DataReset();
+
 				if (data[y, x].IndexOf('P') != -1)
 				{
 					Player player = new Player();
