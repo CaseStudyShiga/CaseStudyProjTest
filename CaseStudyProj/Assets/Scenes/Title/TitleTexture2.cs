@@ -78,7 +78,7 @@ public class TitleTexture2 : MonoBehaviour {
         else
         {
             // 直前担当の画像が表示し終わったか
-            var bEnd1 = this.transform.parent.Find("1").GetComponent<TitleTexture1>().bEnd;
+            var bEnd1 = this.transform.parent.Find("Aiming-logo").GetComponent<TitleTexture1>().bEnd;
             if (bEnd1) bUse = true;
         }
     }

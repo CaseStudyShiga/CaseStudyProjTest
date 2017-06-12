@@ -44,7 +44,7 @@ public class Titlelogo : MonoBehaviour {
         }
         else
         {
-            var bMainChange = this.transform.parent.Find("TestTitle").GetComponent<TitleTouch>().bUse;
+            var bMainChange = this.transform.parent.Find("TitleMainTexture").GetComponent<TitleTouch>().bUse;
             if (bMainChange)
             {
                 bUse = true;

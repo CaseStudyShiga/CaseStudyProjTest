@@ -78,7 +78,7 @@ public class TitleTexture3 : MonoBehaviour {
         else
         {
             // 直前担当の画像が表示し終わったか
-            var bEnd2 = this.transform.parent.Find("2").GetComponent<TitleTexture2>().bEnd;
+            var bEnd2 = this.transform.parent.Find("HAL-logo").GetComponent<TitleTexture2>().bEnd;
             if (bEnd2) bUse = true;
         }
     }

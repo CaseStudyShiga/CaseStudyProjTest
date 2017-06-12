@@ -15,11 +15,12 @@ public class TitleTouch : MonoBehaviour {
     // Use this for initialization
     void Start () {
         renderer = GetComponent<Image>();
-		renderer.sprite = Resources.Load<Sprite>("Sprites/Title/background");
+		renderer.sprite = Resources.Load<Sprite>("Sprites/Title/background001");
         bUse = false;
         bChange = false;
         a_color = 0.0f;
         renderer.color = new Color(255, 255, 255, a_color);
+        //this.transform.SetAsLastSibling();
     }
 	
 	// Update is called once per frame
@@ -45,7 +46,7 @@ public class TitleTouch : MonoBehaviour {
         }
         else
         {
-            var bEnd3 = this.transform.parent.Find("3").GetComponent<TitleTexture3>().bEnd;
+            var bEnd3 = this.transform.parent.Find("unity-logo").GetComponent<TitleTexture3>().bEnd;
             if (bEnd3) bUse = true;
         }
         
