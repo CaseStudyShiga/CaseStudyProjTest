@@ -11,7 +11,7 @@ class EnemyStatus01 : StatusBase
 		this.Name = "デバウアー";
 		this.SubName = "近接型";
 		this.Attack = 2;
-		this.HpMax = this.Hp = 7;
+		this.HpMax = this.Hp = 8;
 		this.Move = 2;
 		this.Range = 1;
 		this.AttackNum = 1;
@@ -26,7 +26,7 @@ class EnemyStatus02 : StatusBase
 		this.Name = "デバウアー";
 		this.SubName = "射撃型";
 		this.Attack = 1;
-		this.HpMax = this.Hp = 6;
+		this.HpMax = this.Hp = 7;
 		this.Move = 1;
 		this.Range = 2;
 		this.AttackNum = 1;

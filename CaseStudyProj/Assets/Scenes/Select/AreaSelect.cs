@@ -26,7 +26,7 @@ class AreaSelect : UIBase
 	void AreaBtn(Area area)
 	{
 		var s = this._select.GetComponent<Select>();
-
+		s.SetBackgroundType(area.ID);
 		s.SetStageSelectActive(true, area);
 	}
 

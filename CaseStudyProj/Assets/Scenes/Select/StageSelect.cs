@@ -85,6 +85,9 @@ class StageSelect : UIBase
 		this._areaName.GetComponent<Text>().text = _area.Name;
 
 		int cnt = this._area.StageNumMax;
+
+		if (cnt == 0) return;
+
 		const int RowMax = 4;
 		double colum = (double)cnt / (double)RowMax;
 		int maxColumn = (int)System.Math.Ceiling(colum);

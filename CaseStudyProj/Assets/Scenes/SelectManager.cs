@@ -67,11 +67,9 @@ class SelectManager
 	void InitField()
 	{
 		this._areaList = new List<Area>();
-		this._areaList.Add(new Area(0, "新宿", 1));
-		this._areaList.Add(new Area(0, "つつじヶ丘", 2));
-		this._areaList.Add(new Area(0, "群馬", 3));
-		this._areaList.Add(new Area(0, "HAL東京", 4));
-		this._areaList.Add(new Area(0, "魔界", 5));
+		this._areaList.Add(new Area(0, "街", 1));
+		this._areaList.Add(new Area(1, "公園", 2));
+		this._areaList.Add(new Area(2, "学校", 3));
 		this._stageID = 0;
 	}
 }
