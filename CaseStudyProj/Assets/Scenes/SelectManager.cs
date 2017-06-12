@@ -20,19 +20,13 @@ public class Area
 		switch (this.ID)
 		{
 			case 0:
-				this.StageNumMax = 2;
+				this.StageNumMax = 5;
 				break;
 			case 1:
-				this.StageNumMax = 0;
+				this.StageNumMax = 1;
 				break;
 			case 2:
-				this.StageNumMax = 0;
-				break;
-			case 3:
-				this.StageNumMax = 0;
-				break;
-			case 4:
-				this.StageNumMax = 0;
+				this.StageNumMax = 1;
 				break;
 			default:
 				this.StageNumMax = 0;

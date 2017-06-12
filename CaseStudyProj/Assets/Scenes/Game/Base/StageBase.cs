@@ -56,7 +56,7 @@ public class StageBase : MonoBehaviour
 		enemys.transform.SetParent(this.transform);
 		enemys.transform.localPosition = Vector3.zero;
 
-		_basebackground = CreateBackGround("BaseBackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/Stage/area1_1"));
+		_basebackground = CreateBackGround("BaseBackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/Stage/area" + CSVDataReader.Instance.AreaID.ToString() + "_0"));
 
 		_background = CreateBackGround("BackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/GUI/gameUI_v2_background"));
 		_background.transform.SetAsFirstSibling();

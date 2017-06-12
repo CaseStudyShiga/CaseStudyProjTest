@@ -5,6 +5,7 @@ using UnityEngine.UI;
 // LoadSceneを使うために必要！！！！！
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using System.Linq;
 
 class StageSelect : UIBase
 {
@@ -110,9 +111,10 @@ class StageSelect : UIBase
 				GameObject txt = this.CreateText("Text", count.ToString(), obj.transform, new Vector3(0, 9), 45, false);
 
 				int starCnt = 0;
+				var saveData = SaveManager.Instance.SaveData.data.Where(d => d.AreaID == this._area.ID).ToList();
 				for (int i = 0; i < 3; i++)
 				{
-					if (SaveManager.Instance.SaveData.data[count].IsStar[i])
+					if (saveData[count].IsStar[i])
 					{
 						starCnt++;
 					}
