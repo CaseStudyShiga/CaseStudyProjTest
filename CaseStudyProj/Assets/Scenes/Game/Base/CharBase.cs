@@ -94,4 +94,17 @@ public class CharBase
 				child.GetComponent<StatusBase>().SelectOff();
 		}
 	}
+
+	protected void OtherSelectFrameOff()
+	{
+		foreach (Transform child in this._status.Stage.transform.Find("Players"))
+		{
+			child.GetComponent<StatusBase>().IsSelectFrame = false;
+		}
+
+		foreach (Transform child in this._status.Stage.transform.Find("Enemys"))
+		{
+			child.GetComponent<StatusBase>().IsSelectFrame = false;
+		}
+	}
 }

@@ -44,7 +44,8 @@ public class StatusBase : MonoBehaviour
 	int _move;						// 移動量
 	int _x;							// 現在位置
 	int _y;							// 現在位置
-	bool _isSelect;					// 選択されているかどうか
+	bool _isSelect;                 // 選択されているかどうか
+	bool _isSelectFrame;			// 選択されているやつにフレームを出すフラグ
 	bool _isBetween;				// 挟まれているかどうか
 	bool _isPlayer;					// プレイヤーかどうか
 	int _range;						// 射程
@@ -69,6 +70,7 @@ public class StatusBase : MonoBehaviour
 	public int Range { get { return _range; } set { _range = value; } }
 	public bool IsPlayer { get { return _isPlayer; } set { _isPlayer = value; } }
 	public bool IsSelect { get { return _isSelect; } }
+	public bool IsSelectFrame { get { return _isSelectFrame; } set { _isSelectFrame = value; } }
 	public bool IsBetween { get { return _isBetween; } }
 	public bool IsMoved { get { return _isMoved; } }
 	public Sprite CharSp { get { return _charSp; } set { _charSp = value; } }

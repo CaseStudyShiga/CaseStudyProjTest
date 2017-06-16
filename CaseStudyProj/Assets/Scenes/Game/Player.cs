@@ -15,6 +15,8 @@ public class Player : CharBase
 		{
 			this.OtherSelectOff();
 			this.Status.SelectOn();
+			this.OtherSelectFrameOff();
+			this.Status.IsSelectFrame = true;
 
 			stage.ClearPossibleMovePanel();
 			stage.Search(this.Status.X, this.Status.Y - 1, this.Status.Move, 1);
@@ -26,6 +28,7 @@ public class Player : CharBase
 		else
 		{
 			this.Status.SelectOff();
+			this.Status.IsSelectFrame = false;
 			stage.ClearPossibleMovePanel();
 		}
 	}

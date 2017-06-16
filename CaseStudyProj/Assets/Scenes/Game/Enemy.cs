@@ -14,6 +14,8 @@ public class Enemy : CharBase
 		if (this.Status.IsSelect == false)
 		{
 			this.OtherSelectOff();
+			this.OtherSelectFrameOff();
+			this.Status.IsSelectFrame = true;
 
 			if (this.Status.IsBetween == false)
 			{
@@ -30,6 +32,7 @@ public class Enemy : CharBase
 		else
 		{
 			this.Status.SelectOff();
+			this.Status.IsSelectFrame = false;
 			stage.ClearPossibleMovePanel();
 		}
 	}
