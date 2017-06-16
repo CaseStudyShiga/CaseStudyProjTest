@@ -45,7 +45,7 @@ public class selectFrame : MonoBehaviour {
         //加算α値設定
         float plusAlpha = 0.03f;
 
-        if( statusBase.IsSelect == true )
+        if( statusBase.IsSelectFrame == true )
         {
             //オブジェクトを表示
             this.gameObject.transform.Find("SelectFrame(Clone)").gameObject.SetActive(true);
