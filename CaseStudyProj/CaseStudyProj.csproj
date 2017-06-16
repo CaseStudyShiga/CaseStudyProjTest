@@ -102,10 +102,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Resources\Prehabs\Effect\EnemyAttack\EffectEnemyAttackScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Explosion\EffectExplosionPurpleScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Explosion\EffectExplosionScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\GunAttack\EffectGunAttackScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\PunchAttack\EffectPunchScript.cs" />
+    <Compile Include="Assets\Resources\Prehabs\Effect\Slash\EffectSlashScript.cs" />
     <Compile Include="Assets\Resources\Prehabs\Fader\Fader.cs" />
     <Compile Include="Assets\Scenes\ButtonManager.cs" />
     <Compile Include="Assets\Scenes\CSVDataReader.cs" />
     <Compile Include="Assets\Scenes\ConfigData.cs" />
+    <Compile Include="Assets\Scenes\CutInManager.cs" />
+    <Compile Include="Assets\Scenes\EffectManager.cs" />
     <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\SkillBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\StageBase.cs" />
@@ -113,24 +121,40 @@
     <Compile Include="Assets\Scenes\Game\Base\UIBase.cs" />
     <Compile Include="Assets\Scenes\Game\Enemy.cs" />
     <Compile Include="Assets\Scenes\Game\Game.cs" />
+    <Compile Include="Assets\Scenes\Game\GaugeBar.cs" />
     <Compile Include="Assets\Scenes\Game\Panel.cs" />
     <Compile Include="Assets\Scenes\Game\Player.cs" />
     <Compile Include="Assets\Scenes\Game\Stage.cs" />
-    <Compile Include="Assets\Scenes\Game\Status\AttackStatus.cs" />
     <Compile Include="Assets\Scenes\Game\Status\EnemyStatus.cs" />
+    <Compile Include="Assets\Scenes\Game\Status\Statuses.cs" />
     <Compile Include="Assets\Scenes\Game\UI\BottomUI.cs" />
+    <Compile Include="Assets\Scenes\Game\UI\ConfigUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\DamageUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\EndChkUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\MenuUI.cs" />
+    <Compile Include="Assets\Scenes\Game\UI\ResultUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\StatusUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\TopUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\UI.cs" />
+    <Compile Include="Assets\Scenes\Game\selectFrame.cs" />
     <Compile Include="Assets\Scenes\GameManager.cs" />
-    <Compile Include="Assets\Scenes\GameObjectUtils.cs" />
+    <Compile Include="Assets\Scenes\Runtime.cs" />
+    <Compile Include="Assets\Scenes\SaveData.cs" />
+    <Compile Include="Assets\Scenes\SaveManager.cs" />
+    <Compile Include="Assets\Scenes\Select\AreaSelect.cs" />
+    <Compile Include="Assets\Scenes\Select\ButtonSystem.cs" />
+    <Compile Include="Assets\Scenes\Select\Confirmation.cs" />
+    <Compile Include="Assets\Scenes\Select\Select.cs" />
+    <Compile Include="Assets\Scenes\Select\StageSelect.cs" />
+    <Compile Include="Assets\Scenes\SelectManager.cs" />
     <Compile Include="Assets\Scenes\SoundManager.cs" />
     <Compile Include="Assets\Scenes\Title\Title.cs" />
-    <Compile Include="Assets\Scenes\tamakoshi\ButtonSystem.cs" />
-    <Compile Include="Assets\Scenes\tamakoshi\textSystem.cs" />
+    <Compile Include="Assets\Scenes\Title\TitleTexture1.cs" />
+    <Compile Include="Assets\Scenes\Title\TitleTexture2.cs" />
+    <Compile Include="Assets\Scenes\Title\TitleTexture3.cs" />
+    <Compile Include="Assets\Scenes\Title\TitleTextureBrack.cs" />
+    <Compile Include="Assets\Scenes\Title\TitleTouch.cs" />
+    <Compile Include="Assets\Scenes\Title\Titlelogo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\DOTween\DOTween.XML" />

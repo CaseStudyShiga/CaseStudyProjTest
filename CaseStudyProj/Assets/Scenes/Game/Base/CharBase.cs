@@ -32,8 +32,9 @@ public class CharBase
 		child.AddComponent<Image>();
 		child.AddComponent<Button>();
 		child.AddComponent<GaugeBar>();
+        child.AddComponent<selectFrame>();
 
-		switch (type)
+        switch (type)
 		{
 			case "P1":
 				_status = child.AddComponent<AttackStatus>();
