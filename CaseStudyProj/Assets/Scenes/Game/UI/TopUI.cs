@@ -35,7 +35,7 @@ public class TopUI : UIBase
 			statusUI.SetSimpleText("Attack", status.Attack.ToString());
 			statusUI.SetSimpleText("Move", status.Move.ToString());
 			statusUI.SetSimpleText("Range", status.Range.ToString());
-			statusUI.transform.parent.GetComponent<TopUI>().SetFaceSprite(status.CharSp);
+			statusUI.transform.parent.GetComponent<TopUI>().SetFaceSprite(status.CharTopSp);
 		}
 	}
 
@@ -44,7 +44,7 @@ public class TopUI : UIBase
 		this.transform.localPosition = new Vector3(0f, 1073f, 0f);
 
 		this._background = this.CreateChild("BackGround", this.transform, new Vector2(750, 278), new Vector3(0, -542), Resources.Load<Sprite>("Sprites/GUI/topUI"));
-		this._face = this.CreateChild("FaceImage", this.transform, new Vector2(260, 260), new Vector3(-245, -533));
+		this._face = this.CreateChild("FaceImage", this.transform, new Vector2(378, 275), new Vector3(-190, -540));
 		this._statusUI = this.CreateStatusUI();
 		this._totalTurn = this.CreateChild("TotalTurn", this.transform, new Vector2(160, 160), new Vector2(303, -471));
 		this._totalTurn.GetComponent<Image>().color = new Color32(0, 0, 0, 0);

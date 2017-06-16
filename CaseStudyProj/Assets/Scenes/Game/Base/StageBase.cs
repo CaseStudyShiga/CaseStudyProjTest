@@ -1,9 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 using UnityEngine.Events;
 using DG.Tweening;
+
+public class TargetList
+{
+	public GameObject Obj;
+	public int Damage;
+	public bool IsFirst;
+	public bool IsSecond;
+
+	public TargetList(GameObject obj, int d, bool first, bool second)
+	{
+		Obj = obj;
+		Damage = d;
+		IsFirst = first;
+		IsSecond = second;
+	}
+}
 
 public class StageBase : MonoBehaviour
 {
@@ -189,7 +207,7 @@ public class StageBase : MonoBehaviour
 		return _panelData[y, x].transform.localPosition;
 	}
 
-	public bool SearchBetween(int x, int y, int di) // center X, center Y, search dir
+	public bool SearchBetween(int x, int y, int di, ref GameObject partner) // center X, center Y, search dir
 	{
 		if (x < 0 || y < 0 || x >= this._panelData.GetLength(1) || y >= this._panelData.GetLength(0)
 			|| this._panelData[y, x] == null)
@@ -204,6 +222,7 @@ public class StageBase : MonoBehaviour
 		int moveY = (int)GameManager.Instance.DirTable[di].y;
 
 		List<StatusBase> enemyStatus = new List<StatusBase>();
+		GameObject parObj = null;
 		while (!result)
 		{
 			nextX += moveX;
@@ -222,12 +241,14 @@ public class StageBase : MonoBehaviour
 			}
 			else
 			{
+				parObj = panel.OnObj.gameObject;
 				result = true;
 			}
 		}
 
 		if (result && enemyCount > 0)
 		{
+			partner = parObj;
 			for (int i = 0; i < enemyStatus.Count; i++)
 			{
 				enemyStatus[i].BetweenOn();
@@ -251,13 +272,16 @@ public class StageBase : MonoBehaviour
 		foreach (Transform child in this.transform.Find("Players"))
 		{
 			StatusBase playerStatus = child.GetComponent<StatusBase>();
-			playerStatus.Dir.Clear();
+			//playerStatus.Dir.Clear();
+			playerStatus.PartnerList.Clear();
 
+			GameObject partner = null;
 			for (int i = 0; i < 8; i++)
 			{
-				if (this.SearchBetween(playerStatus.X, playerStatus.Y, i))
+				if (this.SearchBetween(playerStatus.X, playerStatus.Y, i, ref partner))
 				{
-					playerStatus.Dir.Add(i);
+					//playerStatus.Dir.Add(i);
+					playerStatus.PartnerList.Add(new Partner(partner,i));
 				}
 			}
 		}
@@ -341,33 +365,87 @@ public class StageBase : MonoBehaviour
 		_stackPlayerPos.Clear();
 	}
 
+	List<TargetList> AttackPlayer(StatusBase status, int Dir, bool isPlayer, bool isPartner)
+	{
+		List<TargetList> enemyList = new List<TargetList>();
+
+		for (int i = 0; i < status.Range; i++)
+		{
+			int enemyX = ((int)GameManager.Instance.DirTable[Dir].x * (i + 1)) + status.X;
+			int enemyY = ((int)GameManager.Instance.DirTable[Dir].y * (i + 1)) + status.Y;
+
+			var panel = this.GetPanelData(enemyX, enemyY);
+			var enemy = (panel) ? panel.OnObj : null;
+
+			if (enemy)
+			{
+				var enemyStatus = enemy.GetComponent<StatusBase>();
+
+				if (enemyStatus.IsPlayer == false)
+				{
+					enemyStatus.Damage += status.Attack;
+					enemyList.Add(new TargetList(enemy.gameObject, status.Attack, isPlayer, isPartner));
+				}
+			}
+		}
+
+		return enemyList;
+	}
+
 	public void AttackPlayers()
 	{
 		foreach (Transform child in this.transform.Find("Players"))
 		{
 			var playerStatus = child.GetComponent<StatusBase>();
 
-			for (int d = 0; d < playerStatus.Dir.Count; d++)
+			// プレイヤーが挟んでいるパートナー分
+			for (int d = 0; d < playerStatus.PartnerList.Count; d++)
 			{
-				for (int i = 0; i < playerStatus.Range; i++)
+				List<TargetList> playerEnemyList = new List<TargetList>();
+				List<TargetList> partnerEnemyList = new List<TargetList>();
+				var partnerStatus = playerStatus.PartnerList[d].PartnerObj.GetComponent<StatusBase>();	//パートナーのデータ
+				var partnerpartner = partnerStatus.PartnerList.First(e => e.PartnerObj.GetComponent<StatusBase>().Index == playerStatus.Index); // パートナーのプレイヤーの方向
+
+				// プレイヤーの攻撃
+				playerEnemyList = this.AttackPlayer(playerStatus, playerStatus.PartnerList[d].Dir, true, false);
+
+				// パートナーの攻撃処理
+				partnerEnemyList = this.AttackPlayer(partnerStatus, partnerpartner.Dir, false, true);
+				
+				// プレイヤーとパートナーで攻撃する敵の結合
+				partnerEnemyList.ForEach(data =>
 				{
-					int enemyX = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].x * (i + 1)) + playerStatus.X;
-					int enemyY = ((int)GameManager.Instance.DirTable[playerStatus.Dir[d]].y * (i + 1)) + playerStatus.Y;
-
-					var panel = this.GetPanelData(enemyX, enemyY);
-					var enemy = (panel) ? panel.OnObj : null;
-
-					if (enemy)
+					var hoge = playerEnemyList.Where(e => e.Obj.GetComponent<StatusBase>().Index == data.Obj.GetComponent<StatusBase>().Index);
+					hoge.Select(hogeData =>
 					{
-						var enemyStatus = enemy.GetComponent<StatusBase>();
+						hogeData.Damage += data.Damage;
+						hogeData.IsSecond = data.IsSecond;
 
-						if (enemyStatus.IsPlayer == false)
-						{
-							EffectManager.Instance.SetEffect(playerStatus.Effect, this.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
-							enemyStatus.Damage += playerStatus.Attack;
-						}
+						return hogeData;
+					}).ToList();
+
+					if (hoge.ToList().Count <= 0)
+					{
+						playerEnemyList.Add(data);
 					}
-				}
+				});
+
+				// カットインクラスに渡すデータの設定
+				List<GameObject> objList = new List<GameObject>();
+				List<int> damageList = new List<int>();
+				List<bool> firstList = new List<bool>();
+				List<bool> secondList = new List<bool>();
+				playerEnemyList.ForEach(data =>
+				{
+					objList.Add(data.Obj);
+					damageList.Add(data.Damage);
+					firstList.Add(data.IsFirst);
+					secondList.Add(data.IsSecond);
+				});
+				CutInManager.Instance.AddCutInData(child.gameObject, playerStatus.PartnerList[d].PartnerObj, objList, damageList, firstList, secondList);
+
+				// プレイヤーはすでに攻撃しているので(パートナーのパートナー==プレイヤー)の　リストを外す
+				partnerStatus.PartnerList.RemoveAll(par => par.PartnerObj.GetComponent<StatusBase>().Index == playerStatus.Index);
 			}
 		}
 	}
@@ -384,11 +462,6 @@ public class StageBase : MonoBehaviour
 				{
 					DamageUI.Instance.SetDamage(enemyStatus.Damage, this.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
 					enemyStatus.Hp -= enemyStatus.Damage;
-
-					if (enemyStatus.Hp <= 0)
-					{
-						this.GetPanelData(enemyStatus.X, enemyStatus.Y).DataReset();
-					}
 				}
 
 				enemyStatus.Damage = 0;

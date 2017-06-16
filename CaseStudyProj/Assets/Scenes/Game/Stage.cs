@@ -36,6 +36,7 @@ public class Stage : StageBase
 	void InitField()
 	{
 		var data = CSVDataReader.Instance.Data;
+		int idx = 0;
 		for (int y = 0; y < data.GetLength(0); y++)
 		{
 			for (int x = 0; x < data.GetLength(1); x++)
@@ -45,14 +46,16 @@ public class Stage : StageBase
 				if (data[y, x].IndexOf('P') != -1)
 				{
 					Player player = new Player();
-					player.Create(this.transform, data[y, x], x, y);
+					player.Create(idx, this.transform, data[y, x], x, y);
 					this.PlayerMaxNum++;
+					idx++;
 				}
 
 				if (data[y, x].IndexOf('E') != -1)
 				{
 					Enemy enemy = new Enemy();
-					enemy.Create(this.transform, data[y, x], x, y);
+					enemy.Create(idx, this.transform, data[y, x], x, y);
+					idx++;
 				}
 
 				if (data[y, x].IndexOf('X') != -1)

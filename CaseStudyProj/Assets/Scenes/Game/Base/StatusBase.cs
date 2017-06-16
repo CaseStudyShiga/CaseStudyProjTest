@@ -4,8 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+public class Partner
+{
+	public GameObject PartnerObj;
+	public int Dir;
+
+	public Partner(GameObject obj, int dir)
+	{
+		PartnerObj = obj;
+		Dir = dir;
+	}
+}
+
 public class StatusBase : MonoBehaviour
 {
+	public enum Type
+	{
+		eEd,
+		eLucy,
+		eShinya,
+		eYukina,
+	};
+
 	Color32 DEFAULT_COL = Color.white;
 	Color32 SELECT_COL;
 	Color32 BETWEEN_COL;
@@ -14,26 +34,29 @@ public class StatusBase : MonoBehaviour
 	GameObject _stage;
 	public GameObject Stage { get { return _stage; } set { _stage = value; } }
 
-	// デバッグ用にいまだけpublic
+	int _index;
 	EffectManager.eEffect _effect;
-	string _name;		// キャラクターの名前
-	string _subName;
-	int _attack;		// 攻撃力
-	int _hp;			// 体力
-	int _hpMax;			// 最大体力
-	int _move;			// 移動量
-	int _x;				// 現在位置
-	int _y;				// 現在位置
-	bool _isSelect;		// 選択されているかどうか
-	bool _isBetween;	// 挟まれているかどうか
-	bool _isPlayer;		// プレイヤーかどうか
-	int _range;			// 射程
-	bool _isMoved;		// 行動済みかどうか
-	List<int> _dir;		// 攻撃すべき方向（敵がいる方向）
-	Sprite _charSp;		// キャライメージ
-	int _damage;		// 受けるダメージ値
-	int _attackNum;     // 攻撃回数
+	string _name;					// キャラクターの名前
+	string _subName;				// サブネーム
+	int _attack;					// 攻撃力
+	int _hp;						// 体力
+	int _hpMax;						// 最大体力
+	int _move;						// 移動量
+	int _x;							// 現在位置
+	int _y;							// 現在位置
+	bool _isSelect;					// 選択されているかどうか
+	bool _isBetween;				// 挟まれているかどうか
+	bool _isPlayer;					// プレイヤーかどうか
+	int _range;						// 射程
+	bool _isMoved;					// 行動済みかどうか
+	Sprite _charSp;					// キャライメージ
+	Sprite _charTopSp;				// キャラのTopUIに出すイメージ
+	int _damage;					// 受けるダメージ値
+	int _attackNum;					// 攻撃回数
+	List<Partner> _partnerList;		// 挟んでいる相方
+	Type _type;						// キャラタイプ
 
+	public int Index { get { return _index; } set { _index = value; } }
 	public EffectManager.eEffect Effect { get { return _effect; } set { _effect = value; } }
 	public string Name { get { return _name; } set { _name = value; } }
 	public string SubName { get { return _subName; } set { _subName = value; } }
@@ -48,10 +71,12 @@ public class StatusBase : MonoBehaviour
 	public bool IsSelect { get { return _isSelect; } }
 	public bool IsBetween { get { return _isBetween; } }
 	public bool IsMoved { get { return _isMoved; } }
-	public List<int> Dir { get { return _dir; } set { _dir = value; } }
 	public Sprite CharSp { get { return _charSp; } set { _charSp = value; } }
+	public Sprite CharTopSp { get { return _charTopSp; }  set { _charTopSp = value; } }
 	public int Damage { get { return _damage; } set { _damage = value; } }
 	public int AttackNum { get { return _attackNum; } set { _attackNum = value; } }
+	public List<Partner> PartnerList { get { return _partnerList; } set { _partnerList = value; } }
+	public Type CharType { get { return _type; } set { _type = value; } }
 
 	void Update()
 	{
@@ -62,18 +87,23 @@ public class StatusBase : MonoBehaviour
 
 		if (this._hp <= 0)
 		{
+			var stage = _stage.GetComponent<StageBase>();
+			stage.GetPanelData(_x, _y).DataReset();
 			Destroy(this.gameObject);
 		}
 	}
 
 	public void InitField()
 	{
+		this._index = 0;
 		this._isSelect = false;
 		this._isBetween = false;
 		this._isPlayer = false;
 		this._isMoved = false;
-		this._dir = new List<int>() { };
+		//this._dir = new List<int>() { };
 		this._damage = 0;
+		//this._partnerList = new List<GameObject>() { };
+		this._partnerList = new List<Partner>() { };
 	}
 
 	void SettingDefaultCol()

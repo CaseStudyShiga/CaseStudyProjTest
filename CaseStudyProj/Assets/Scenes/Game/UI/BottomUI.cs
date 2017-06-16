@@ -48,12 +48,15 @@ public class BottomUI : UIBase
 			stagebase.ClearPossibleMovePanel();
 
 			stagebase.AttackPlayers();
-			stagebase.DamageEnemy();
+			//CutInManager.Instance.CutInStart();
+			yield return StartCoroutine(CutInManager.Instance.CutInStart()); //stagebase.DamageEnemy();
 			yield return StartCoroutine(stagebase.EnemysTurn());
 
 			stagebase.ClearStackPlayer();
 			stagebase.AllMovedOff();
 			stagebase.ClearPossibleMovePanel();
+
+			yield return new WaitForSeconds(0.5f);
 			stagebase.AllCheckBetween();
 
 			stagebase.CheckGameComplete();
@@ -61,7 +64,7 @@ public class BottomUI : UIBase
 
 			if (GameManager.Instance.isComplete)
 			{
-				yield return new WaitForSeconds(1.0f);          // waitTime後に実行する
+				yield return new WaitForSeconds(1.0f);
 
 				var result = this.transform.parent.Find("ResultUI").GetComponent<ResultUI>();
 				result.ActiveMethod();
@@ -84,7 +87,10 @@ public class BottomUI : UIBase
 	{
 		var menuUI = this.transform.parent.Find("MenuUI");
 
-		menuUI.GetComponent<MenuUI>().ActiveMethod();
+		if (GameManager.Instance.isEnemyTurn == false)
+		{ 
+			menuUI.GetComponent<MenuUI>().ActiveMethod();
+			}
 	}
 
 	void InitField()

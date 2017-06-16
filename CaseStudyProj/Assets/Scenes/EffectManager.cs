@@ -34,7 +34,7 @@ public class EffectManager : MonoBehaviour
 
 	void Start()
 	{
-		this.transform.SetParent(GameObject.Find("Canvas").transform);
+		this.transform.SetParent(GameObject.Find("Canvas/UI").transform);
 		this.transform.SetAsLastSibling();
 		this.transform.localPosition = Vector3.zero;
 	}

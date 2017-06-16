@@ -13,6 +13,7 @@ class StageSelect : UIBase
 	GameObject _background;
 	GameObject _areaName;
 	GameObject _stages;
+	GameObject _confimationBack;
 	GameObject _confirmationPanel;
 	GameObject _yesBtn;
 	GameObject _noBtn;
@@ -35,10 +36,12 @@ class StageSelect : UIBase
 	//-----------------------------------------------------
 	void onConfirmationPanel()
 	{
+		this._confimationBack.SetActive(true);
 		this._confirmationPanel.SetActive(true);
 		this._confirmationPanel.transform.SetAsLastSibling();
 		this._confirmationPanel.transform.localScale = new Vector3(0, 0, 0);
-		this._confirmationPanel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.5f);
+		this._confirmationPanel.transform.DOScale(new Vector3(1f, 1f, 1f), 0.25f).OnComplete(()=> {
+		});
 	}
 
 	void YesAction()
@@ -54,7 +57,8 @@ class StageSelect : UIBase
 	//-----------------------------------------------------
 	void NoAction()
 	{
-		this._confirmationPanel.transform.DOScale(new Vector3(0f, 0f, 0f), 0.5f).OnComplete(() => {
+		this._confimationBack.SetActive(false);
+		this._confirmationPanel.transform.DOScale(new Vector3(0f, 0f, 0f), 0.25f).OnComplete(() => {
 			this._confirmationPanel.SetActive(false);
 		});
 	}
@@ -67,15 +71,17 @@ class StageSelect : UIBase
 		this._stages = new GameObject("Stages");
 		this._stages.transform.SetParent(this.transform);
 		this._stages.transform.localPosition = Vector3.zero;
-		this._confirmationPanel = this.CreateChild("ConfirmationPanel", this.transform.parent.transform, new Vector2(750, 1334), Vector3.zero);
+
+		this._confimationBack = this.CreateChild("ConfirmationPanel", this.transform.parent.transform, new Vector2(750, 1334), Vector3.zero);
+		this._confimationBack.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
+		this._confimationBack.SetActive(false);
+		this._confirmationPanel = this.CreateChild("ConfirmationPanel", this.transform.parent.transform, new Vector2(750, 1334), Vector3.zero, Resources.Load<Sprite>("Sprites/GUI/stage_select_window"));
 		this._confirmationPanel.transform.localScale = new Vector3(0, 0, 0);
-		this._confirmationPanel.GetComponent<Image>().color = new Color32(0, 0, 0, 100);
+		this._confirmationPanel.AddComponent<Confirmation>();
 
-		this._yesBtn = this.CreateButton("yesButton", this._confirmationPanel.transform, new Vector2(200, 100), new Vector3(-120,-160), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_panelButton"), this.YesAction);
-		this._noBtn = this.CreateButton("noButton", this._confirmationPanel.transform, new Vector2(200, 100), new Vector3(120, -160), Resources.Load<Sprite>("Sprites/GUI/areaSelectUI_panelButton"), this.NoAction);
-
-		this.CreateText("Text", "はい", this._yesBtn.transform, new Vector3(0, 5), 40, false);
-		this.CreateText("Text", "いいえ", this._noBtn.transform, new Vector3(0, 5), 40, false);
+		Vector3 rPos = new Vector3(0, -100);
+		this._yesBtn = this.CreateButton("yesButton", this._confirmationPanel.transform, new Vector2(350, 150), new Vector3(0,-100) + rPos, Resources.Load<Sprite>("Sprites/GUI/turnendWindow_yes"), this.YesAction);
+		this._noBtn = this.CreateButton("noButton", this._confirmationPanel.transform, new Vector2(350, 150), new Vector3(0, -250) + rPos, Resources.Load<Sprite>("Sprites/GUI/turnendWindow_no"), this.NoAction);
 
 		this._background.transform.SetAsFirstSibling();
 	}
@@ -108,7 +114,7 @@ class StageSelect : UIBase
 				}
 
 				GameObject obj = this.CreateButton("stage" + count.ToString(), this._stages.transform, new Vector2(150, 150), new Vector3(-270 + (x * 180), 200 - (y * 200)), Resources.Load<Sprite>("Sprites/GUI/stageSelectUI_stageButton_0"), () => { });
-				GameObject txt = this.CreateText("Text", count.ToString(), obj.transform, new Vector3(0, 9), 45, false);
+				GameObject txt = this.CreateText("Text", (count + 1).ToString(), obj.transform, new Vector3(0, 9), 45, false);
 
 				int starCnt = 0;
 				var saveData = SaveManager.Instance.SaveData.data.Where(d => d.AreaID == this._area.ID).ToList();
@@ -124,6 +130,7 @@ class StageSelect : UIBase
 				var btnSystem = obj.AddComponent<ButtonSystem>();
 				btnSystem.StageID = count;
 				obj.GetComponent<Button>().onClick.AddListener(() => {
+					this._confirmationPanel.GetComponent<Confirmation>().CheckMission(area, obj.GetComponent<ButtonSystem>().StageID);
 					this.onConfirmationPanel();
 				});
 				count++;

@@ -119,7 +119,7 @@ class ResultUI : UIBase
 		this._retryBtn = this.CreateButton("RetryBtn", this.transform, SIZE, new Vector3(0, POS.y - 50), Resources.Load<Sprite>("Sprites/GUI/result_retry"), this.RetryBtnAction);
 
 		this._stageIcon = this.CreateButton("stage" + CSVDataReader.Instance.StageID.ToString(), this.transform, new Vector2(200, 200), new Vector3(-265, 400), Resources.Load<Sprite>("Sprites/GUI/stageSelectUI_stageButton_0"), () => { });
-		GameObject txt = this.CreateText("Text", CSVDataReader.Instance.StageID.ToString(), this._stageIcon.transform, new Vector3(0, 9), 60, false);
+		GameObject txt = this.CreateText("Text", (CSVDataReader.Instance.StageID + 1).ToString(), this._stageIcon.transform, new Vector3(0, 9), 60, false);
 
 		this._CompleteTxt = this.CreateText("Text", "作戦成功", this.transform, new Vector3(0, 385), 60, false);
 		this._CompleteSubTxt = this.CreateText("SubText", "WIN", this.transform, new Vector3(0, 385 + 45), 30, false);

@@ -31,6 +31,7 @@ public class CharBase
 		child.GetComponent<RectTransform>().localScale = Vector3.one;
 		child.AddComponent<Image>();
 		child.AddComponent<Button>();
+		child.AddComponent<GaugeBar>();
 
 		switch (type)
 		{

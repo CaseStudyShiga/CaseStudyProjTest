@@ -114,6 +114,7 @@
     <Compile Include="Assets\Scenes\ButtonManager.cs" />
     <Compile Include="Assets\Scenes\CSVDataReader.cs" />
     <Compile Include="Assets\Scenes\ConfigData.cs" />
+    <Compile Include="Assets\Scenes\CutInManager.cs" />
     <Compile Include="Assets\Scenes\EffectManager.cs" />
     <Compile Include="Assets\Scenes\Game\Base\CharBase.cs" />
     <Compile Include="Assets\Scenes\Game\Base\SkillBase.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Assets\Scenes\Game\Base\UIBase.cs" />
     <Compile Include="Assets\Scenes\Game\Enemy.cs" />
     <Compile Include="Assets\Scenes\Game\Game.cs" />
+    <Compile Include="Assets\Scenes\Game\GaugeBar.cs" />
     <Compile Include="Assets\Scenes\Game\Panel.cs" />
     <Compile Include="Assets\Scenes\Game\Player.cs" />
     <Compile Include="Assets\Scenes\Game\Stage.cs" />
@@ -137,10 +139,12 @@
     <Compile Include="Assets\Scenes\Game\UI\TopUI.cs" />
     <Compile Include="Assets\Scenes\Game\UI\UI.cs" />
     <Compile Include="Assets\Scenes\GameManager.cs" />
+    <Compile Include="Assets\Scenes\Runtime.cs" />
     <Compile Include="Assets\Scenes\SaveData.cs" />
     <Compile Include="Assets\Scenes\SaveManager.cs" />
     <Compile Include="Assets\Scenes\Select\AreaSelect.cs" />
     <Compile Include="Assets\Scenes\Select\ButtonSystem.cs" />
+    <Compile Include="Assets\Scenes\Select\Confirmation.cs" />
     <Compile Include="Assets\Scenes\Select\Select.cs" />
     <Compile Include="Assets\Scenes\Select\StageSelect.cs" />
     <Compile Include="Assets\Scenes\SelectManager.cs" />

@@ -15,7 +15,8 @@ class EnemyStatus01 : StatusBase
 		this.Move = 2;
 		this.Range = 1;
 		this.AttackNum = 1;
-		this.CharSp = Resources.Load<Sprite>("Sprites/Char/enemy0");
+		this.CharSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy01");
+		this.CharTopSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy01");
 	}
 }
 
@@ -30,7 +31,8 @@ class EnemyStatus02 : StatusBase
 		this.Move = 1;
 		this.Range = 2;
 		this.AttackNum = 1;
-		this.CharSp = Resources.Load<Sprite>("Sprites/Char/enemy0");
+		this.CharSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy02");
+		this.CharTopSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy02");
 	}
 }
 
@@ -45,7 +47,8 @@ class EnemyStatus03 : StatusBase
 		this.Move = 4;
 		this.Range = 1;
 		this.AttackNum = 1;
-		this.CharSp = Resources.Load<Sprite>("Sprites/Char/enemy0");
+		this.CharSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy03");
+		this.CharTopSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy03");
 	}
 }
 
@@ -57,10 +60,11 @@ class EnemyStatus04 : StatusBase
 		this.Name = "デバウアー";
 		this.SubName = "制圧型";
 		this.Attack = 1;
-		this.HpMax = this.Hp = 13;
+		this.HpMax = this.Hp = 12;
 		this.Move = 1;
 		this.Range = 1;
 		this.AttackNum = 4;
-		this.CharSp = Resources.Load<Sprite>("Sprites/Char/enemy0");
+		this.CharSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy04");
+		this.CharTopSp = Resources.Load<Sprite>("Sprites/Char/sprite_enemy04");
 	}
 }
