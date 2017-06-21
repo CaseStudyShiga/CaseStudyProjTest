@@ -52,7 +52,7 @@ public class SoundManager
 	AudioSource _sourceBgm = null; // BGM
 	AudioSource _sourceSeDefault = null; // SE (デフォルト)
 	AudioSource[] _sourceSeArray; // SE (チャンネル)
-								  // BGMにアクセスするためのテーブル
+	// BGMにアクセスするためのテーブル
 	Dictionary<string, _Data> _poolBgm = new Dictionary<string, _Data>();
 	// SEにアクセスするためのテーブル 
 	Dictionary<string, _Data> _poolSe = new Dictionary<string, _Data>();
@@ -154,11 +154,11 @@ public class SoundManager
 
 	/// BGMの再生
 	/// ※事前にLoadBgmでロードしておくこと
-	public bool PlayBgm(string key)
+	public bool PlayBgm(string key, bool loop = true)
 	{
-		return Instance._PlayBgm(key);
+		return Instance._PlayBgm(key, loop);
 	}
-	bool _PlayBgm(string key)
+	bool _PlayBgm(string key, bool loop)
 	{
 		if (_poolBgm.ContainsKey(key) == false)
 		{
@@ -174,7 +174,7 @@ public class SoundManager
 
 		// 再生
 		var source = _GetAudioSource(eType.Bgm);
-		source.loop = true;
+		source.loop = loop;
 		source.clip = _data.Clip;
 		source.Play();
 

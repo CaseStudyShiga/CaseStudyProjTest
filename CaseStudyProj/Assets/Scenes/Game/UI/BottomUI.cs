@@ -49,7 +49,8 @@ public class BottomUI : UIBase
 
 			stagebase.AttackPlayers();
 			//CutInManager.Instance.CutInStart();
-			yield return StartCoroutine(CutInManager.Instance.CutInStart()); //stagebase.DamageEnemy();
+			GameManager.Instance.isEnemyTurn = true;
+			yield return StartCoroutine(CutInManager.Instance.CutInStart());
 			yield return StartCoroutine(stagebase.EnemysTurn());
 
 			stagebase.ClearStackPlayer();
@@ -64,11 +65,23 @@ public class BottomUI : UIBase
 
 			if (GameManager.Instance.isComplete)
 			{
-				yield return new WaitForSeconds(1.0f);
+				yield return new WaitForSeconds(0.5f);
 
 				var result = this.transform.parent.Find("ResultUI").GetComponent<ResultUI>();
+				result.CheckMission();
 				result.ActiveMethod();
 			}
+
+			if (GameManager.Instance.isFailed)
+			{
+				yield return new WaitForSeconds(0.5f);
+
+				var result = this.transform.parent.Find("ResultUI").GetComponent<ResultUI>();
+				result.FailedMission();
+				result.ActiveMethod();
+			}
+
+			GameManager.Instance.isEnemyTurn = false;
 		}
 	}
 
@@ -90,7 +103,7 @@ public class BottomUI : UIBase
 		if (GameManager.Instance.isEnemyTurn == false)
 		{ 
 			menuUI.GetComponent<MenuUI>().ActiveMethod();
-			}
+		}
 	}
 
 	void InitField()

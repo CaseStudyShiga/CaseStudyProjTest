@@ -45,8 +45,6 @@ public class SaveManager
 		TextReader txtReader = new StringReader(www.text);
 		SavePath = txtReader.ToString();
 #endif
-
-
 		_saveData = new SaveData();
 	}
 

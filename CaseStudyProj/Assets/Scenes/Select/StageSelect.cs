@@ -46,10 +46,14 @@ class StageSelect : UIBase
 
 	void YesAction()
 	{
-		Fader.instance.BlackOut();
-		StartCoroutine(DelayMethod(1.2f, () => {
-			CSVDataReader.Instance.Load(this._area.ID, SelectManager.Instance.StageID);
-		}));
+		if (Fader.instance.IsFading == false)
+		{
+			Fader.instance.BlackOut();
+			StartCoroutine(DelayMethod(1.2f, () =>
+			{
+				CSVDataReader.Instance.Load(this._area.ID, SelectManager.Instance.StageID);
+			}));
+		}
 	}
 
 	//-----------------------------------------------------
@@ -57,10 +61,14 @@ class StageSelect : UIBase
 	//-----------------------------------------------------
 	void NoAction()
 	{
-		this._confimationBack.SetActive(false);
-		this._confirmationPanel.transform.DOScale(new Vector3(0f, 0f, 0f), 0.25f).OnComplete(() => {
-			this._confirmationPanel.SetActive(false);
-		});
+		if (Fader.instance.IsFading == false)
+		{
+			this._confimationBack.SetActive(false);
+			this._confirmationPanel.transform.DOScale(new Vector3(0f, 0f, 0f), 0.25f).OnComplete(() =>
+			{
+				this._confirmationPanel.SetActive(false);
+			});
+		}
 	}
 
 	void InitField()

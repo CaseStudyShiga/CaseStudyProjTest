@@ -34,6 +34,7 @@ public class Select : MonoBehaviour
 
 	void Start ()
 	{
+		SoundManager.Instance.StopBgm();
 		SaveManager.Instance.Load();
 		Fader.instance.BlackIn();
 	}

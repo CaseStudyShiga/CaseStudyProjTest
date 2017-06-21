@@ -7,19 +7,35 @@ using System.Linq;
 using UnityEngine.Events;
 using DG.Tweening;
 
-public class TargetList
+public class Target
 {
 	public GameObject Obj;
 	public int Damage;
 	public bool IsFirst;
 	public bool IsSecond;
 
-	public TargetList(GameObject obj, int d, bool first, bool second)
+	public Target(GameObject obj, int d, bool first, bool second)
 	{
 		Obj = obj;
 		Damage = d;
 		IsFirst = first;
 		IsSecond = second;
+	}
+}
+
+public class TargetPos
+{
+	public StatusBase Status;
+	public int Dir;
+	public int X;
+	public int Y;
+
+	public TargetPos(StatusBase s, int d, int x, int y)
+	{
+		Status = s;
+		Dir = d;
+		X = x;
+		Y = y;
 	}
 }
 
@@ -38,6 +54,7 @@ public class StageBase : MonoBehaviour
 	Stack<Transform> _stackPlayerObj = new Stack<Transform>() { };
 	Stack<Vector2> _stackPlayerPos = new Stack<Vector2>() { };
 	List<Transform> _targetList = new List<Transform>() { };
+	List<TargetPos> _targetPosList = new List<TargetPos>() { };
 	int _playerMaxNum;
 
 	// 外部読み取り用
@@ -51,11 +68,6 @@ public class StageBase : MonoBehaviour
 
 	void Update()
 	{
-	}
-
-	protected void SetBaseBackGround()
-	{
-		//_basebackground.GetComponent<Image>().sprite = 
 	}
 
 	// int型の2次元配列を基準にパネルを生成
@@ -289,10 +301,24 @@ public class StageBase : MonoBehaviour
 
 	public void CheckGameComplete()
 	{
+		// 敵の生存数
 		int enemyCnt = 0;
 		foreach (Transform child in this.transform.Find("Enemys"))
 		{
 			enemyCnt++;
+		}
+
+		// 味方の生存数
+		int playerCnt = 0;
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			playerCnt++;
+		}
+
+		if (playerCnt <= 1)
+		{
+			GameManager.Instance.GameFailed();
+			return;
 		}
 
 		if (enemyCnt <= 0)
@@ -365,9 +391,9 @@ public class StageBase : MonoBehaviour
 		_stackPlayerPos.Clear();
 	}
 
-	List<TargetList> AttackPlayer(StatusBase status, int Dir, bool isPlayer, bool isPartner)
+	List<Target> AttackPlayer(StatusBase status, int Dir, bool isPlayer, bool isPartner)
 	{
-		List<TargetList> enemyList = new List<TargetList>();
+		List<Target> enemyList = new List<Target>();
 
 		for (int i = 0; i < status.Range; i++)
 		{
@@ -384,8 +410,12 @@ public class StageBase : MonoBehaviour
 				if (enemyStatus.IsPlayer == false)
 				{
 					enemyStatus.Damage += status.Attack;
-					enemyList.Add(new TargetList(enemy.gameObject, status.Attack, isPlayer, isPartner));
+					enemyList.Add(new Target(enemy.gameObject, status.Attack, isPlayer, isPartner));
 				}
+				//else	// このelseをコメントアウトすると 射程範囲の敵をプレイヤーを超えて攻撃する
+				//{
+				//	return enemyList;
+				//}
 			}
 		}
 
@@ -401,8 +431,8 @@ public class StageBase : MonoBehaviour
 			// プレイヤーが挟んでいるパートナー分
 			for (int d = 0; d < playerStatus.PartnerList.Count; d++)
 			{
-				List<TargetList> playerEnemyList = new List<TargetList>();
-				List<TargetList> partnerEnemyList = new List<TargetList>();
+				List<Target> playerEnemyList = new List<Target>();
+				List<Target> partnerEnemyList = new List<Target>();
 				var partnerStatus = playerStatus.PartnerList[d].PartnerObj.GetComponent<StatusBase>();	//パートナーのデータ
 				var partnerpartner = partnerStatus.PartnerList.First(e => e.PartnerObj.GetComponent<StatusBase>().Index == playerStatus.Index); // パートナーのプレイヤーの方向
 
@@ -471,8 +501,6 @@ public class StageBase : MonoBehaviour
 
 	public IEnumerator EnemysTurn()
 	{
-		GameManager.Instance.isEnemyTurn = true;
-
 		float speed = 0.5f;
 		switch (GameManager.Instance.SpeedUpType)
 		{
@@ -492,8 +520,6 @@ public class StageBase : MonoBehaviour
 		
 		// 全敵キャラ攻撃
 		yield return StartCoroutine(AllEnemyAttack(speed));
-
-		GameManager.Instance.isEnemyTurn = false;
 	}
 
 	IEnumerator AllEnemyMove(float waitTime)
@@ -514,6 +540,18 @@ public class StageBase : MonoBehaviour
 				this.EnemyMove(child, status.X, status.Y + 1, status.Move, 3);
 				this.EnemyMove(child, status.X - 1, status.Y, status.Move, 4);
 
+				_targetPosList.Sort((a, b) =>
+					a.Status.Hp - b.Status.Hp
+				);
+
+				if (_targetPosList.Count > 0)
+				{
+					if (_targetPosList[0].Dir == 1) status.SetPos(_targetPosList[0].X, _targetPosList[0].Y + 1);
+					if (_targetPosList[0].Dir == 2) status.SetPos(_targetPosList[0].X - 1, _targetPosList[0].Y);
+					if (_targetPosList[0].Dir == 3) status.SetPos(_targetPosList[0].X, _targetPosList[0].Y - 1);
+					if (_targetPosList[0].Dir == 4) status.SetPos(_targetPosList[0].X + 1, _targetPosList[0].Y);
+				}
+
 				// 移動していたら
 				if (!(oldX == status.X && oldY == status.Y))
 				{
@@ -521,6 +559,8 @@ public class StageBase : MonoBehaviour
 					this.GetPanelData(oldX, oldY).DataReset();
 				}
 			}
+
+			_targetPosList.Clear();
 		}
 	}
 
@@ -569,15 +609,18 @@ public class StageBase : MonoBehaviour
 		// パネルの上にすでに何か存在していたら終了
 		if (panelData.OnObj)
 		{
+			var playerStatus = panelData.OnObj.GetComponent<StatusBase>();
 			// それがプレイヤーだったら近くに移動
-			if (panelData.OnObj.GetComponent<StatusBase>().IsPlayer)
+			if (playerStatus.IsPlayer)
 			{
-				StatusBase status = enemy.GetComponent<StatusBase>();
+				//StatusBase status = enemy.GetComponent<StatusBase>();
+				//
+				//if (startDir == 1) status.SetPos(startX, startY + 1);
+				//if (startDir == 2) status.SetPos(startX - 1, startY);
+				//if (startDir == 3) status.SetPos(startX, startY - 1);
+				//if (startDir == 4) status.SetPos(startX + 1, startY);
 
-				if (startDir == 1) status.SetPos(startX, startY + 1);
-				if (startDir == 2) status.SetPos(startX - 1, startY);
-				if (startDir == 3) status.SetPos(startX, startY - 1);
-				if (startDir == 4) status.SetPos(startX + 1, startY);
+				_targetPosList.Add(new TargetPos(playerStatus, startDir, startX, startY));
 			}
 
 			return;
@@ -606,15 +649,18 @@ public class StageBase : MonoBehaviour
 		// パネルの上にすでに何か存在していたら終了
 		if (panelData.OnObj)
 		{
+			var playerStatus = panelData.OnObj.GetComponent<StatusBase>();
 			// それがプレイヤーだったら近くに移動
-			if (panelData.OnObj.GetComponent<StatusBase>().IsPlayer)
+			if (playerStatus.IsPlayer)
 			{
-				StatusBase status = enemy.GetComponent<StatusBase>();
+				//StatusBase status = enemy.GetComponent<StatusBase>();
+				//
+				//if (di == 1) status.SetPos(x, y + 1);
+				//if (di == 2) status.SetPos(x - 1, y);
+				//if (di == 3) status.SetPos(x, y - 1);
+				//if (di == 4) status.SetPos(x + 1, y);
 
-				if (di == 1) status.SetPos(x, y + 1);
-				if (di == 2) status.SetPos(x - 1, y);
-				if (di == 3) status.SetPos(x, y - 1);
-				if (di == 4) status.SetPos(x + 1, y);
+				_targetPosList.Add(new TargetPos(playerStatus, di, x, y));
 			}
 
 			return;

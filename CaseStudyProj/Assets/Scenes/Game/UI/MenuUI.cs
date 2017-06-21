@@ -34,21 +34,28 @@ class MenuUI : UIBase
 	// ステージリセット
 	void ResetAction()
 	{
-		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
-		stage.Reset();
-		this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
-		GameManager.Instance.Reset();
+		if (Fader.instance.IsFading == false)
+		{
+			var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
+			this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
+			GameManager.Instance.Reset();
+			stage.Reset();
 
-		this.NotActiveMethod();
+			this.NotActiveMethod();
+		}
 	}
 
 	// ステージ選択へ
 	void SelectAction()
 	{
-		Fader.instance.BlackOut();
-		StartCoroutine(DelayMethod(1.0f, () => {
-			SceneManager.LoadScene("Select");
-		}));
+		if (Fader.instance.IsFading == false)
+		{
+			Fader.instance.BlackOut();
+			StartCoroutine(DelayMethod(1.0f, () =>
+			{
+				SceneManager.LoadScene("Select");
+			}));
+		}
 	}
 
 	void InitField()
@@ -63,7 +70,7 @@ class MenuUI : UIBase
 		var config = this._configUI.AddComponent<ConfigUI>();
 		config.IsMenu = true;
 
-		this._resetBtn = this.CreateButton("ResetBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 250), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_retry"), this.ResetAction);
+		this._resetBtn = this.CreateButton("ResetBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 250), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_retry"), () => { this.ResetAction(); });
 		this._selectBtn = this.CreateButton("SelectBtn", this.transform, Vector2.one, new Vector3(0, POS.y + 100), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_stageselect"), this.SelectAction);
 		this._configButton = this.CreateButton("ConfigBtn", this.transform, Vector2.one, new Vector3(0, POS.y - 50), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_config"), config.ActiveMethod);
 		this._resumeBtn = this.CreateButton("ResumeBtn", this.transform, Vector2.one, new Vector3(0,POS.y - 200), Resources.Load<Sprite>("Sprites/GUI/gameUI_v3_resume"), this.NotActiveMethod);

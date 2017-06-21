@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 	bool _turnendChk;
 	SpeedUp _speedupType = SpeedUp.x1;
 	bool _complete = false;
+	bool _failed = false;
 	bool[] _isMission;
 
 	public int TotalTurnNum { get { return _totalTurnNum; } }
@@ -44,6 +45,7 @@ public class GameManager : MonoBehaviour
 	public bool isTurnEndChk { get { return _turnendChk; } set { _turnendChk = value; } }
 	public SpeedUp SpeedUpType { get { return _speedupType; } set { _speedupType = value; } }
 	public bool isComplete { get { return _complete; } }
+	public bool isFailed { get { return _failed; } }
 	public bool[] isMission { get { return this._isMission; } set { _isMission = value; } }
 
 	void Awake()
@@ -77,6 +79,11 @@ public class GameManager : MonoBehaviour
 	public void GameComplete()
 	{
 		this._complete = true;
+	}
+
+	public void GameFailed()
+	{
+		this._failed = true;
 	}
 
 	public void AddTurn()

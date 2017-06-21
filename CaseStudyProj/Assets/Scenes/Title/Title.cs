@@ -11,6 +11,7 @@ public class Title : MonoBehaviour
 {
 	void Start ()
 	{
+		SoundManager.Instance.PlayBgm("Title");
 		this.InitField();
 		this.InitAction();
 

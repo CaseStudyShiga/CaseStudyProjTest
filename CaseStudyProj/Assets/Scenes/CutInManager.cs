@@ -67,23 +67,35 @@ public class CutInManager : UIBase
 
 	public IEnumerator CutInStart()
 	{
+		float delayTime = 0.15f;
+		float nextDelayTime = 2.2f;
+		float cutInDuration = 1.0f;
+
+		switch (GameManager.Instance.SpeedUpType)
+		{
+			case GameManager.SpeedUp.x1:
+				break;
+			case GameManager.SpeedUp.x2:
+				break;
+			case GameManager.SpeedUp.x3:
+				break;
+		}
+
 		foreach (var data in _cutinDataList)
 		{
-			const float delayTime = 0.15f;
-
 			this.SetImage(true, data.PlayerObj.GetComponent<StatusBase>());
 			this.SetImage(false, data.PartnerObj.GetComponent<StatusBase>());
 
 			_cutInFirstObj.transform.localPosition = new Vector3(750, 300);
 			_cutInSecondObj.transform.localPosition = new Vector3(-750, -400);
 
-			// 一つ目のカットイン
-			_cutInFirstObj.transform.DOLocalMoveX(25f, 1f).SetEase(Ease.InOutQuart).OnComplete(()=> 
+			// 敵に攻撃
+			data.EnemyList.Select((enemy, idx) =>
 			{
-				// 敵に攻撃
-				data.EnemyList.Select((enemy, idx) =>
+				if (enemy)
 				{
-					if (enemy)
+					// 一つ目のカットイン
+					_cutInFirstObj.transform.DOLocalMoveX(25f, cutInDuration).SetEase(Ease.InOutQuart).OnComplete(() =>
 					{
 						var enemyStatus = enemy.GetComponent<StatusBase>();
 						var stage = enemyStatus.Stage.GetComponent<StageBase>();
@@ -100,21 +112,21 @@ public class CutInManager : UIBase
 						{
 							EffectManager.Instance.SetEffect(data.PartnerObj.GetComponent<StatusBase>().Effect, stage.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
 						}
-					}
-					return enemy;
-				}).ToList();
 
-				_cutInFirstObj.transform.DOLocalMoveX(-800f, 1f).SetEase(Ease.InOutQuart).SetDelay(delayTime).OnComplete(()=> {
-				});
-			});
+						_cutInFirstObj.transform.DOLocalMoveX(-800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime).OnComplete(() => {
+						});
+					});
 
-			// 二つ目のカットイン
-			_cutInSecondObj.transform.DOLocalMoveX(-25f, 1f).SetEase(Ease.InOutQuart).OnComplete(() =>
-			{
-				_cutInSecondObj.transform.DOLocalMoveX(800f, 1f).SetEase(Ease.InOutQuart).SetDelay(delayTime);
-			});
+					// 二つ目のカットイン
+					_cutInSecondObj.transform.DOLocalMoveX(-25f, 1f).SetEase(Ease.InOutQuart).OnComplete(() =>
+					{
+						_cutInSecondObj.transform.DOLocalMoveX(800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime);
+					});
+				}
+				return enemy;
+			}).ToList();
 
-			yield return new WaitForSeconds(3.5f);
+			yield return new WaitForSeconds(nextDelayTime);
 		}
 
 		_cutinDataList.Clear();
@@ -162,8 +174,8 @@ public class CutInManager : UIBase
 		_cutinDataList = new List<CutInData>();
 
 		Vector2 size = new Vector2(750, 300);
-		this._cutInFirstObj = this.CreateChild("CutInFirst", this.transform, size, new Vector3(25, 300));
-		this._cutInSecondObj = this.CreateChild("CutInSecond", this.transform, size, new Vector3(-25, -400));
+		this._cutInFirstObj = this.CreateChild("CutInFirst", this.transform, size, new Vector3(750, 300));
+		this._cutInSecondObj = this.CreateChild("CutInSecond", this.transform, size, new Vector3(-750, -400));
 	}
 }
 

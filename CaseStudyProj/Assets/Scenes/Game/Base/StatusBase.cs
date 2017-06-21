@@ -34,28 +34,28 @@ public class StatusBase : MonoBehaviour
 	GameObject _stage;
 	public GameObject Stage { get { return _stage; } set { _stage = value; } }
 
-	int _index;
-	EffectManager.eEffect _effect;
-	string _name;					// キャラクターの名前
-	string _subName;				// サブネーム
-	int _attack;					// 攻撃力
-	int _hp;						// 体力
-	int _hpMax;						// 最大体力
-	int _move;						// 移動量
-	int _x;							// 現在位置
-	int _y;							// 現在位置
-	bool _isSelect;                 // 選択されているかどうか
-	bool _isSelectFrame;			// 選択されているやつにフレームを出すフラグ
-	bool _isBetween;				// 挟まれているかどうか
-	bool _isPlayer;					// プレイヤーかどうか
-	int _range;						// 射程
-	bool _isMoved;					// 行動済みかどうか
-	Sprite _charSp;					// キャライメージ
-	Sprite _charTopSp;				// キャラのTopUIに出すイメージ
-	int _damage;					// 受けるダメージ値
-	int _attackNum;					// 攻撃回数
-	List<Partner> _partnerList;		// 挟んでいる相方
-	Type _type;						// キャラタイプ
+	public int _index;
+	public EffectManager.eEffect _effect;
+	public string _name;					// キャラクターの名前
+	public string _subName;				// サブネーム
+	public int _attack;					// 攻撃力
+	public int _hp;						// 体力
+	public int _hpMax;						// 最大体力
+	public int _move;						// 移動量
+	public int _x;							// 現在位置
+	public int _y;							// 現在位置
+	public bool _isSelect;                 // 選択されているかどうか
+	public bool _isSelectFrame;			// 選択されているやつにフレームを出すフラグ
+	public bool _isBetween;				// 挟まれているかどうか
+	public bool _isPlayer;					// プレイヤーかどうか
+	public int _range;						// 射程
+	public bool _isMoved;					// 行動済みかどうか
+	public Sprite _charSp;					// キャライメージ
+	public Sprite _charTopSp;				// キャラのTopUIに出すイメージ
+	public int _damage;					// 受けるダメージ値
+	public int _attackNum;					// 攻撃回数
+	public List<Partner> _partnerList;		// 挟んでいる相方
+	public Type _type;						// キャラタイプ
 
 	public int Index { get { return _index; } set { _index = value; } }
 	public EffectManager.eEffect Effect { get { return _effect; } set { _effect = value; } }
@@ -112,12 +112,7 @@ public class StatusBase : MonoBehaviour
 	{
 		// Imageの色変更
 		var image = this.transform.GetComponent<Image>();
-		DOTween.To(
-			() => image.color,              // 何を対象にするのか
-			color => image.color = color,   // 値の更新
-			DEFAULT_COL,                    // 最終的な値
-			0.15f                            // アニメーション時間
-		);
+		image.color = DEFAULT_COL;
 	}
 
 	public void SetColor(Color32 s, Color32 b)

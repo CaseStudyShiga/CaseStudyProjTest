@@ -20,6 +20,10 @@ class ResultUI : UIBase
 	GameObject[] _missionTxt = new GameObject[3];
 	GameObject[] _mission = new GameObject[3];
 
+	int _areaId;
+	int _nextStageId;
+	bool _isNextBtn = true;
+
 	void Start()
 	{
 		this.InitField();
@@ -30,10 +34,23 @@ class ResultUI : UIBase
 	{
 	}
 
-	void CheckMission()
+	public void CheckMission()
 	{
 		var stageIcon = this._stageIcon.GetComponent<Image>();
 
+		// NextBtnのフラグ設定
+		this._areaId = CSVDataReader.Instance.AreaID;
+		this._nextStageId = CSVDataReader.Instance.StageID + 1;
+		if (this._nextStageId >= SelectManager.Instance.AreaList[this._areaId].StageNumMax)
+		{
+			this._isNextBtn = false;
+		}
+		else
+		{
+			this._isNextBtn = true;
+		}
+
+		// ミッションコンプリートのフラグ処理
 		int missionCompleteNum = 0;
 		for (int i = 0; i < 3; i++)
 		{
@@ -51,9 +68,9 @@ class ResultUI : UIBase
 				txt.color = new Color32(100,100,100,255);
 			}
 		}
-
 		stageIcon.sprite = Resources.Load<Sprite>("Sprites/GUI/stageSelectUI_stageButton_" + missionCompleteNum.ToString());
 
+		// データのセーブ
 		SaveData.Data data;
 		data.AreaID = CSVDataReader.Instance.AreaID;
 		data.StageID = CSVDataReader.Instance.StageID;
@@ -87,26 +104,60 @@ class ResultUI : UIBase
 		SaveManager.Instance.Save();
 	}
 
+	public void FailedMission()
+	{
+		this._CompleteTxt.GetComponent<Text>().text = "作戦失敗";
+		this._CompleteSubTxt.GetComponent<Text>().text = "FAILED";
+
+		for (int i = 0; i < 3; i++)
+		{
+			var icon = this._mission[i].GetComponent<Image>();
+			var txt = this._missionTxt[i].GetComponent<Text>();
+
+			icon.sprite = Resources.Load<Sprite>("Sprites/GUI/result_normafail");
+			txt.color = new Color32(100, 100, 100, 255);
+		}
+	}
+
 	void NextBtnAction()
 	{
+		if (Fader.instance.IsFading == false)
+		{
+			if (this._isNextBtn)
+			{
+				Fader.instance.BlackOut();
+				StartCoroutine(DelayMethod(1.2f, () =>
+				{
+					CSVDataReader.Instance.Load(this._areaId, this._nextStageId);
+					SceneManager.LoadScene("Game");                 // シーン切り替え
+			}));
+			}
+		}
 	}
 
 	void SelectBtnAction()
 	{
-		Fader.instance.BlackOut();
-		StartCoroutine(DelayMethod(1.0f, () => {
-			SceneManager.LoadScene("Select");
-		}));
+		if (Fader.instance.IsFading == false)
+		{
+			Fader.instance.BlackOut();
+			StartCoroutine(DelayMethod(1.0f, () =>
+			{
+				SceneManager.LoadScene("Select");
+			}));
+		}
 	}
 
 	void RetryBtnAction()
 	{
-		var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
-		stage.Reset();
-		this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
-		GameManager.Instance.Reset();
+		if (Fader.instance.IsFading == false)
+		{
+			var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
+			stage.Reset();
+			this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
+			GameManager.Instance.Reset();
 
-		this.NotActiveMethod();
+			this.NotActiveMethod();
+		}
 	}
 
 	void InitField()
@@ -169,8 +220,6 @@ class ResultUI : UIBase
 				this._mission[i].transform.DOScale(Vector3.one, 0.2f);
 				this._missionTxt[i].transform.DOScale(Vector3.one, 0.2f);
 			}
-
-			this.CheckMission();
 		});
 	}
 

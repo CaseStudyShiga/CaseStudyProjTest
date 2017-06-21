@@ -70,11 +70,15 @@ public class Stage : StageBase
 	{
 		foreach (Transform child in this.transform.Find("Players"))
 		{
+			child.GetComponent<StatusBase>().X = -1;
+			child.GetComponent<StatusBase>().Y = -1;
 			Destroy(child.gameObject);
 		}
 
 		foreach (Transform child in this.transform.Find("Enemys"))
 		{
+			child.GetComponent<StatusBase>().X = -1;
+			child.GetComponent<StatusBase>().Y = -1;
 			Destroy(child.gameObject);
 		}
 

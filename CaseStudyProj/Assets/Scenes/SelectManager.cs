@@ -20,10 +20,10 @@ public class Area
 		switch (this.ID)
 		{
 			case 0:
-				this.StageNumMax = 5;
+				this.StageNumMax = 12;
 				break;
 			case 1:
-				this.StageNumMax = 1;
+				this.StageNumMax = 10;
 				break;
 			case 2:
 				this.StageNumMax = 1;
