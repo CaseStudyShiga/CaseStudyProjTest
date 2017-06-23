@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
 		this._totalTurnNum = 1;
 		this._enemyTurn = false;
 		this._complete = false;
+		this._failed = false;
 
 		for (int i = 0; i < 3; i++)
 		{
