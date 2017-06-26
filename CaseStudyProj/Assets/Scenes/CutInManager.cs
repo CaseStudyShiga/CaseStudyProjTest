@@ -96,6 +96,7 @@ public class CutInManager : UIBase
 			_cutInSecondObj.transform.localPosition = new Vector3(-750, -400);
 
 			// 敵に攻撃
+			bool enemyNullChk = false;
 			data.EnemyList.Select((enemy, idx) =>
 			{
 				if (enemy)
@@ -119,7 +120,8 @@ public class CutInManager : UIBase
 							EffectManager.Instance.SetEffect(data.PartnerObj.GetComponent<StatusBase>().Effect, stage.GetPanelLocalPosition(enemyStatus.X, enemyStatus.Y));
 						}
 
-						_cutInFirstObj.transform.DOLocalMoveX(-800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime).OnComplete(() => {
+						_cutInFirstObj.transform.DOLocalMoveX(-800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime).OnComplete(() =>
+						{
 						});
 					});
 
@@ -129,8 +131,17 @@ public class CutInManager : UIBase
 						_cutInSecondObj.transform.DOLocalMoveX(800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime);
 					});
 				}
+				else
+				{
+					enemyNullChk = true;
+				}
 				return enemy;
 			}).ToList();
+
+			if (enemyNullChk)
+			{
+				continue;
+			}
 
 			yield return new WaitForSeconds(nextDelayTime + 0.05f);
 		}

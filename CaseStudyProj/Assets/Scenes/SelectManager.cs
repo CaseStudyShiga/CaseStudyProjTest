@@ -26,7 +26,7 @@ public class Area
 				this.StageNumMax = 10;
 				break;
 			case 2:
-				this.StageNumMax = 1;
+				this.StageNumMax = 8;
 				break;
 			default:
 				this.StageNumMax = 0;

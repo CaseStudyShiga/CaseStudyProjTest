@@ -30,6 +30,7 @@ public class EffectManager : MonoBehaviour
 		eExplosionPurple,
 		eGunAttack,
 		eEnemyAttack,
+		eAttackSign,
 	}
 
 	void Start()
@@ -65,6 +66,10 @@ public class EffectManager : MonoBehaviour
 			case eEffect.eEnemyAttack:
 				effect = Resources.Load<GameObject>("Prehabs/Effect/EnemyAttack/effect_enemyattack");
 				break;
+			case eEffect.eAttackSign:
+				effect = Resources.Load<GameObject>("Prehabs/Effect/AttackSign/effect_attacksign");
+				scl = 1f;
+				break;
 		}
 
 		if (effect)
@@ -75,5 +80,35 @@ public class EffectManager : MonoBehaviour
 			obj.GetComponent<RectTransform>().localScale = Vector3.one * scl;
 			obj.transform.SetAsFirstSibling();
 		}
+	}
+
+	public GameObject AttackSign(int dir, int range, Vector3 pos, Transform parent)
+	{
+		GameObject effect = Resources.Load<GameObject>("Prehabs/Effect/AttackSign/effect_attacksign");
+		Quaternion qua = Quaternion.identity;
+		Vector3 scl = new Vector3(range * 1f, 1f, 1f);
+
+		qua.eulerAngles = new Vector3(0, 0, 90 - (dir * 45));
+
+		if (dir % 2 == 1)
+		{
+			scl = new Vector3(scl .x * 1.414f, scl.y, scl.z);
+		}
+
+		if (effect)
+		{
+			GameObject obj = Instantiate(effect) as GameObject;
+			obj.transform.SetParent(parent);
+			obj.GetComponent<RectTransform>().pivot = new Vector2(0f, 0.5f);
+			obj.GetComponent<RectTransform>().localPosition = Vector3.zero;
+			obj.GetComponent<RectTransform>().localScale = scl;
+			obj.GetComponent<RectTransform>().localRotation = qua;
+			obj.transform.SetAsFirstSibling();
+			obj.name = "AttackSign" + dir.ToString();
+
+			return obj;
+		}
+
+		return null;
 	}
 }

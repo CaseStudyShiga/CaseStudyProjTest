@@ -48,7 +48,6 @@ public class BottomUI : UIBase
 			stagebase.ClearPossibleMovePanel();
 
 			stagebase.AttackPlayers();
-			//CutInManager.Instance.CutInStart();
 			GameManager.Instance.isEnemyTurn = true;
 			yield return StartCoroutine(CutInManager.Instance.CutInStart());
 			yield return StartCoroutine(stagebase.EnemysTurn());

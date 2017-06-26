@@ -45,6 +45,11 @@ public class Player : CharBase
 		this.Status.IsPlayer = true;
 		this.Status.Index = idx;
 
+		GameObject attackSign = new GameObject("AttackSigns");
+		attackSign.transform.SetParent(this._instance.transform);
+		attackSign.transform.localPosition = Vector3.zero;
+		attackSign.transform.localScale = Vector3.one;
+
 		return _instance;
 	}
 }

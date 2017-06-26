@@ -1,11 +1,11 @@
-10,,,,,,,
+5,,,,,,,
 X,X,N,N,N,X,N,N
 X,X,N,N,N,X,N,N
 X,X,N,N,N,X,X,N
 X,X,N,N,N,N,X,N
-X,X,N,N,N,P4,N,N
+X,X,N,N,N,N,N,N
 X,X,X,X,N,N,N,N
-X,X,X,X,X,N,N,P3
-X,X,X,N,E2,E4,E2,N
-N,N,N,N,N,E2,N,N
-N,N,N,P1,N,N,N,N
+X,X,X,X,X,N,P3,N
+X,X,X,N,N,E1,N,N
+N,N,P1,P2,E1,E4,E2,N
+N,N,N,N,N,E3,N,P4

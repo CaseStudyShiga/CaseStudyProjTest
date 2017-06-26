@@ -74,17 +74,17 @@ public class StageBase : MonoBehaviour
 	protected void CreateStageBase(int[,] stageData)
 	{
 		GameObject panels = new GameObject("Panels");
-		GameObject players = new GameObject("Players");
 		GameObject enemys = new GameObject("Enemys");
+		GameObject players = new GameObject("Players");
 
 		panels.transform.SetParent(this.transform);
 		panels.transform.localPosition = Vector3.zero;
 
-		players.transform.SetParent(this.transform);
-		players.transform.localPosition = Vector3.zero;
-
 		enemys.transform.SetParent(this.transform);
 		enemys.transform.localPosition = Vector3.zero;
+
+		players.transform.SetParent(this.transform);
+		players.transform.localPosition = Vector3.zero;
 
 		_basebackground = CreateBackGround("BaseBackGround", this.transform, new Vector2(750, 1334), Resources.Load<Sprite>("Sprites/Stage/area" + CSVDataReader.Instance.AreaID.ToString() + "_0"));
 
@@ -277,24 +277,55 @@ public class StageBase : MonoBehaviour
 		foreach (Transform child in this.transform.Find("Enemys"))
 		{
 			StatusBase enemyStatus = child.GetComponent<StatusBase>();
-
 			enemyStatus.BetweenOff();
 		}
 
 		foreach (Transform child in this.transform.Find("Players"))
 		{
 			StatusBase playerStatus = child.GetComponent<StatusBase>();
-			//playerStatus.Dir.Clear();
 			playerStatus.PartnerList.Clear();
-
 			GameObject partner = null;
-			for (int i = 0; i < 8; i++)
+
+			for (int dir = 0; dir < 8; dir++)
 			{
-				if (this.SearchBetween(playerStatus.X, playerStatus.Y, i, ref partner))
+				if (this.SearchBetween(playerStatus.X, playerStatus.Y, dir, ref partner))
 				{
-					//playerStatus.Dir.Add(i);
-					playerStatus.PartnerList.Add(new Partner(partner,i));
+					playerStatus.PartnerList.Add(new Partner(partner, dir));
 				}
+			}
+		}
+
+		// アタックサインの生成
+		foreach (Transform child in this.transform.Find("Players"))
+		{
+			foreach (Transform sign in child.Find("AttackSigns"))
+			{
+				var image = sign.GetComponent<Image>();
+				DOTween.ToAlpha(
+					() => image.color,
+					color => image.color = color,
+					0,
+					0.2f
+				).OnComplete(() => {
+					Destroy(sign.gameObject);
+				});
+			}
+
+			StatusBase playerStatus = child.GetComponent<StatusBase>();
+
+			child.Find("AttackSigns").SetAsLastSibling();
+
+			foreach (var par in playerStatus.PartnerList)
+			{
+				int range = playerStatus.Range;
+				var enemyList = this.AttackPlayer(playerStatus, par.Dir, true, false);
+				
+				if(enemyList.Count <= range)
+				{
+					range = enemyList.Count;
+				}
+
+				EffectManager.Instance.AttackSign(par.Dir, range, this.GetPanelLocalPosition(playerStatus.X, playerStatus.Y), child.Find("AttackSigns"));
 			}
 		}
 	}
