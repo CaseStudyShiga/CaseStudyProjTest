@@ -16,9 +16,6 @@ public class selectFrame : MonoBehaviour {
     {
         gameObject.AddComponent<IgnoreTouch>();
 
-        //代入変数
-        Vector3 pos;
-
         //---プレハブ情報取得---
         var res = Resources.Load<GameObject>("Prehabs/gameObject/SelectFrame");
 
@@ -45,35 +42,36 @@ public class selectFrame : MonoBehaviour {
         //加算α値設定
         float plusAlpha = 0.03f;
 
-        if( statusBase.IsSelectFrame == true )
-        {
-            //オブジェクトを表示
-            this.gameObject.transform.Find("SelectFrame(Clone)").gameObject.SetActive(true);
+		//--- 点滅操作 ---
+		if (alphaCheck == true)
+		{
+			alpha -= plusAlpha;
 
-            //--- 点滅操作 ---
-            if (alphaCheck == true)
-            {
-                alpha -= plusAlpha;
+			if (alpha < 0.5f)
+			{
+				alphaCheck = false;
+			}
+		}
+		else
+		{
+			alpha += plusAlpha;
 
-                if (alpha < 0.5f)
-                {
-                    alphaCheck = false;
-                }
-            }
-            else
-            {
-                alpha += plusAlpha;
+			if (alpha > 1.0f)
+			{
+				alphaCheck = true;
+			}
+		}
 
-                if (alpha > 1.0f)
-                {
-                    alphaCheck = true;
-                }
-            }
+		//if ( statusBase.IsBetween == true || statusBase.PartnerList.Count > 0)
+		if (statusBase.IsSelectFrame)
+		{
+			//オブジェクトを表示
+			this.gameObject.transform.Find("SelectFrame(Clone)").gameObject.SetActive(true);
         }
         else
         {
-            //--- セレクトされていないので非表示 ---
-            this.gameObject.transform.Find("SelectFrame(Clone)").gameObject.SetActive(false);
+			//--- セレクトされていないので非表示 ---
+			this.gameObject.transform.Find("SelectFrame(Clone)").gameObject.SetActive(false);
         }
 
         //--- カラー更新 ---

@@ -22,12 +22,12 @@ class ResultUI : UIBase
 
 	int _areaId;
 	int _nextStageId;
+	bool _isFailed = false;
 	bool _isNextBtn = true;
 
 	void Start()
 	{
 		this.InitField();
-		//this.ActiveMethod();
 	}
 
 	void Update()
@@ -106,6 +106,7 @@ class ResultUI : UIBase
 
 	public void FailedMission()
 	{
+		this._isFailed = true;
 		this._CompleteTxt.GetComponent<Text>().text = "作戦失敗";
 		this._CompleteSubTxt.GetComponent<Text>().text = "FAILED";
 
@@ -151,6 +152,8 @@ class ResultUI : UIBase
 	{
 		if (Fader.instance.IsFading == false)
 		{
+			this._isFailed = false;
+
 			var stage = this.transform.parent.parent.Find("Stage").GetComponent<Stage>();
 			stage.Reset();
 			this.transform.parent.Find("TopUI").GetComponent<TopUI>().Reset();
@@ -204,12 +207,26 @@ class ResultUI : UIBase
 		}
 
 		this._frame.transform.SetSiblingIndex(0);
+
+		this._isFailed = false;
 	}
 
 	public void ActiveMethod()
 	{
 		this._frame.transform.DOScale(Vector3.one, 0.25f).OnComplete(() => {
-			this._nextBtn.transform.DOScale(Vector3.one, 0.2f);
+
+			if (this._isFailed == false)
+			{
+				this._nextBtn.transform.DOScale(Vector3.one, 0.2f);
+				this._selectBtn.transform.localPosition = new Vector3(0, POS.y + 100);
+				this._retryBtn.transform.localPosition = new Vector3(0, POS.y - 50);
+			}
+			else
+			{
+				this._selectBtn.transform.localPosition = new Vector3(0, -370);
+				this._retryBtn.transform.localPosition = new Vector3(0, -150);
+			}
+
 			this._selectBtn.transform.DOScale(Vector3.one, 0.2f);
 			this._retryBtn.transform.DOScale(Vector3.one, 0.2f);
 			this._CompleteTxt.transform.DOScale(Vector3.one, 0.2f);

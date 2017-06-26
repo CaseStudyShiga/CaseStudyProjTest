@@ -412,10 +412,10 @@ public class StageBase : MonoBehaviour
 					enemyStatus.Damage += status.Attack;
 					enemyList.Add(new Target(enemy.gameObject, status.Attack, isPlayer, isPartner));
 				}
-				//else	// このelseをコメントアウトすると 射程範囲の敵をプレイヤーを超えて攻撃する
-				//{
-				//	return enemyList;
-				//}
+				else	// このelseをコメントアウトすると 射程範囲の敵をプレイヤーを超えて攻撃する
+				{
+					return enemyList;
+				}
 			}
 		}
 
@@ -505,13 +505,13 @@ public class StageBase : MonoBehaviour
 		switch (GameManager.Instance.SpeedUpType)
 		{
 			case GameManager.SpeedUp.x1:
-				speed = 0.5f;
-				break;
-			case GameManager.SpeedUp.x2:
 				speed = 0.25f;
 				break;
-			case GameManager.SpeedUp.x3:
+			case GameManager.SpeedUp.x2:
 				speed = 0.125f;
+				break;
+			case GameManager.SpeedUp.x3:
+				speed = 0.1f;
 				break;
 		}
 

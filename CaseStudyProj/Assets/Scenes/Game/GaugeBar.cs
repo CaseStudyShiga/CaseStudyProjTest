@@ -31,7 +31,7 @@ public class GaugeBar : MonoBehaviour {
         //---位置情報初期化---
         obj.transform.localPosition = Vector3.zero;
         pos = obj.transform.localPosition;
-        pos.y = -40;
+        pos.y = -35;
         obj.transform.localPosition = pos;
 
         //---ステータス情報取得---

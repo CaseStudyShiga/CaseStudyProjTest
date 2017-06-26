@@ -68,19 +68,25 @@ public class CutInManager : UIBase
 	public IEnumerator CutInStart()
 	{
 		float delayTime = 0.15f;
-		float nextDelayTime = 2.2f;
 		float cutInDuration = 1.0f;
 
 		switch (GameManager.Instance.SpeedUpType)
 		{
 			case GameManager.SpeedUp.x1:
+				delayTime = 0.15f;
+				cutInDuration = 1.0f;
 				break;
 			case GameManager.SpeedUp.x2:
+				delayTime = 0.10f;
+				cutInDuration = 0.5f;
 				break;
 			case GameManager.SpeedUp.x3:
+				delayTime = 0.05f;
+				cutInDuration = 0.25f;
 				break;
 		}
 
+		float nextDelayTime = (cutInDuration * 2) + delayTime;
 		foreach (var data in _cutinDataList)
 		{
 			this.SetImage(true, data.PlayerObj.GetComponent<StatusBase>());
@@ -118,7 +124,7 @@ public class CutInManager : UIBase
 					});
 
 					// 二つ目のカットイン
-					_cutInSecondObj.transform.DOLocalMoveX(-25f, 1f).SetEase(Ease.InOutQuart).OnComplete(() =>
+					_cutInSecondObj.transform.DOLocalMoveX(-25f, cutInDuration).SetEase(Ease.InOutQuart).OnComplete(() =>
 					{
 						_cutInSecondObj.transform.DOLocalMoveX(800f, cutInDuration).SetEase(Ease.InOutQuart).SetDelay(delayTime);
 					});
@@ -126,7 +132,7 @@ public class CutInManager : UIBase
 				return enemy;
 			}).ToList();
 
-			yield return new WaitForSeconds(nextDelayTime);
+			yield return new WaitForSeconds(nextDelayTime + 0.05f);
 		}
 
 		_cutinDataList.Clear();
